@@ -384,4 +384,51 @@ export const TEMPLATES: Plan[] = [
       ]),
     ],
   },
+
+  // ---------------------------------------------------------------- Knee-Resilient Upper/Lower
+  {
+    id: 'tpl-knee-resilient',
+    name: 'Knee-Resilient Upper / Lower — 4 Day',
+    description:
+      'A knee-conscious 4-day split for training around chronic knee pain (e.g. post-ACL). Lower days start with an isometric primer, prioritize quads AND hamstrings, add hip/glute work to control knee valgus, use knee-friendly tempo and single-leg work, and finish with low-impact sled work — no jumping/impact. Load pain-guided: keep knee pain ≤3/10 during, and it should settle to baseline by the next morning; if not, reduce load, depth, or range. Not medical advice — clear your loading with your surgeon/PT.',
+    daysPerWeek: 4,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Lower A — Quad focus', [
+        px('wall-sit', 3, 1, 1, 0, 120),
+        px('heels-elevated-squat', 3, 8, 12, 2, 150),
+        px('leg-extension', 3, 10, 15, 1, 90),
+        px('step-down', 3, 8, 12, 1, 90),
+        px('banded-lateral-walk', 2, 12, 20, 1, 60),
+        px('backward-sled-drag', 3, 3, 5, 1, 90),
+      ]),
+      day('Upper A', [
+        px('incline-db-press', 4, 8, 12, 2, 120),
+        px('chest-supported-row', 4, 8, 12, 2, 120),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
+        px('lat-pulldown', 3, 8, 12, 2, 120),
+        px('cable-lateral-raise', 3, 12, 20, 1, 60),
+        px('ez-bar-curl', 3, 8, 12, 1, 60),
+        px('triceps-pushdown', 3, 10, 15, 1, 60),
+      ]),
+      day('Lower B — Posterior / Hip', [
+        px('romanian-deadlift', 3, 6, 10, 2, 180),
+        px('seated-leg-curl', 3, 8, 15, 1, 90),
+        px('nordic-curl', 3, 3, 6, 1, 120),
+        px('hip-thrust', 3, 8, 15, 2, 120),
+        px('tke', 3, 12, 20, 1, 60),
+        px('tibialis-raise', 3, 15, 25, 1, 45),
+        px('sled-push', 3, 3, 5, 1, 120),
+      ]),
+      day('Upper B', [
+        px('ohp', 4, 6, 10, 2, 150),
+        px('pullup', 4, 6, 12, 2, 120),
+        px('seated-cable-row', 3, 8, 12, 2, 120),
+        px('reverse-pec-deck', 3, 12, 20, 1, 60),
+        px('incline-db-curl', 3, 8, 12, 1, 60),
+        px('overhead-triceps-ext', 3, 10, 15, 1, 60),
+      ]),
+    ],
+  },
 ]

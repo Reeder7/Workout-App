@@ -39,6 +39,10 @@ const PRINCIPLES = [
     title: 'Rest & recovery',
     body: 'Rest ~2–3+ minutes on heavy compounds to preserve force and total volume, and ~1–2 minutes on isolation work. Take a lighter deload (~50–70% of normal volume/intensity) roughly every 4–8 weeks to shed accumulated fatigue.',
   },
+  {
+    title: 'Training around joint or tendon pain',
+    body: 'You don’t need to be pain-free to train — loading with some pain is safe if you keep it controlled. Use the traffic-light rule: pain ≤3/10 during the set and back to baseline by next morning = green, keep progressing. Pain 3–5/10 that settles = amber, hold steady. Pain >5/10, or worse the next morning = red, back off load, depth, or range (or switch to isometrics). Adapt by changing the movement — tempo, foot position, range — not by skipping. Judge the weekly trend, not single sessions. (Educational, not medical advice — clear injuries with your PT/surgeon.)',
+  },
 ]
 
 export function Library() {

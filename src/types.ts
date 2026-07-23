@@ -8,6 +8,7 @@ export type MuscleGroup =
   | 'Biceps'
   | 'Triceps'
   | 'Calves'
+  | 'Shins'
   | 'Abs'
   | 'Forearms'
   | 'Traps'
