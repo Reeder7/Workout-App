@@ -56,6 +56,25 @@ export function ExerciseDetail() {
         {meta ? `${meta.primary} · ${meta.equipment} · ${meta.category}` : ''}
       </p>
 
+      {meta?.tags && meta.tags.length > 0 && (
+        <div className="row wrap" style={{ gap: 6, marginTop: -12, marginBottom: 16 }}>
+          {meta.tags.map((t) => (
+            <span key={t} className="pill pill-accent">
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {meta?.caution && (
+        <div className="caution-banner">
+          <span className="caution-icon">⚠</span>
+          <span className="hint" style={{ margin: 0 }}>
+            {meta.caution}
+          </span>
+        </div>
+      )}
+
       {history.length === 0 ? (
         <div className="empty">
           <p className="faint">No sessions logged for this lift yet.</p>

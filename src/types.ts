@@ -19,6 +19,8 @@ export type Equipment =
   | 'Cable'
   | 'Smith'
   | 'Bodyweight'
+  | 'Sled'
+  | 'Band'
   | 'Other'
 
 export type ExerciseCategory = 'Compound' | 'Isolation'
@@ -42,6 +44,10 @@ export interface Exercise {
   mistakes?: string[]
   /** One-line biomechanical rationale (where tension/stretch peaks, etc.). */
   science?: string
+  /** Labels like 'Knee-friendly', 'Isometric', 'Tempo/HSR', 'BFR', 'Sled', 'Activation', 'Rehab'. */
+  tags?: string[]
+  /** Medical/technique caution shown as a highlighted banner on the detail page. */
+  caution?: string
   custom?: boolean
 }
 

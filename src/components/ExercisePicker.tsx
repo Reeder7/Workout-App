@@ -144,7 +144,7 @@ function NewExerciseForm({
           value={equipment}
           onChange={(e) => setEquipment(e.target.value as Exercise['equipment'])}
         >
-          {['Barbell', 'Dumbbell', 'Machine', 'Cable', 'Smith', 'Bodyweight', 'Other'].map(
+          {['Barbell', 'Dumbbell', 'Machine', 'Cable', 'Smith', 'Bodyweight', 'Sled', 'Band', 'Other'].map(
             (x) => (
               <option key={x} value={x}>
                 {x}
