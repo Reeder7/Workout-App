@@ -9,27 +9,35 @@ import type { Exercise, MuscleGroup } from '../types'
 const PRINCIPLES = [
   {
     title: 'Train close to failure',
-    body: 'Most hard sets should end 0–3 reps shy of failure (RIR). That’s the effort level that reliably drives growth without burying your recovery.',
-  },
-  {
-    title: 'Progressive overload',
-    body: 'Beat your logbook over time — add reps within the target range, then add weight and reset to the bottom of the range. Small, steady increases win.',
+    body: 'Most hard sets should end 0–3 reps shy of failure (RIR). Push isolations and machines to (or near) failure — the fatigue cost is low. Keep heavy compounds like squats and deadlifts with a bit more in reserve (~1–3 RIR) to manage fatigue and stay technically safe. A common pattern: 1–2 RIR on the early sets, last set to failure.',
   },
   {
     title: 'Volume: ~10–20 sets / muscle / week',
-    body: 'Total hard sets per muscle per week is the main volume dial. Start around 10, add sets over a block if you’re recovering well.',
+    body: 'Total hard sets per muscle per week is your main volume dial. Start around 10, add sets over a training block if you’re recovering and progressing well, and pull back if progress stalls or recovery suffers. Volume is a dose you titrate, not a fixed number.',
   },
   {
-    title: 'Frequency 2× / week',
-    body: 'Hitting each muscle about twice a week lets you spread volume out and refresh the growth stimulus more often than a once-a-week bro split.',
+    title: 'Frequency ~2× / week',
+    body: 'Hitting each muscle about twice a week lets you spread quality volume across sessions with less per-session fatigue and a fresher growth stimulus than a once-a-week bro split. Higher-frequency plans (4–5×) can work for advanced lifters who recover well.',
+  },
+  {
+    title: 'Progressive overload (double progression)',
+    body: 'Beat your logbook over time. Work within the target rep range; once you hit the top of the range across all sets, add a small amount of weight and drop back to the bottom of the range. Small, steady increases win. Beginners can just add a little weight each week.',
   },
   {
     title: 'Rep range 5–30',
-    body: 'Growth happens across a wide rep range when sets are taken close to failure. Anchor compounds in the 5–10 range and isolations in the 10–20 range.',
+    body: 'Growth happens across a wide rep range when sets are taken close to failure — 6–12 isn’t uniquely magical. Anchor big compounds in ~5–10 reps, most work in ~8–15, and isolations in ~12–20+. Use ~1–5 reps when the goal is pure strength.',
   },
   {
     title: 'Exercise selection',
-    body: 'Favor movements with a good stability–ROM–resistance profile, and include at least one that loads the muscle in a stretched position.',
+    body: 'Favor movements with a good stability–range of motion–resistance profile, and make sure at least one exercise per muscle loads it hard in the stretched (lengthened) position — that’s where much of the growth stimulus comes from.',
+  },
+  {
+    title: 'Lengthened partials & the stretch',
+    body: 'The stretched portion of a rep is the most productive. Never skip the deep stretch on any lift. For a modest extra edge, you can add partial reps in the stretched position after reaching failure — it works best on stretch-loaded moves like RDLs, rows, flyes, pullovers, and overhead triceps. Use it selectively; it adds fatigue.',
+  },
+  {
+    title: 'Rest & recovery',
+    body: 'Rest ~2–3+ minutes on heavy compounds to preserve force and total volume, and ~1–2 minutes on isolation work. Take a lighter deload (~50–70% of normal volume/intensity) roughly every 4–8 weeks to shed accumulated fatigue.',
   },
 ]
 

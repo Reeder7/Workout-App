@@ -17,16 +17,18 @@ function day(name: string, exercises: PlanExercise[]): PlanDay {
 }
 
 /**
- * Built-in programs modeled on Jeff Nippard–style evidence-based hypertrophy
- * training: 2× weekly frequency per muscle, ~10–20 hard sets per muscle per
- * week, most work at 1–3 RIR, compounds first then isolations.
+ * Built-in programs modeled on Jeff Nippard–style evidence-based training:
+ * ~10–20 hard sets per muscle per week, ~2× weekly frequency, most work at
+ * 1–3 RIR (isolations closer to failure than heavy compounds), compounds
+ * first then isolations, and stretch-biased exercise selection.
  */
 export const TEMPLATES: Plan[] = [
+  // ---------------------------------------------------------------- 3-Day Full Body
   {
-    id: 'tpl-full-body',
-    name: 'Full Body — 3 Days',
+    id: 'tpl-full-body-3',
+    name: 'Full Body — 3 Day',
     description:
-      'Great for beginners or busy schedules. Every muscle trained 3× per week. Focus on adding weight or reps each session.',
+      'Every muscle trained 3× per week. Ideal for beginners or busy schedules — the highest bang-for-buck frequency when you can only train a few days. Focus on adding weight or reps each session.',
     daysPerWeek: 3,
     createdAt: 0,
     builtIn: true,
@@ -36,8 +38,8 @@ export const TEMPLATES: Plan[] = [
         px('bench-press', 3, 6, 8, 2, 180),
         px('chest-supported-row', 3, 8, 12, 2, 120),
         px('lateral-raise', 3, 12, 20, 1, 60),
-        px('lying-leg-curl', 3, 10, 15, 1, 90),
-        px('triceps-pushdown', 3, 10, 15, 1, 60),
+        px('seated-leg-curl', 3, 10, 15, 1, 90),
+        px('overhead-triceps-ext', 3, 10, 15, 1, 60),
       ]),
       day('Full Body B', [
         px('romanian-deadlift', 3, 8, 10, 2, 180),
@@ -45,7 +47,7 @@ export const TEMPLATES: Plan[] = [
         px('lat-pulldown', 3, 8, 12, 2, 120),
         px('leg-press', 3, 10, 15, 2, 120),
         px('incline-db-curl', 3, 8, 12, 1, 60),
-        px('standing-calf-raise', 3, 10, 15, 1, 60),
+        px('standing-calf-raise', 3, 8, 15, 1, 60),
       ]),
       day('Full Body C', [
         px('hack-squat', 3, 8, 12, 2, 150),
@@ -57,67 +59,71 @@ export const TEMPLATES: Plan[] = [
       ]),
     ],
   },
+
+  // ---------------------------------------------------------------- 4-Day Upper/Lower
   {
     id: 'tpl-upper-lower',
-    name: 'Upper / Lower — 4 Days',
+    name: 'Upper / Lower — 4 Day',
     description:
-      'The classic 4-day split. Each muscle trained 2× per week with room for solid volume. A great intermediate default.',
+      'The classic 4-day split — Nippard’s pick for time-limited intermediates. A strength-leaning and a hypertrophy-leaning day for each half; every muscle trained 2× per week.',
     daysPerWeek: 4,
     createdAt: 0,
     builtIn: true,
     days: [
-      day('Upper A (Strength)', [
+      day('Upper (Strength)', [
         px('bench-press', 4, 5, 8, 2, 180),
         px('barbell-row', 4, 6, 10, 2, 150),
         px('ohp', 3, 6, 10, 2, 150),
         px('lat-pulldown', 3, 8, 12, 2, 120),
-        px('lateral-raise', 3, 12, 20, 1, 60),
-        px('barbell-curl', 3, 8, 12, 1, 60),
+        px('cable-lateral-raise', 3, 12, 20, 1, 60),
+        px('ez-bar-curl', 3, 8, 12, 1, 60),
         px('triceps-pushdown', 3, 10, 15, 1, 60),
       ]),
-      day('Lower A (Squat focus)', [
+      day('Lower (Squat focus)', [
         px('back-squat', 4, 5, 8, 2, 210),
         px('romanian-deadlift', 3, 8, 10, 2, 180),
         px('leg-press', 3, 10, 15, 2, 120),
         px('seated-leg-curl', 3, 10, 15, 1, 90),
-        px('standing-calf-raise', 4, 10, 15, 1, 60),
+        px('standing-calf-raise', 4, 8, 15, 1, 60),
         px('hanging-leg-raise', 3, 8, 15, 1, 60),
       ]),
-      day('Upper B (Hypertrophy)', [
+      day('Upper (Hypertrophy)', [
         px('incline-db-press', 4, 8, 12, 2, 120),
         px('chest-supported-row', 4, 8, 12, 2, 120),
-        px('db-shoulder-press', 3, 8, 12, 2, 120),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
         px('pullup', 3, 6, 12, 2, 120),
-        px('cable-lateral-raise', 3, 12, 20, 1, 60),
+        px('cable-rear-delt-fly', 3, 12, 20, 1, 60),
         px('incline-db-curl', 3, 8, 15, 1, 60),
         px('overhead-triceps-ext', 3, 10, 15, 1, 60),
       ]),
-      day('Lower B (Deadlift focus)', [
+      day('Lower (Deadlift focus)', [
         px('romanian-deadlift', 4, 6, 10, 2, 210),
         px('hack-squat', 3, 8, 12, 2, 150),
         px('bulgarian-split-squat', 3, 8, 12, 2, 120),
         px('lying-leg-curl', 3, 10, 15, 1, 90),
-        px('seated-calf-raise', 4, 12, 20, 1, 60),
+        px('seated-calf-raise', 4, 10, 20, 1, 60),
         px('cable-crunch', 3, 10, 20, 1, 60),
       ]),
     ],
   },
+
+  // ---------------------------------------------------------------- 6-Day PPL
   {
     id: 'tpl-ppl',
-    name: 'Push / Pull / Legs — 6 Days',
+    name: 'Push / Pull / Legs — 6 Day',
     description:
-      'High-volume 6-day split for dedicated lifters. Each muscle trained 2× per week with lots of exercise variety. Demands good recovery.',
+      'High-volume 6-day split for dedicated intermediate–advanced lifters. Each muscle trained 2× per week with lots of exercise variety. Demands good recovery.',
     daysPerWeek: 6,
     createdAt: 0,
     builtIn: true,
     days: [
       day('Push A', [
         px('bench-press', 4, 6, 10, 2, 180),
-        px('db-shoulder-press', 3, 8, 12, 2, 120),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
         px('incline-db-press', 3, 8, 12, 2, 120),
         px('cable-lateral-raise', 4, 12, 20, 1, 60),
-        px('triceps-pushdown', 3, 10, 15, 1, 60),
         px('overhead-triceps-ext', 3, 10, 15, 1, 60),
+        px('rope-pushdown', 3, 10, 15, 1, 60),
       ]),
       day('Pull A', [
         px('barbell-row', 4, 6, 10, 2, 150),
@@ -132,12 +138,12 @@ export const TEMPLATES: Plan[] = [
         px('romanian-deadlift', 3, 8, 10, 2, 180),
         px('leg-press', 3, 10, 15, 2, 120),
         px('seated-leg-curl', 3, 10, 15, 1, 90),
-        px('standing-calf-raise', 4, 10, 15, 1, 60),
+        px('standing-calf-raise', 4, 8, 15, 1, 60),
       ]),
       day('Push B', [
         px('ohp', 4, 6, 10, 2, 150),
         px('machine-chest-press', 3, 8, 12, 2, 120),
-        px('pec-deck', 3, 12, 20, 1, 60),
+        px('high-low-cable-fly', 3, 12, 20, 1, 60),
         px('lateral-raise', 4, 12, 20, 1, 60),
         px('close-grip-bench', 3, 8, 12, 2, 120),
         px('skullcrusher', 3, 8, 12, 1, 90),
@@ -146,8 +152,8 @@ export const TEMPLATES: Plan[] = [
         px('pullup', 4, 6, 12, 2, 120),
         px('chest-supported-row', 3, 8, 12, 2, 120),
         px('straight-arm-pulldown', 3, 12, 20, 1, 60),
-        px('reverse-pec-deck', 3, 12, 20, 1, 60),
-        px('barbell-curl', 3, 8, 12, 1, 60),
+        px('cable-rear-delt-fly', 3, 12, 20, 1, 60),
+        px('bayesian-curl', 3, 10, 15, 1, 60),
         px('barbell-shrug', 3, 10, 15, 1, 60),
       ]),
       day('Legs B', [
@@ -155,7 +161,226 @@ export const TEMPLATES: Plan[] = [
         px('hip-thrust', 3, 8, 15, 2, 120),
         px('bulgarian-split-squat', 3, 8, 12, 2, 120),
         px('leg-extension', 3, 12, 20, 1, 60),
-        px('seated-calf-raise', 4, 12, 20, 1, 60),
+        px('seated-calf-raise', 4, 10, 20, 1, 60),
+      ]),
+    ],
+  },
+
+  // ---------------------------------------------------------------- 5-Day ULPPL
+  {
+    id: 'tpl-ulppl',
+    name: 'Upper·Lower·Push·Pull·Legs — 5 Day',
+    description:
+      'A popular 5-day hybrid: an Upper and Lower day to anchor frequency, then Push / Pull / Legs to add volume. Most muscles hit ~2× per week with a great recovery-to-volume ratio.',
+    daysPerWeek: 5,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Upper', [
+        px('bench-press', 4, 6, 10, 2, 180),
+        px('chest-supported-row', 4, 8, 12, 2, 120),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
+        px('lat-pulldown', 3, 8, 12, 2, 120),
+        px('cable-lateral-raise', 3, 12, 20, 1, 60),
+        px('ez-bar-curl', 3, 8, 12, 1, 60),
+        px('triceps-pushdown', 3, 10, 15, 1, 60),
+      ]),
+      day('Lower', [
+        px('back-squat', 4, 5, 8, 2, 210),
+        px('romanian-deadlift', 3, 8, 10, 2, 180),
+        px('leg-press', 3, 10, 15, 2, 120),
+        px('seated-leg-curl', 3, 10, 15, 1, 90),
+        px('standing-calf-raise', 4, 8, 15, 1, 60),
+        px('cable-crunch', 3, 10, 20, 1, 60),
+      ]),
+      day('Push', [
+        px('incline-db-press', 4, 8, 12, 2, 120),
+        px('machine-chest-press', 3, 8, 12, 2, 120),
+        px('lateral-raise', 4, 12, 20, 1, 60),
+        px('overhead-triceps-ext', 3, 10, 15, 1, 60),
+        px('rope-pushdown', 3, 10, 15, 1, 60),
+      ]),
+      day('Pull', [
+        px('pullup', 4, 6, 12, 2, 120),
+        px('seated-cable-row', 3, 8, 12, 2, 120),
+        px('reverse-pec-deck', 3, 12, 20, 1, 60),
+        px('bayesian-curl', 3, 10, 15, 1, 60),
+        px('hammer-curl', 3, 8, 15, 1, 60),
+      ]),
+      day('Legs', [
+        px('hack-squat', 4, 8, 12, 2, 180),
+        px('bulgarian-split-squat', 3, 8, 12, 2, 120),
+        px('lying-leg-curl', 3, 10, 15, 1, 90),
+        px('leg-extension', 3, 12, 20, 1, 60),
+        px('seated-calf-raise', 4, 10, 20, 1, 60),
+      ]),
+    ],
+  },
+
+  // ---------------------------------------------------------------- 5-Day PPLUL
+  {
+    id: 'tpl-pplul',
+    name: 'Push·Pull·Legs·Upper·Lower — 5 Day',
+    description:
+      'The other 5-day hybrid: front-load Push / Pull / Legs early in the week, then an Upper and Lower day to top frequency up to ~2× per muscle. Great when you want dedicated PPL focus plus balance.',
+    daysPerWeek: 5,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Push', [
+        px('bench-press', 4, 6, 10, 2, 180),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
+        px('high-low-cable-fly', 3, 12, 20, 1, 60),
+        px('cable-lateral-raise', 4, 12, 20, 1, 60),
+        px('overhead-triceps-ext', 3, 10, 15, 1, 60),
+        px('rope-pushdown', 3, 10, 15, 1, 60),
+      ]),
+      day('Pull', [
+        px('barbell-row', 4, 6, 10, 2, 150),
+        px('lat-pulldown', 3, 8, 12, 2, 120),
+        px('reverse-pec-deck', 3, 12, 20, 1, 60),
+        px('incline-db-curl', 3, 8, 12, 1, 60),
+        px('hammer-curl', 3, 8, 15, 1, 60),
+        px('barbell-shrug', 3, 10, 15, 1, 60),
+      ]),
+      day('Legs', [
+        px('back-squat', 4, 6, 10, 2, 210),
+        px('romanian-deadlift', 3, 8, 10, 2, 180),
+        px('leg-press', 3, 10, 15, 2, 120),
+        px('seated-leg-curl', 3, 10, 15, 1, 90),
+        px('standing-calf-raise', 4, 8, 15, 1, 60),
+      ]),
+      day('Upper', [
+        px('incline-db-press', 4, 8, 12, 2, 120),
+        px('chest-supported-row', 4, 8, 12, 2, 120),
+        px('machine-lateral-raise', 3, 12, 20, 1, 60),
+        px('bayesian-curl', 3, 10, 15, 1, 60),
+        px('close-grip-bench', 3, 8, 12, 2, 120),
+      ]),
+      day('Lower', [
+        px('hack-squat', 4, 8, 12, 2, 180),
+        px('bulgarian-split-squat', 3, 8, 12, 2, 120),
+        px('lying-leg-curl', 3, 10, 15, 1, 90),
+        px('leg-extension', 3, 12, 20, 1, 60),
+        px('seated-calf-raise', 4, 10, 20, 1, 60),
+        px('hanging-leg-raise', 3, 8, 15, 1, 60),
+      ]),
+    ],
+  },
+
+  // ---------------------------------------------------------------- 4-Day High-Frequency Full Body
+  {
+    id: 'tpl-hf-full-body',
+    name: 'High-Frequency Full Body — 4 Day',
+    description:
+      'An advanced hypertrophy approach: 4 full-body sessions with most muscles trained 4× per week (1–2 exercises each per day). Each day opens with a heavy primary lift, then accessories. Recovery management is the priority.',
+    daysPerWeek: 4,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Day 1 (Squat)', [
+        px('back-squat', 4, 5, 8, 2, 210),
+        px('incline-db-press', 3, 8, 12, 2, 120),
+        px('chest-supported-row', 3, 8, 12, 2, 120),
+        px('seated-leg-curl', 2, 10, 15, 1, 90),
+        px('cable-lateral-raise', 3, 12, 20, 1, 60),
+        px('overhead-triceps-ext', 2, 10, 15, 1, 60),
+      ]),
+      day('Day 2 (Bench)', [
+        px('bench-press', 4, 5, 8, 2, 180),
+        px('romanian-deadlift', 3, 8, 10, 2, 180),
+        px('lat-pulldown', 3, 8, 12, 2, 120),
+        px('leg-extension', 2, 12, 20, 1, 60),
+        px('reverse-pec-deck', 3, 12, 20, 1, 60),
+        px('incline-db-curl', 2, 8, 12, 1, 60),
+      ]),
+      day('Day 3 (Deadlift)', [
+        px('romanian-deadlift', 3, 6, 10, 2, 210),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
+        px('seated-cable-row', 3, 8, 12, 2, 120),
+        px('leg-press', 3, 10, 15, 2, 120),
+        px('lateral-raise', 3, 12, 20, 1, 60),
+        px('rope-pushdown', 2, 10, 15, 1, 60),
+      ]),
+      day('Day 4 (Overhead)', [
+        px('ohp', 4, 6, 10, 2, 150),
+        px('hack-squat', 3, 8, 12, 2, 150),
+        px('pullup', 3, 6, 12, 2, 120),
+        px('lying-leg-curl', 2, 10, 15, 1, 90),
+        px('bayesian-curl', 3, 10, 15, 1, 60),
+        px('standing-calf-raise', 3, 8, 15, 1, 60),
+      ]),
+    ],
+  },
+
+  // ---------------------------------------------------------------- 4-Day Powerbuilding
+  {
+    id: 'tpl-powerbuilding',
+    name: 'Powerbuilding — 4 Day',
+    description:
+      'Strength and size in one. Each session opens with a heavy low-rep top lift (squat, bench, deadlift, or press), then bodybuilding accessories in moderate–high reps. Built on an Upper/Lower frame, main lifts 2×/week.',
+    daysPerWeek: 4,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Lower (Squat)', [
+        px('back-squat', 5, 3, 5, 2, 210),
+        px('romanian-deadlift', 3, 8, 10, 2, 180),
+        px('leg-press', 3, 10, 15, 2, 120),
+        px('seated-leg-curl', 3, 10, 15, 1, 90),
+        px('standing-calf-raise', 4, 8, 15, 1, 60),
+      ]),
+      day('Upper (Bench)', [
+        px('bench-press', 5, 3, 5, 2, 210),
+        px('barbell-row', 4, 6, 10, 2, 150),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
+        px('lat-pulldown', 3, 8, 12, 2, 120),
+        px('cable-lateral-raise', 3, 12, 20, 1, 60),
+        px('ez-bar-curl', 3, 8, 12, 1, 60),
+      ]),
+      day('Lower (Deadlift)', [
+        px('deadlift', 4, 3, 5, 2, 240),
+        px('front-squat', 3, 6, 10, 2, 180),
+        px('bulgarian-split-squat', 3, 8, 12, 2, 120),
+        px('lying-leg-curl', 3, 10, 15, 1, 90),
+        px('seated-calf-raise', 4, 10, 20, 1, 60),
+      ]),
+      day('Upper (Press)', [
+        px('ohp', 5, 4, 6, 2, 180),
+        px('close-grip-bench', 3, 6, 10, 2, 150),
+        px('chest-supported-row', 4, 8, 12, 2, 120),
+        px('cable-rear-delt-fly', 3, 12, 20, 1, 60),
+        px('incline-db-curl', 3, 8, 12, 1, 60),
+        px('overhead-triceps-ext', 3, 10, 15, 1, 60),
+      ]),
+    ],
+  },
+
+  // ---------------------------------------------------------------- 2-Day Full Body
+  {
+    id: 'tpl-full-body-2',
+    name: 'Full Body — 2 Day',
+    description:
+      'A minimalist plan for very busy weeks. Two efficient full-body sessions covering all the major movement patterns. Every muscle trained 2× per week in as little time as possible.',
+    daysPerWeek: 2,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Full Body A', [
+        px('back-squat', 3, 6, 10, 2, 180),
+        px('bench-press', 3, 6, 10, 2, 180),
+        px('chest-supported-row', 3, 8, 12, 2, 120),
+        px('seated-leg-curl', 3, 10, 15, 1, 90),
+        px('cable-lateral-raise', 3, 12, 20, 1, 60),
+        px('standing-calf-raise', 3, 8, 15, 1, 60),
+      ]),
+      day('Full Body B', [
+        px('romanian-deadlift', 3, 8, 10, 2, 180),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
+        px('lat-pulldown', 3, 8, 12, 2, 120),
+        px('leg-press', 3, 10, 15, 2, 120),
+        px('ez-bar-curl', 3, 8, 12, 1, 60),
+        px('triceps-pushdown', 3, 10, 15, 1, 60),
       ]),
     ],
   },
