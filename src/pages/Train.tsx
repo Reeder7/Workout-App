@@ -18,14 +18,36 @@ export function Train() {
   const startEmpty = useStore((s) => s.startEmptySession)
 
   const [pickDayFor, setPickDayFor] = useState<Plan | null>(null)
+  const [pendingStart, setPendingStart] = useState<
+    { plan: Plan; dayId: string } | 'empty' | null
+  >(null)
   const stats = summaryStats(sessions)
 
-  function begin(plan: Plan, dayId: string) {
-    const day = plan.days.find((d) => d.id === dayId)
-    if (!day) return
-    startSession(plan, day)
+  function doStart(target: { plan: Plan; dayId: string } | 'empty') {
+    if (target === 'empty') {
+      startEmpty()
+    } else {
+      const day = target.plan.days.find((d) => d.id === target.dayId)
+      if (!day) return
+      startSession(target.plan, day)
+    }
     setPickDayFor(null)
+    setPendingStart(null)
     nav('/session')
+  }
+
+  // Guard against silently discarding an in-progress workout.
+  function requestStart(target: { plan: Plan; dayId: string } | 'empty') {
+    if (active) {
+      setPickDayFor(null)
+      setPendingStart(target)
+    } else {
+      doStart(target)
+    }
+  }
+
+  function begin(plan: Plan, dayId: string) {
+    requestStart({ plan, dayId })
   }
 
   const hour = new Date().getHours()
@@ -104,10 +126,7 @@ export function Train() {
       <button
         className="btn btn-ghost btn-block"
         style={{ marginTop: 12 }}
-        onClick={() => {
-          startEmpty()
-          nav('/session')
-        }}
+        onClick={() => requestStart('empty')}
       >
         <Icon name="play" size={16} /> Quick / empty workout
       </button>
@@ -170,6 +189,40 @@ export function Train() {
             <Icon name="play" className="accent" size={20} />
           </button>
         ))}
+      </Sheet>
+
+      <Sheet
+        open={!!pendingStart}
+        onClose={() => setPendingStart(null)}
+        title="Workout in progress"
+      >
+        <p className="hint" style={{ marginTop: 0 }}>
+          You already have a workout in progress. Starting a new one will discard it and any
+          sets you've logged.
+        </p>
+        <button
+          className="btn btn-primary btn-block"
+          onClick={() => {
+            setPendingStart(null)
+            nav('/session')
+          }}
+        >
+          <Icon name="play" size={16} /> Resume current workout
+        </button>
+        <button
+          className="btn btn-danger btn-block"
+          style={{ marginTop: 10 }}
+          onClick={() => pendingStart && doStart(pendingStart)}
+        >
+          Discard it & start new
+        </button>
+        <button
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 6 }}
+          onClick={() => setPendingStart(null)}
+        >
+          Cancel
+        </button>
       </Sheet>
     </div>
   )

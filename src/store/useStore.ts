@@ -129,6 +129,7 @@ export const useStore = create<State>()(
           exercises: (day?.exercises ?? []).map((pe) => ({
             exerciseId: pe.exerciseId,
             note: pe.note,
+            restSec: pe.restSec,
             sets: Array.from({ length: Math.max(1, pe.sets) }, () => ({
               reps: 0,
               weight: 0,
@@ -250,17 +251,56 @@ export const useStore = create<State>()(
         try {
           const data = JSON.parse(json)
           if (!data || typeof data !== 'object') return false
+
+          const isObj = (v: unknown): v is Record<string, unknown> =>
+            !!v && typeof v === 'object' && !Array.isArray(v)
+          const validPlan = (p: unknown) =>
+            isObj(p) &&
+            typeof p.id === 'string' &&
+            typeof p.name === 'string' &&
+            Array.isArray(p.days) &&
+            p.days.every(
+              (d) => isObj(d) && typeof d.id === 'string' && Array.isArray(d.exercises),
+            )
+          const validSession = (s: unknown) =>
+            isObj(s) &&
+            typeof s.id === 'string' &&
+            typeof s.date === 'number' &&
+            Array.isArray(s.exercises) &&
+            s.exercises.every((e) => isObj(e) && Array.isArray((e as { sets?: unknown }).sets))
+          const validExercise = (e: unknown) =>
+            isObj(e) && typeof e.id === 'string' && typeof e.name === 'string'
+
+          // Every provided collection must be well-formed, or we reject the
+          // whole import rather than persist partially-corrupt state.
+          if (data.plans !== undefined && (!Array.isArray(data.plans) || !data.plans.every(validPlan)))
+            return false
+          if (
+            data.sessions !== undefined &&
+            (!Array.isArray(data.sessions) || !data.sessions.every(validSession))
+          )
+            return false
+          if (
+            data.customExercises !== undefined &&
+            (!Array.isArray(data.customExercises) || !data.customExercises.every(validExercise))
+          )
+            return false
+          if (data.settings !== undefined) {
+            if (!isObj(data.settings) || (data.settings.unit !== 'lb' && data.settings.unit !== 'kg'))
+              return false
+          }
+          if (data.exerciseNotes !== undefined && !isObj(data.exerciseNotes)) return false
+
           set((s) => ({
             plans: Array.isArray(data.plans) ? data.plans : s.plans,
             sessions: Array.isArray(data.sessions) ? data.sessions : s.sessions,
             customExercises: Array.isArray(data.customExercises)
               ? data.customExercises
               : s.customExercises,
-            settings: data.settings ?? s.settings,
-            exerciseNotes:
-              data.exerciseNotes && typeof data.exerciseNotes === 'object'
-                ? data.exerciseNotes
-                : s.exerciseNotes,
+            settings: isObj(data.settings) ? (data.settings as Settings) : s.settings,
+            exerciseNotes: isObj(data.exerciseNotes)
+              ? (data.exerciseNotes as Record<string, string>)
+              : s.exerciseNotes,
           }))
           return true
         } catch {

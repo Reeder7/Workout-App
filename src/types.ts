@@ -91,6 +91,8 @@ export interface LoggedExercise {
   exerciseId: string
   sets: LoggedSet[]
   note?: string
+  /** Rest target (seconds) carried from the plan, used by the rest timer. */
+  restSec?: number
 }
 
 export interface Session {

@@ -107,7 +107,7 @@ export function Session() {
       </p>
 
       {active.exercises.map((ex, ei) => {
-        const meta = EXERCISE_BY_ID[ex.exerciseId]
+        const meta = exerciseById(ex.exerciseId)
         const last = lastPerformance(sessions, ex.exerciseId)
         return (
           <div className="card" key={`${ex.exerciseId}-${ei}`}>
@@ -123,7 +123,10 @@ export function Session() {
               </div>
               <button
                 className="icon-btn"
-                onClick={() => removeExercise(ei)}
+                onClick={() => {
+                  removeExercise(ei)
+                  setNotesOpen({})
+                }}
                 aria-label="Remove exercise"
               >
                 <Icon name="trash" size={16} />
@@ -192,29 +195,35 @@ export function Session() {
                 <input
                   type="number"
                   inputMode="decimal"
+                  min="0"
                   value={st.weight || ''}
                   placeholder="0"
                   onChange={(e) =>
-                    updateSet(ei, si, { weight: parseFloat(e.target.value) || 0 })
+                    updateSet(ei, si, { weight: Math.max(0, parseFloat(e.target.value) || 0) })
                   }
                 />
                 <input
                   type="number"
                   inputMode="numeric"
+                  min="0"
                   value={st.reps || ''}
                   placeholder="0"
                   onChange={(e) =>
-                    updateSet(ei, si, { reps: parseInt(e.target.value) || 0 })
+                    updateSet(ei, si, { reps: Math.max(0, parseInt(e.target.value) || 0) })
                   }
                 />
                 <input
                   type="number"
                   inputMode="numeric"
+                  min="0"
                   value={st.rir ?? ''}
                   placeholder="—"
                   onChange={(e) =>
                     updateSet(ei, si, {
-                      rir: e.target.value === '' ? undefined : parseInt(e.target.value),
+                      rir:
+                        e.target.value === ''
+                          ? undefined
+                          : Math.max(0, parseInt(e.target.value) || 0),
                     })
                   }
                 />
@@ -228,7 +237,7 @@ export function Session() {
                   onClick={() => {
                     const nowDone = !st.done
                     updateSet(ei, si, { done: nowDone })
-                    if (nowDone) startRest(120)
+                    if (nowDone) startRest(ex.restSec ?? 120)
                   }}
                 >
                   <Icon name="check" size={16} />

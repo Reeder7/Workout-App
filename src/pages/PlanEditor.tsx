@@ -15,12 +15,14 @@ export function PlanEditor() {
   const updatePlan = useStore((s) => s.updatePlan)
   const deletePlan = useStore((s) => s.deletePlan)
   const startSession = useStore((s) => s.startSession)
+  const activeSession = useStore((s) => s.activeSession)
 
   const [activeDayId, setActiveDayId] = useState<string | null>(null)
   const [pickerOpen, setPickerOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [showVolume, setShowVolume] = useState(false)
   const [editMeta, setEditMeta] = useState(false)
+  const [confirmStart, setConfirmStart] = useState(false)
 
   const exName = (eid: string) =>
     EXERCISE_BY_ID[eid]?.name ?? allExercises.find((e) => e.id === eid)?.name ?? 'Exercise'
@@ -140,8 +142,12 @@ export function PlanEditor() {
           <button
             className="btn btn-sm btn-primary"
             onClick={() => {
-              startSession(plan, currentDay)
-              nav('/session')
+              if (activeSession) {
+                setConfirmStart(true)
+              } else {
+                startSession(plan, currentDay)
+                nav('/session')
+              }
             }}
           >
             <Icon name="play" size={14} /> Start
@@ -206,7 +212,8 @@ export function PlanEditor() {
             <div className="grow">
               <div style={{ fontWeight: 700 }}>{exName(pe.exerciseId)}</div>
               <div className="faint" style={{ fontSize: 12 }}>
-                {EXERCISE_BY_ID[pe.exerciseId]?.primary ?? 'Custom'}
+                {(EXERCISE_BY_ID[pe.exerciseId] ?? allExercises.find((e) => e.id === pe.exerciseId))
+                  ?.primary ?? 'Custom'}
               </div>
             </div>
             <button
@@ -330,6 +337,45 @@ export function PlanEditor() {
         />
         <button className="btn btn-primary btn-block" onClick={() => setEditMeta(false)}>
           Done
+        </button>
+      </Sheet>
+
+      {/* Confirm starting over an in-progress workout */}
+      <Sheet
+        open={confirmStart}
+        onClose={() => setConfirmStart(false)}
+        title="Workout in progress"
+      >
+        <p className="hint" style={{ marginTop: 0 }}>
+          You already have a workout in progress. Starting this one will discard it and any sets
+          you've logged.
+        </p>
+        <button
+          className="btn btn-primary btn-block"
+          onClick={() => {
+            setConfirmStart(false)
+            nav('/session')
+          }}
+        >
+          <Icon name="play" size={16} /> Resume current workout
+        </button>
+        <button
+          className="btn btn-danger btn-block"
+          style={{ marginTop: 10 }}
+          onClick={() => {
+            startSession(plan, currentDay)
+            setConfirmStart(false)
+            nav('/session')
+          }}
+        >
+          Discard it & start this one
+        </button>
+        <button
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 6 }}
+          onClick={() => setConfirmStart(false)}
+        >
+          Cancel
         </button>
       </Sheet>
 
