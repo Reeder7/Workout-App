@@ -287,10 +287,16 @@ input[type='number'] {
   padding-bottom: env(safe-area-inset-bottom);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background: rgba(14, 14, 16, 0.86);
+  background: rgba(14, 14, 16, 0.92);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-top: 1px solid var(--border);
+  /* Promote to its own compositing layer so iOS Safari repaints the fixed bar
+     in the correct position during momentum scroll (prevents it "freezing"
+     mid-page when combined with backdrop-filter). */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
 }
 .tab {
   display: flex;
@@ -466,6 +472,8 @@ input[type='number'] {
   background: linear-gradient(to top, var(--bg) 60%, transparent);
   display: flex;
   gap: 10px;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* ---------- Chips (filters) ---------- */
@@ -509,6 +517,8 @@ input[type='number'] {
   max-width: var(--maxw);
   margin: 0 auto;
   padding: 0 16px;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 .timer-inner {
   background: var(--surface-3);
