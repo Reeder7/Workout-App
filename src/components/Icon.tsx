@@ -24,6 +24,8 @@ export type IconName =
   | 'edit'
   | 'download'
   | 'upload'
+  | 'info'
+  | 'note'
 
 const paths: Record<IconName, JSX.Element> = {
   dumbbell: (
@@ -79,6 +81,18 @@ const paths: Record<IconName, JSX.Element> = {
     </>
   ),
   edit: <path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3zM14 6l3 3" />,
+  info: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5M12 7.6h.01" />
+    </>
+  ),
+  note: (
+    <>
+      <path d="M5 4h11l3 3v13H5zM16 4v3h3" />
+      <path d="M8 12h8M8 16h5" />
+    </>
+  ),
   download: <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" />,
   upload: <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 5h14" />,
 }

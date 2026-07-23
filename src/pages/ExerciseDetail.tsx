@@ -5,6 +5,8 @@ import { EXERCISE_BY_ID } from '../data/exercises'
 import { exerciseHistory } from '../lib/stats'
 import { LineChart, type LinePoint } from '../components/LineChart'
 import { Icon } from '../components/Icon'
+import { ExerciseGuide } from '../components/ExerciseGuide'
+import { ExerciseNoteEditor } from '../components/ExerciseNoteEditor'
 import { fmtWeight, relativeDate } from '../lib/format'
 
 type Metric = 'e1rm' | 'weight' | 'volume'
@@ -55,25 +57,6 @@ export function ExerciseDetail() {
       <p className="page-sub">
         {meta ? `${meta.primary} · ${meta.equipment} · ${meta.category}` : ''}
       </p>
-
-      {meta?.tags && meta.tags.length > 0 && (
-        <div className="row wrap" style={{ gap: 6, marginTop: -12, marginBottom: 16 }}>
-          {meta.tags.map((t) => (
-            <span key={t} className="pill pill-accent">
-              {t}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {meta?.caution && (
-        <div className="caution-banner">
-          <span className="caution-icon">⚠</span>
-          <span className="hint" style={{ margin: 0 }}>
-            {meta.caution}
-          </span>
-        </div>
-      )}
 
       {history.length === 0 ? (
         <div className="empty">
@@ -137,78 +120,21 @@ export function ExerciseDetail() {
         </>
       )}
 
+      {meta && (
+        <>
+          <div className="section-head">
+            <h2>My notes</h2>
+          </div>
+          <ExerciseNoteEditor exerciseId={meta.id} />
+        </>
+      )}
+
       {meta && (meta.notes || meta.howTo || meta.cues || meta.mistakes || meta.science) && (
         <>
           <div className="section-head">
             <h2>How to perform</h2>
           </div>
-          <div className="card">
-            {meta.notes && (
-              <p className="hint" style={{ margin: '0 0 4px' }}>
-                {meta.notes}
-              </p>
-            )}
-            {meta.repRange && (
-              <div className="pill pill-accent" style={{ margin: '8px 0 4px' }}>
-                Target {meta.repRange[0]}–{meta.repRange[1]} reps
-              </div>
-            )}
-
-            {meta.howTo && meta.howTo.length > 0 && (
-              <div style={{ marginTop: 14 }}>
-                <div className="eyebrow" style={{ marginBottom: 8 }}>
-                  Execution
-                </div>
-                <ol className="steps">
-                  {meta.howTo.map((s, i) => (
-                    <li key={i}>{s}</li>
-                  ))}
-                </ol>
-              </div>
-            )}
-
-            {meta.cues && meta.cues.length > 0 && (
-              <div style={{ marginTop: 14 }}>
-                <div className="eyebrow" style={{ marginBottom: 8 }}>
-                  Key cues
-                </div>
-                {meta.cues.map((c, i) => (
-                  <div className="bullet" key={i}>
-                    <span className="bullet-dot accent">▸</span>
-                    <span className="hint">{c}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {meta.mistakes && meta.mistakes.length > 0 && (
-              <div style={{ marginTop: 14 }}>
-                <div className="eyebrow" style={{ marginBottom: 8 }}>
-                  Avoid
-                </div>
-                {meta.mistakes.map((m, i) => (
-                  <div className="bullet" key={i}>
-                    <span className="bullet-dot" style={{ color: 'var(--danger)' }}>
-                      ✕
-                    </span>
-                    <span className="hint">{m}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {meta.science && (
-              <div
-                className="science"
-                style={{ marginTop: 16 }}
-              >
-                <span className="eyebrow accent">Why it works</span>
-                <p className="hint" style={{ margin: '6px 0 0' }}>
-                  {meta.science}
-                </p>
-              </div>
-            )}
-          </div>
+          <ExerciseGuide exercise={meta} />
         </>
       )}
     </div>

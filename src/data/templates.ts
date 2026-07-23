@@ -431,4 +431,66 @@ export const TEMPLATES: Plan[] = [
       ]),
     ],
   },
+
+  // ------------------------------------------------- PPL + Knee-Resilient legs
+  {
+    id: 'tpl-ppl-knee',
+    name: 'Push · Pull · Legs (Knee-Resilient) — 6 Day',
+    description:
+      'A full 6-day Push/Pull/Legs where the two leg days are the knee-conscious lower sessions — quad + hamstring priority, isometric primer, hip/glute valgus control, knee-friendly tempo and single-leg work, and low-impact sled finishers (no jumping/impact). Everything trained ~2× per week. Load the legs pain-guided: keep knee pain ≤3/10 and settling by the next morning. Not medical advice — clear your loading with your PT/surgeon.',
+    daysPerWeek: 6,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Push A', [
+        px('bench-press', 4, 6, 10, 2, 180),
+        px('machine-shoulder-press', 3, 8, 12, 2, 120),
+        px('incline-db-press', 3, 8, 12, 2, 120),
+        px('cable-lateral-raise', 4, 12, 20, 1, 60),
+        px('overhead-triceps-ext', 3, 10, 15, 1, 60),
+        px('rope-pushdown', 3, 10, 15, 1, 60),
+      ]),
+      day('Pull A', [
+        px('barbell-row', 4, 6, 10, 2, 150),
+        px('lat-pulldown', 3, 8, 12, 2, 120),
+        px('seated-cable-row', 3, 8, 12, 2, 120),
+        px('reverse-pec-deck', 3, 12, 20, 1, 60),
+        px('incline-db-curl', 3, 8, 12, 1, 60),
+        px('hammer-curl', 3, 8, 15, 1, 60),
+      ]),
+      day('Legs A — Quad focus', [
+        px('wall-sit', 3, 1, 1, 0, 120),
+        px('heels-elevated-squat', 3, 8, 12, 2, 150),
+        px('leg-extension', 3, 10, 15, 1, 90),
+        px('step-down', 3, 8, 12, 1, 90),
+        px('banded-lateral-walk', 2, 12, 20, 1, 60),
+        px('backward-sled-drag', 3, 3, 5, 1, 90),
+      ]),
+      day('Push B', [
+        px('ohp', 4, 6, 10, 2, 150),
+        px('machine-chest-press', 3, 8, 12, 2, 120),
+        px('high-low-cable-fly', 3, 12, 20, 1, 60),
+        px('lateral-raise', 4, 12, 20, 1, 60),
+        px('close-grip-bench', 3, 8, 12, 2, 120),
+        px('skullcrusher', 3, 8, 12, 1, 90),
+      ]),
+      day('Pull B', [
+        px('pullup', 4, 6, 12, 2, 120),
+        px('chest-supported-row', 3, 8, 12, 2, 120),
+        px('straight-arm-pulldown', 3, 12, 20, 1, 60),
+        px('cable-rear-delt-fly', 3, 12, 20, 1, 60),
+        px('bayesian-curl', 3, 10, 15, 1, 60),
+        px('barbell-shrug', 3, 10, 15, 1, 60),
+      ]),
+      day('Legs B — Posterior / Hip', [
+        px('romanian-deadlift', 3, 6, 10, 2, 180),
+        px('seated-leg-curl', 3, 8, 15, 1, 90),
+        px('nordic-curl', 3, 3, 6, 1, 120),
+        px('hip-thrust', 3, 8, 15, 2, 120),
+        px('tke', 3, 12, 20, 1, 60),
+        px('tibialis-raise', 3, 15, 25, 1, 45),
+        px('sled-push', 3, 3, 5, 1, 120),
+      ]),
+    ],
+  },
 ]

@@ -6,6 +6,8 @@ import { Icon } from '../components/Icon'
 import { ExercisePicker } from '../components/ExercisePicker'
 import { RestTimer } from '../components/RestTimer'
 import { Sheet } from '../components/Sheet'
+import { ExerciseGuide } from '../components/ExerciseGuide'
+import { ExerciseNoteEditor } from '../components/ExerciseNoteEditor'
 import { fmtWeight } from '../lib/format'
 import type { Session as SessionType } from '../types'
 
@@ -48,14 +50,19 @@ export function Session() {
   const finish = useStore((s) => s.finishSession)
   const discard = useStore((s) => s.discardActiveSession)
 
+  const exerciseNotes = useStore((s) => s.exerciseNotes)
+
   const [pickerOpen, setPickerOpen] = useState(false)
   const [confirmFinish, setConfirmFinish] = useState(false)
   const [restEndsAt, setRestEndsAt] = useState<number | null>(null)
+  const [guideFor, setGuideFor] = useState<string | null>(null)
+  const [notesOpen, setNotesOpen] = useState<Record<number, boolean>>({})
 
   const elapsed = useElapsed(active?.date)
 
-  const exerciseName = (id: string) =>
-    EXERCISE_BY_ID[id]?.name ?? allExercises.find((e) => e.id === id)?.name ?? 'Exercise'
+  const exerciseById = (id: string) =>
+    EXERCISE_BY_ID[id] ?? allExercises.find((e) => e.id === id)
+  const exerciseName = (id: string) => exerciseById(id)?.name ?? 'Exercise'
 
   const completedSets = useMemo(
     () =>
@@ -104,7 +111,7 @@ export function Session() {
         const last = lastPerformance(sessions, ex.exerciseId)
         return (
           <div className="card" key={`${ex.exerciseId}-${ei}`}>
-            <div className="row-between" style={{ marginBottom: 10 }}>
+            <div className="row-between" style={{ marginBottom: 8 }}>
               <div className="grow">
                 <div style={{ fontWeight: 700, fontSize: 16 }}>
                   {exerciseName(ex.exerciseId)}
@@ -123,7 +130,51 @@ export function Session() {
               </button>
             </div>
 
-            <div className="setgrid setgrid-head">
+            <div className="row" style={{ gap: 8, marginBottom: 10 }}>
+              <button
+                className="btn btn-sm btn-ghost"
+                onClick={() => setGuideFor(ex.exerciseId)}
+              >
+                <Icon name="info" size={15} /> How to
+              </button>
+              <button
+                className="btn btn-sm btn-ghost"
+                onClick={() => setNotesOpen((o) => ({ ...o, [ei]: !o[ei] }))}
+              >
+                <Icon name="note" size={15} /> Notes
+                {(exerciseNotes[ex.exerciseId] ?? '').trim() && (
+                  <span className="accent" style={{ marginLeft: 2 }}>
+                    •
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {notesOpen[ei] ? (
+              <ExerciseNoteEditor exerciseId={ex.exerciseId} compact />
+            ) : (
+              (exerciseNotes[ex.exerciseId] ?? '').trim() && (
+                <button
+                  onClick={() => setNotesOpen((o) => ({ ...o, [ei]: true }))}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'left',
+                    background: 'var(--surface-2)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius-sm)',
+                    padding: '8px 10px',
+                    marginBottom: 4,
+                  }}
+                >
+                  <span className="hint" style={{ margin: 0, fontStyle: 'italic' }}>
+                    {exerciseNotes[ex.exerciseId]}
+                  </span>
+                </button>
+              )
+            )}
+
+            <div className="setgrid setgrid-head" style={{ marginTop: 10 }}>
               <div className="center">SET</div>
               <div className="center">{unit.toUpperCase()}</div>
               <div className="center">REPS</div>
@@ -228,6 +279,14 @@ export function Session() {
         onClose={() => setPickerOpen(false)}
         onPick={(e) => addExercise(e.id)}
       />
+
+      <Sheet
+        open={!!guideFor}
+        onClose={() => setGuideFor(null)}
+        title={guideFor ? exerciseName(guideFor) : ''}
+      >
+        {guideFor && <ExerciseGuide exercise={exerciseById(guideFor)} />}
+      </Sheet>
 
       <Sheet open={confirmFinish} onClose={() => setConfirmFinish(false)} title="Finish workout?">
         <p className="hint" style={{ marginTop: 0 }}>

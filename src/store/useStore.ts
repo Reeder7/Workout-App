@@ -36,10 +36,13 @@ interface State {
   customExercises: Exercise[]
   settings: Settings
   activeSession: Session | null
+  /** Persistent per-exercise notes, keyed by exerciseId, saved across workouts. */
+  exerciseNotes: Record<string, string>
 
   // exercises
   allExercises: () => Exercise[]
   addCustomExercise: (e: Omit<Exercise, 'id' | 'custom'>) => Exercise
+  setExerciseNote: (exerciseId: string, note: string) => void
 
   // plans
   addPlan: (plan: Plan) => void
@@ -76,6 +79,7 @@ export const useStore = create<State>()(
       customExercises: [],
       settings: { unit: 'lb' },
       activeSession: null,
+      exerciseNotes: {},
 
       allExercises: () => [...EXERCISES, ...get().customExercises],
 
@@ -84,6 +88,8 @@ export const useStore = create<State>()(
         set((s) => ({ customExercises: [...s.customExercises, ex] }))
         return ex
       },
+      setExerciseNote: (exerciseId, note) =>
+        set((s) => ({ exerciseNotes: { ...s.exerciseNotes, [exerciseId]: note } })),
 
       addPlan: (plan) => set((s) => ({ plans: [...s.plans, plan] })),
       updatePlan: (plan) =>
@@ -225,9 +231,17 @@ export const useStore = create<State>()(
       setSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
 
       exportData: () => {
-        const { plans, sessions, customExercises, settings } = get()
+        const { plans, sessions, customExercises, settings, exerciseNotes } = get()
         return JSON.stringify(
-          { version: 1, exportedAt: Date.now(), plans, sessions, customExercises, settings },
+          {
+            version: 1,
+            exportedAt: Date.now(),
+            plans,
+            sessions,
+            customExercises,
+            settings,
+            exerciseNotes,
+          },
           null,
           2,
         )
@@ -243,6 +257,10 @@ export const useStore = create<State>()(
               ? data.customExercises
               : s.customExercises,
             settings: data.settings ?? s.settings,
+            exerciseNotes:
+              data.exerciseNotes && typeof data.exerciseNotes === 'object'
+                ? data.exerciseNotes
+                : s.exerciseNotes,
           }))
           return true
         } catch {
@@ -256,6 +274,7 @@ export const useStore = create<State>()(
           customExercises: [],
           settings: { unit: 'lb' },
           activeSession: null,
+          exerciseNotes: {},
         }),
     }),
     { name: 'iron-log-v1' },
