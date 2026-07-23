@@ -30,10 +30,18 @@ export interface Exercise {
   secondary: MuscleGroup[]
   equipment: Equipment
   category: ExerciseCategory
-  /** Jeff Nippard–style coaching cue / selection rationale. */
+  /** Short selection rationale / why this exercise earns its place. */
   notes?: string
   /** Recommended hypertrophy rep range. */
   repRange?: [number, number]
+  /** Step-by-step setup and execution. */
+  howTo?: string[]
+  /** Key form cues to keep in mind mid-set. */
+  cues?: string[]
+  /** Common mistakes to avoid. */
+  mistakes?: string[]
+  /** One-line biomechanical rationale (where tension/stretch peaks, etc.). */
+  science?: string
   custom?: boolean
 }
 

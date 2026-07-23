@@ -164,7 +164,7 @@ export function Library() {
                 nav(`/progress/${id}`)
               }}
             >
-              <Icon name="chart" size={16} /> View my progress
+              <Icon name="chart" size={16} /> Full details & progress
             </button>
           </>
         )}

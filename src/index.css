@@ -546,6 +546,62 @@ input[type='number'] {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+
+/* ---------- Rich exercise content ---------- */
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 12px 34px;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.steps li:last-child {
+  padding-bottom: 0;
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bullet {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  margin-bottom: 7px;
+}
+.bullet:last-child {
+  margin-bottom: 0;
+}
+.bullet-dot {
+  font-size: 13px;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+.science {
+  background: rgba(198, 242, 78, 0.06);
+  border: 1px solid var(--accent-dim);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
 .center {
   text-align: center;
 }

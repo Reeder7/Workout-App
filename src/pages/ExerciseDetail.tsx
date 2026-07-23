@@ -118,18 +118,75 @@ export function ExerciseDetail() {
         </>
       )}
 
-      {meta?.notes && (
+      {meta && (meta.notes || meta.howTo || meta.cues || meta.mistakes || meta.science) && (
         <>
           <div className="section-head">
-            <h2>Coaching notes</h2>
+            <h2>How to perform</h2>
           </div>
           <div className="card">
-            <p className="hint" style={{ margin: 0 }}>
-              {meta.notes}
-            </p>
+            {meta.notes && (
+              <p className="hint" style={{ margin: '0 0 4px' }}>
+                {meta.notes}
+              </p>
+            )}
             {meta.repRange && (
-              <div className="pill pill-accent" style={{ marginTop: 12 }}>
+              <div className="pill pill-accent" style={{ margin: '8px 0 4px' }}>
                 Target {meta.repRange[0]}–{meta.repRange[1]} reps
+              </div>
+            )}
+
+            {meta.howTo && meta.howTo.length > 0 && (
+              <div style={{ marginTop: 14 }}>
+                <div className="eyebrow" style={{ marginBottom: 8 }}>
+                  Execution
+                </div>
+                <ol className="steps">
+                  {meta.howTo.map((s, i) => (
+                    <li key={i}>{s}</li>
+                  ))}
+                </ol>
+              </div>
+            )}
+
+            {meta.cues && meta.cues.length > 0 && (
+              <div style={{ marginTop: 14 }}>
+                <div className="eyebrow" style={{ marginBottom: 8 }}>
+                  Key cues
+                </div>
+                {meta.cues.map((c, i) => (
+                  <div className="bullet" key={i}>
+                    <span className="bullet-dot accent">▸</span>
+                    <span className="hint">{c}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {meta.mistakes && meta.mistakes.length > 0 && (
+              <div style={{ marginTop: 14 }}>
+                <div className="eyebrow" style={{ marginBottom: 8 }}>
+                  Avoid
+                </div>
+                {meta.mistakes.map((m, i) => (
+                  <div className="bullet" key={i}>
+                    <span className="bullet-dot" style={{ color: 'var(--danger)' }}>
+                      ✕
+                    </span>
+                    <span className="hint">{m}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {meta.science && (
+              <div
+                className="science"
+                style={{ marginTop: 16 }}
+              >
+                <span className="eyebrow accent">Why it works</span>
+                <p className="hint" style={{ margin: '6px 0 0' }}>
+                  {meta.science}
+                </p>
               </div>
             )}
           </div>
