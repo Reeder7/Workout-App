@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { MUSCLE_GROUPS } from '../data/exercises'
+import { LANDMARKS, DEFAULTS } from '../data/landmarks'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
 import type { Exercise, MuscleGroup } from '../types'
@@ -40,9 +41,30 @@ const PRINCIPLES = [
     body: 'Rest ~2–3+ minutes on heavy compounds to preserve force and total volume, and ~1–2 minutes on isolation work. Take a lighter deload (~50–70% of normal volume/intensity) roughly every 4–8 weeks to shed accumulated fatigue.',
   },
   {
+    title: 'Effective reps, not time under tension',
+    body: 'Tempo barely matters on its own — anywhere from about 0.5 to 8 seconds per rep grows muscle similarly. What drives growth is effective reps: the final reps near failure under high tension. A long slow set stopped well short of failure beats nothing, but it loses to a shorter set taken close to failure. Use a controlled 2–3 second eccentric; don’t treat super-slow reps as a hack.',
+  },
+  {
     title: 'Training around joint or tendon pain',
     body: 'You don’t need to be pain-free to train — loading with some pain is safe if you keep it controlled. Use the traffic-light rule: pain ≤3/10 during the set and back to baseline by next morning = green, keep progressing. Pain 3–5/10 that settles = amber, hold steady. Pain >5/10, or worse the next morning = red, back off load, depth, or range (or switch to isometrics). Adapt by changing the movement — tempo, foot position, range — not by skipping. Judge the weekly trend, not single sessions. (Educational, not medical advice — clear injuries with your PT/surgeon.)',
   },
+  {
+    title: 'Don’t over-optimize the small stuff',
+    body: 'Most of the differences the research finds between load, tempo, rest, frequency and exact failure proximity are small. Adherence, honest effort, and progressive overload dwarf all of them. Get those three right and the rest is fine-tuning — the numbers in this app are sensible defaults, not magic.',
+  },
+]
+
+/** Claims the evidence does not support. */
+const MYTHS = [
+  'Soreness (DOMS) means it was a good workout — it isn’t a growth signal.',
+  'There’s one magic “hypertrophy rep zone” (8–12 only).',
+  'You need a pump for growth.',
+  '“Muscle confusion” — constantly changing exercises to keep muscles guessing.',
+  'Super-slow reps are a growth hack.',
+  'Supramaximal (heavier-than-1RM) eccentrics accelerate size gains.',
+  'You must train every set to failure.',
+  'Frequency itself drives growth once weekly volume is equal.',
+  'Light weights “tone” while heavy weights “bulk”.',
 ]
 
 export function Library() {
@@ -138,6 +160,119 @@ export function Library() {
           </p>
         </div>
       ))}
+
+      <div className="section-head">
+        <h2>Weekly volume landmarks</h2>
+        <span className="tag">sets / muscle / week</span>
+      </div>
+      <div className="card">
+        <p className="hint" style={{ marginTop: 0 }}>
+          Starting points for an intermediate lifter, on the fractional scale this app counts with
+          (a muscle worked as a secondary counts as half a set). <strong>MEV</strong> = minimum
+          effective, <strong>MAV</strong> = the productive zone, <strong>MRV</strong> = maximum
+          recoverable. Start near MEV, ramp about {DEFAULTS.weeklySetRamp} set per week, and
+          deload around week {DEFAULTS.mesocycleWeeks}.
+        </p>
+        <div className="tablewrap">
+          <table className="dtable">
+            <thead>
+              <tr>
+                <th>Muscle</th>
+                <th>MEV</th>
+                <th>MAV</th>
+                <th>MRV</th>
+              </tr>
+            </thead>
+            <tbody>
+              {MUSCLE_GROUPS.map((m) => {
+                const l = LANDMARKS[m]
+                if (!l) return null
+                return (
+                  <tr key={m}>
+                    <td>{m}</td>
+                    <td className="mono">{l.mev[0]}</td>
+                    <td className="mono">
+                      {l.mav[0]}–{l.mav[1]}
+                    </td>
+                    <td className="mono">{l.mrv}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p className="hint" style={{ marginBottom: 0, marginTop: 12 }}>
+          These are heuristics calibrated from published frameworks, not measured constants — your
+          own recovery and performance are the real test.
+        </p>
+      </div>
+
+      <div className="section-head">
+        <h2>Default prescriptions</h2>
+      </div>
+      <div className="card">
+        <div className="tablewrap">
+          <table className="dtable">
+            <tbody>
+              <tr>
+                <td>Compound reps / RIR / rest</td>
+                <td className="mono nowrap">
+                  {DEFAULTS.compoundReps[0]}–{DEFAULTS.compoundReps[1]} ·{' '}
+                  {DEFAULTS.compoundRir[0]}–{DEFAULTS.compoundRir[1]} ·{' '}
+                  {DEFAULTS.compoundRestSec}s
+                </td>
+              </tr>
+              <tr>
+                <td>Isolation reps / RIR / rest</td>
+                <td className="mono nowrap">
+                  {DEFAULTS.isolationReps[0]}–{DEFAULTS.isolationReps[1]} ·{' '}
+                  {DEFAULTS.isolationRirLastSet[0]}–{DEFAULTS.isolationRirLastSet[1]} ·{' '}
+                  {DEFAULTS.isolationRestSec}s
+                </td>
+              </tr>
+              <tr>
+                <td>Frequency per muscle</td>
+                <td className="mono nowrap">{DEFAULTS.frequencyPerMuscle}×/week</td>
+              </tr>
+              <tr>
+                <td>Sets per muscle per session (cap)</td>
+                <td className="mono nowrap">{DEFAULTS.setsPerMuscleSessionCap}</td>
+              </tr>
+              <tr>
+                <td>Default tempo</td>
+                <td className="mono nowrap">{DEFAULTS.defaultTempo}</td>
+              </tr>
+              <tr>
+                <td>Stretch-biased isolation tempo</td>
+                <td className="mono nowrap">{DEFAULTS.stretchIsolationTempo}</td>
+              </tr>
+              <tr>
+                <td>Protein</td>
+                <td className="mono nowrap">
+                  {DEFAULTS.proteinGPerKg}–{DEFAULTS.proteinGPerKgDeficit} g/kg
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="hint" style={{ marginBottom: 0, marginTop: 12 }}>
+          Tempo is written eccentric–pause–concentric–pause in seconds.
+        </p>
+      </div>
+
+      <div className="section-head">
+        <h2>Myths the research doesn’t support</h2>
+      </div>
+      <div className="card">
+        {MYTHS.map((m) => (
+          <div className="bullet" key={m}>
+            <span className="bullet-dot" style={{ color: 'var(--danger)' }}>
+              ✕
+            </span>
+            <span className="hint">{m}</span>
+          </div>
+        ))}
+      </div>
       <p className="faint" style={{ fontSize: 11, marginTop: 16, textAlign: 'center' }}>
         Training principles and exercise notes are inspired by Jeff Nippard's evidence-based
         content. This app is an independent personal project and isn't affiliated with or

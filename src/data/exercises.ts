@@ -1531,6 +1531,88 @@ export const EXERCISES: Exercise[] = [
     science: 'Isolates wrist extension for the forearm extensors.',
   },
 
+  // ============ ADDITIONAL TIER-LIST / STRETCH-BIASED MOVEMENTS ============
+  {
+    id: 'incline-cable-fly',
+    name: 'Incline Cable Fly',
+    primary: 'Chest',
+    secondary: ['Shoulders'],
+    equipment: 'Cable',
+    category: 'Isolation',
+    repRange: [10, 15],
+    tags: ['Stretch-biased'],
+    notes: 'A Tier-1 upper-chest isolation: the incline bench fixes your torso so the cables load the clavicular fibers through a long arc with constant tension.',
+    howTo: [
+      'Set an incline bench (~30°) between two low pulleys; sit back holding a handle in each hand.',
+      'Start with the arms wide and slightly below shoulder level, elbows softly bent and fixed.',
+      'Sweep the hands up and together over the upper chest in an arc.',
+      'Return under control to a deep stretch, keeping the elbow angle constant.',
+    ],
+    cues: ['Fixed elbow angle — arc, don’t press', 'Squeeze the upper chest at the top', 'Chase the stretch at the bottom'],
+    mistakes: ['Bending/extending the elbows', 'Shrugging the shoulders up', 'Cutting the bottom range short'],
+    science: 'Constant cable tension through a long adduction arc with the torso supported — strong lengthened-position loading of the upper chest.',
+  },
+  {
+    id: 'db-pullover',
+    name: 'Dumbbell Pullover',
+    primary: 'Back',
+    secondary: ['Chest', 'Triceps'],
+    equipment: 'Dumbbell',
+    category: 'Isolation',
+    repRange: [10, 15],
+    tags: ['Stretch-biased'],
+    notes: 'A Tier-2 lat movement with an exceptional stretch: the overhead position loads the lats at long muscle length, which the spec flags as a small but consistent growth edge.',
+    howTo: [
+      'Lie on a bench holding one dumbbell over the chest with both hands, elbows slightly bent and fixed.',
+      'Lower the dumbbell back over and behind the head until you feel a deep lat/ribcage stretch.',
+      'Keep the elbows at the same angle throughout — this is shoulder extension, not an elbow bend.',
+      'Pull the dumbbell back over the chest by driving with the lats.',
+    ],
+    cues: ['Fixed elbow angle', 'Feel the stretch under the armpits', 'Ribs down, don’t arch off the bench'],
+    mistakes: ['Turning it into a triceps extension', 'Flaring the ribs/overarching', 'Going heavier than you can control overhead'],
+    science: 'Loads the lats in deep shoulder flexion (their most lengthened position) — a stretch stimulus rows and pulldowns don’t reach.',
+  },
+  {
+    id: 'back-extension-45',
+    name: '45° Back Extension',
+    primary: 'Hamstrings',
+    secondary: ['Glutes', 'Back'],
+    equipment: 'Machine',
+    category: 'Compound',
+    repRange: [10, 15],
+    tags: ['Knee-friendly'],
+    notes: 'A hip-extension movement the spec lists for both hamstrings and glutes — it loads the posterior chain through range with almost no knee involvement, making it a good option on cranky-knee days.',
+    howTo: [
+      'Set the pad just below the hip crease on a 45° bench; feet secure.',
+      'Cross the arms or hold a plate at the chest; start with the torso hinged down.',
+      'Extend the hips to bring the torso in line with the legs — do not hyperextend the lower back.',
+      'Lower under control to a full hamstring/glute stretch.',
+    ],
+    cues: ['Drive with the hips and glutes, not the lower back', 'Stop at a straight line — no arching past it', 'Round the upper back slightly to bias glutes'],
+    mistakes: ['Hyperextending at the top', 'Pad set too high (limits hip range)', 'Using momentum'],
+    science: 'Trains hip extension through a full range with the knees mostly static — hamstring and glute work with minimal knee load.',
+  },
+  {
+    id: 'katana-extension',
+    name: 'Cross-Body Cable Extension (Katana)',
+    primary: 'Triceps',
+    secondary: [],
+    equipment: 'Cable',
+    category: 'Isolation',
+    repRange: [10, 15],
+    tags: ['Stretch-biased'],
+    notes: 'Arms set ~30–40° forward gives the long-head stretch of an overhead extension in a more comfortable shoulder position.',
+    howTo: [
+      'Set a rope or single handles on a high pulley; face away and step forward.',
+      'Hold the arms angled ~30–40° in front of the torso, elbows fixed and pointing forward.',
+      'Extend the elbows fully, letting the hands travel down and across.',
+      'Return under control to a stretch without letting the elbows drift.',
+    ],
+    cues: ['Elbows fixed and forward', 'Full lockout', 'Control the stretch'],
+    mistakes: ['Letting the elbows drop back to the sides', 'Turning it into a pushdown', 'Shrugging'],
+    science: 'A forward arm angle lengthens the triceps long head with less shoulder strain than a strict overhead position.',
+  },
+
   // ==================== KNEE-RESILIENT / REHAB ====================
   // Built for a lifter managing chronic knee pain post ACL reconstruction:
   // stretch/ROM control, tendon-friendly tempo and isometrics, activation, and
@@ -1555,6 +1637,7 @@ export const EXERCISES: Exercise[] = [
     mistakes: ['Knees drifting forward past the band', 'Band too light to counter-balance', 'Holding past the point form breaks down'],
     science: 'The vertical-shin, band-offloaded position produces high quadriceps tension with minimal anterior knee shear. Isometrics may briefly reduce tendon pain, though the effect is individual — test it on yourself.',
     caution: 'Needs a heavy-duty rack band. If your loop bands are too light, use the Wall Sit or Isometric Leg-Extension Hold instead. Keep knee pain ≤3/10 during the hold.',
+    excludeFromVolume: true,
   },
   {
     id: 'wall-sit',
@@ -1576,6 +1659,7 @@ export const EXERCISES: Exercise[] = [
     mistakes: ['Sitting so deep the knees hurt', 'Knees caving inward', 'Hands pushing on the thighs'],
     science: 'A low-skill quad isometric that loads the muscle hard with a stable, controllable knee angle you can shorten on irritable days.',
     caution: 'Set the depth to whatever keeps front-of-knee pain ≤3/10. Shallower = less kneecap load.',
+    excludeFromVolume: true,
   },
   {
     id: 'iso-leg-extension',
@@ -1597,6 +1681,7 @@ export const EXERCISES: Exercise[] = [
     mistakes: ['Holding in a painful terminal-extension lockout', 'Jerking into the hold', 'Too heavy to hold the full time'],
     science: 'An easily dosed static quad contraction; the fixed angle lets you load hard while avoiding the range that provokes your knee.',
     caution: 'If full extension (near-straight knee) flares the kneecap, hold in a more bent position instead.',
+    excludeFromVolume: true,
   },
   {
     id: 'heels-elevated-squat',
@@ -1763,6 +1848,7 @@ export const EXERCISES: Exercise[] = [
     mistakes: ['Loading too heavy early', 'Standing too upright (loses quad work)', 'Rushing/jerky steps'],
     science: 'Concentric-only, near-zero-impact loading that repeatedly extends the knee under resistance — builds quad capacity with minimal pain or joint stress.',
     caution: 'Great low-pain option, but the "cures knees" testimonials are anecdotal — treat it as excellent capacity work, not a cure. Build load gradually.',
+    excludeFromVolume: true,
   },
   {
     id: 'sled-push',
@@ -1784,6 +1870,7 @@ export const EXERCISES: Exercise[] = [
     mistakes: ['Tiny choppy steps', 'Too heavy to keep moving', 'Rounding the back hard'],
     science: 'Concentric-dominant leg drive with no landing impact — builds strength and conditioning while sparing the knees.',
     caution: 'Low-impact and knee-friendly; still build load gradually and keep any knee pain ≤3/10.',
+    excludeFromVolume: true,
   },
   {
     id: 'banded-lateral-walk',

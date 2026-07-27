@@ -186,11 +186,30 @@ export function Session() {
             </div>
 
             {ex.sets.map((st, si) => (
-              <div
-                className={`setgrid${st.done ? ' set-row-done' : ''}`}
-                key={si}
-                style={{ marginBottom: 6 }}
-              >
+              <div key={si}>
+                {st.target && (
+                  <div className="set-target">
+                    {st.target.label && (
+                      <span className="pill pill-accent set-target-label">
+                        {st.target.label}
+                      </span>
+                    )}
+                    <span className="faint">
+                      {st.target.isHold
+                        ? `${st.target.repMin}${
+                            st.target.repMax !== st.target.repMin ? `–${st.target.repMax}` : ''
+                          }s hold`
+                        : `${st.target.repMin}–${st.target.repMax} reps`}
+                      {' · '}
+                      {st.target.rir} RIR
+                      {st.target.tempo ? ` · ${st.target.tempo}` : ''}
+                    </span>
+                  </div>
+                )}
+                <div
+                  className={`setgrid${st.done ? ' set-row-done' : ''}`}
+                  style={{ marginBottom: 8 }}
+                >
                 <div className="set-num">{si + 1}</div>
                 <input
                   type="number"
@@ -237,11 +256,12 @@ export function Session() {
                   onClick={() => {
                     const nowDone = !st.done
                     updateSet(ei, si, { done: nowDone })
-                    if (nowDone) startRest(ex.restSec ?? 120)
+                    if (nowDone) startRest(st.target?.restSec ?? ex.restSec ?? 120)
                   }}
                 >
                   <Icon name="check" size={16} />
                 </button>
+                </div>
               </div>
             ))}
 

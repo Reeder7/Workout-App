@@ -5,6 +5,7 @@ import type {
   LoggedSet,
   Plan,
   PlanDay,
+  PrescribedSet,
   Session,
   Settings,
 } from '../types'
@@ -126,17 +127,39 @@ export const useStore = create<State>()(
           planId: plan?.id,
           dayId: day?.id,
           name: day ? `${plan?.name ?? ''} · ${day.name}`.trim() : 'Workout',
-          exercises: (day?.exercises ?? []).map((pe) => ({
-            exerciseId: pe.exerciseId,
-            note: pe.note,
-            restSec: pe.restSec,
-            sets: Array.from({ length: Math.max(1, pe.sets) }, () => ({
-              reps: 0,
-              weight: 0,
-              rir: pe.rir,
-              done: false,
-            })),
-          })),
+          exercises: (day?.exercises ?? []).map((pe) => {
+            // A per-set scheme is authoritative; otherwise fall back to the
+            // flat sets/reps/rir prescription repeated for each set.
+            const scheme: PrescribedSet[] =
+              pe.scheme && pe.scheme.length > 0
+                ? pe.scheme
+                : Array.from({ length: Math.max(1, pe.sets) }, () => ({
+                    repMin: pe.repMin,
+                    repMax: pe.repMax,
+                    rir: pe.rir,
+                    restSec: pe.restSec,
+                  }))
+            return {
+              exerciseId: pe.exerciseId,
+              note: pe.note,
+              restSec: pe.restSec,
+              sets: scheme.map((ps) => ({
+                reps: 0,
+                weight: 0,
+                rir: ps.rir,
+                done: false,
+                target: {
+                  repMin: ps.repMin,
+                  repMax: ps.repMax,
+                  rir: ps.rir,
+                  restSec: ps.restSec,
+                  label: ps.label,
+                  tempo: ps.tempo,
+                  isHold: ps.isHold,
+                },
+              })),
+            }
+          }),
         }
         set({ activeSession: session })
       },

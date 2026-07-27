@@ -99,7 +99,7 @@ export function weeklySetsByMuscle(
     if (s.date < cutoff) continue
     for (const ex of s.exercises) {
       const meta = exerciseOf(ex.exerciseId, custom)
-      if (!meta) continue
+      if (!meta || meta.excludeFromVolume) continue
       const n = ex.sets.length
       counts[meta.primary] = (counts[meta.primary] ?? 0) + n
       for (const sec of meta.secondary) {
