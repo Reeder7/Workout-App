@@ -295,7 +295,7 @@ export const TEMPLATES: Plan[] = [
     builtIn: true,
     days: [
       day('Push A', [
-        comp('incline-barbell-press', 4, [6, 10], { rir: [3, 1], rest: 180, role: 'Upper chest' }),
+        comp('smith-incline-press', 4, [6, 10], { rir: [3, 1], rest: 180, role: 'Upper chest' }),
         comp('flat-db-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Mid chest' }),
         comp('machine-shoulder-press', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Front delts' }),
         iso('cable-lateral-raise', 4, [12, 20], { role: 'Side delts' }),

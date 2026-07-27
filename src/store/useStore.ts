@@ -58,6 +58,8 @@ interface State {
   startEmptySession: () => void
   addExerciseToActive: (exerciseId: string) => void
   removeExerciseFromActive: (index: number) => void
+  /** Replace an exercise mid-workout, keeping its set structure and targets. */
+  swapExerciseInActive: (index: number, newExerciseId: string) => void
   addSet: (exerciseIndex: number) => void
   updateSet: (exerciseIndex: number, setIndex: number, patch: Partial<LoggedSet>) => void
   removeSet: (exerciseIndex: number, setIndex: number) => void
@@ -195,6 +197,27 @@ export const useStore = create<State>()(
               exercises: s.activeSession.exercises.filter((_, i) => i !== index),
             },
           }
+        }),
+      swapExerciseInActive: (index, newExerciseId) =>
+        set((s) => {
+          if (!s.activeSession) return s
+          const exercises = s.activeSession.exercises.map((ex, i) => {
+            if (i !== index) return ex
+            // Keep the prescription (set count and per-set targets) but clear
+            // the logged numbers — they belonged to the old movement.
+            return {
+              ...ex,
+              exerciseId: newExerciseId,
+              sets: ex.sets.map((st) => ({
+                reps: 0,
+                weight: 0,
+                rir: st.target?.rir ?? st.rir,
+                done: false,
+                target: st.target,
+              })),
+            }
+          })
+          return { activeSession: { ...s.activeSession, exercises } }
         }),
       addSet: (exerciseIndex) =>
         set((s) => {

@@ -8,6 +8,7 @@ import { RestTimer } from '../components/RestTimer'
 import { Sheet } from '../components/Sheet'
 import { ExerciseGuide } from '../components/ExerciseGuide'
 import { ExerciseNoteEditor } from '../components/ExerciseNoteEditor'
+import { SwapSheet } from '../components/SwapSheet'
 import { fmtWeight } from '../lib/format'
 import type { Session as SessionType } from '../types'
 
@@ -44,6 +45,7 @@ export function Session() {
 
   const addExercise = useStore((s) => s.addExerciseToActive)
   const removeExercise = useStore((s) => s.removeExerciseFromActive)
+  const swapExercise = useStore((s) => s.swapExerciseInActive)
   const addSet = useStore((s) => s.addSet)
   const updateSet = useStore((s) => s.updateSet)
   const removeSet = useStore((s) => s.removeSet)
@@ -57,6 +59,7 @@ export function Session() {
   const [restEndsAt, setRestEndsAt] = useState<number | null>(null)
   const [guideFor, setGuideFor] = useState<string | null>(null)
   const [notesOpen, setNotesOpen] = useState<Record<number, boolean>>({})
+  const [swapIndex, setSwapIndex] = useState<number | null>(null)
 
   const elapsed = useElapsed(active?.date)
 
@@ -150,6 +153,9 @@ export function Session() {
                     •
                   </span>
                 )}
+              </button>
+              <button className="btn btn-sm btn-ghost" onClick={() => setSwapIndex(ei)}>
+                <Icon name="swap" size={15} /> Swap
               </button>
             </div>
 
@@ -316,6 +322,17 @@ export function Session() {
       >
         {guideFor && <ExerciseGuide exercise={exerciseById(guideFor)} />}
       </Sheet>
+
+      <SwapSheet
+        exerciseId={swapIndex != null ? active.exercises[swapIndex]?.exerciseId ?? null : null}
+        onClose={() => setSwapIndex(null)}
+        onSwap={(id) => swapIndex != null && swapExercise(swapIndex, id)}
+        warning={
+          swapIndex != null && active.exercises[swapIndex]?.sets.some((st) => st.done)
+            ? 'You have completed sets on this exercise. Swapping keeps the set structure but clears those logged numbers.'
+            : undefined
+        }
+      />
 
       <Sheet open={confirmFinish} onClose={() => setConfirmFinish(false)} title="Finish workout?">
         <p className="hint" style={{ marginTop: 0 }}>

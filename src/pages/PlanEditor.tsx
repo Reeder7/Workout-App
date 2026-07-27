@@ -5,6 +5,7 @@ import { EXERCISE_BY_ID } from '../data/exercises'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
 import { ExercisePicker } from '../components/ExercisePicker'
+import { SwapSheet } from '../components/SwapSheet'
 import { LANDMARKS, volumeZone, ZONE_LABEL, ZONE_COLOR, DEFAULTS } from '../data/landmarks'
 import type { MuscleGroup, Plan, PlanDay, PlanExercise, PrescribedSet } from '../types'
 
@@ -24,6 +25,7 @@ export function PlanEditor() {
   const [showVolume, setShowVolume] = useState(false)
   const [editMeta, setEditMeta] = useState(false)
   const [confirmStart, setConfirmStart] = useState(false)
+  const [swapPeId, setSwapPeId] = useState<string | null>(null)
 
   const exName = (eid: string) =>
     EXERCISE_BY_ID[eid]?.name ?? allExercises.find((e) => e.id === eid)?.name ?? 'Exercise'
@@ -299,6 +301,13 @@ export function PlanEditor() {
             </button>
             <button
               className="icon-btn"
+              onClick={() => setSwapPeId(pe.id)}
+              aria-label="Swap exercise"
+            >
+              <Icon name="swap" size={15} />
+            </button>
+            <button
+              className="icon-btn"
               onClick={() => removeExercise(pe.id)}
               aria-label="Remove"
             >
@@ -418,6 +427,18 @@ export function PlanEditor() {
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onPick={(e) => addExercise(e.id)}
+      />
+
+      <SwapSheet
+        exerciseId={
+          swapPeId
+            ? currentDay.exercises.find((x) => x.id === swapPeId)?.exerciseId ?? null
+            : null
+        }
+        onClose={() => setSwapPeId(null)}
+        onSwap={(id) => {
+          if (swapPeId) updateExercise(swapPeId, { exerciseId: id })
+        }}
       />
 
       {/* Edit meta sheet */}
