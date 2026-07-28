@@ -51,6 +51,8 @@ interface State {
   deletePlan: (id: string) => void
   duplicatePlan: (id: string) => void
   addPlanFromTemplate: (templateId: string) => Plan | undefined
+  /** Re-copy a plan's days from its source template, keeping the plan's id. */
+  refreshPlanFromTemplate: (planId: string) => boolean
   createEmptyPlan: () => Plan
 
   // active workout
@@ -105,9 +107,35 @@ export const useStore = create<State>()(
       addPlanFromTemplate: (templateId) => {
         const t = TEMPLATES.find((x) => x.id === templateId)
         if (!t) return undefined
-        const plan = clonePlan(t)
+        const plan = { ...clonePlan(t), sourceTemplateId: t.id }
         set((s) => ({ plans: [...s.plans, plan] }))
         return plan
+      },
+      refreshPlanFromTemplate: (planId) => {
+        const plan = get().plans.find((p) => p.id === planId)
+        if (!plan) return false
+        // Match by recorded source, falling back to name for plans created
+        // before that link existed.
+        const t =
+          TEMPLATES.find((x) => x.id === plan.sourceTemplateId) ??
+          TEMPLATES.find((x) => x.name === plan.name)
+        if (!t) return false
+        const fresh = clonePlan(t)
+        set((s) => ({
+          plans: s.plans.map((p) =>
+            p.id === planId
+              ? {
+                  ...p,
+                  name: t.name,
+                  description: t.description,
+                  daysPerWeek: t.daysPerWeek,
+                  days: fresh.days,
+                  sourceTemplateId: t.id,
+                }
+              : p,
+          ),
+        }))
+        return true
       },
       createEmptyPlan: () => {
         const plan: Plan = {

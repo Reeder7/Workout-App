@@ -18,6 +18,7 @@ export function PlanEditor() {
   const deletePlan = useStore((s) => s.deletePlan)
   const startSession = useStore((s) => s.startSession)
   const activeSession = useStore((s) => s.activeSession)
+  const refreshFromTemplate = useStore((s) => s.refreshPlanFromTemplate)
 
   const [activeDayId, setActiveDayId] = useState<string | null>(null)
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -26,6 +27,7 @@ export function PlanEditor() {
   const [editMeta, setEditMeta] = useState(false)
   const [confirmStart, setConfirmStart] = useState(false)
   const [swapPeId, setSwapPeId] = useState<string | null>(null)
+  const [confirmRefresh, setConfirmRefresh] = useState(false)
 
   const exName = (eid: string) =>
     EXERCISE_BY_ID[eid]?.name ?? allExercises.find((e) => e.id === eid)?.name ?? 'Exercise'
@@ -458,6 +460,46 @@ export function PlanEditor() {
         />
         <button className="btn btn-primary btn-block" onClick={() => setEditMeta(false)}>
           Done
+        </button>
+        <button
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 10 }}
+          onClick={() => {
+            setEditMeta(false)
+            setConfirmRefresh(true)
+          }}
+        >
+          <Icon name="swap" size={16} /> Refresh from template
+        </button>
+      </Sheet>
+
+      <Sheet
+        open={confirmRefresh}
+        onClose={() => setConfirmRefresh(false)}
+        title="Refresh from template?"
+      >
+        <p className="hint" style={{ marginTop: 0 }}>
+          This replaces this plan's days and exercises with the current version of the built-in
+          template — useful when the programming has been updated since you added it (for example
+          to pick up per-set rep and RIR targets). Any edits you made to this plan will be lost.
+          Your logged history and exercise notes are untouched.
+        </p>
+        <button
+          className="btn btn-primary btn-block"
+          onClick={() => {
+            const ok = refreshFromTemplate(plan.id)
+            setConfirmRefresh(false)
+            if (!ok) alert('No matching built-in template found for this plan.')
+          }}
+        >
+          Refresh now
+        </button>
+        <button
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 8 }}
+          onClick={() => setConfirmRefresh(false)}
+        >
+          Cancel
         </button>
       </Sheet>
 

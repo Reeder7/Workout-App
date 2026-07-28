@@ -112,6 +112,8 @@ export interface Plan {
   days: PlanDay[]
   createdAt: number
   builtIn?: boolean
+  /** Template this plan was created from, so it can be refreshed later. */
+  sourceTemplateId?: string
 }
 
 export interface LoggedSet {
