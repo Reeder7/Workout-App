@@ -174,6 +174,68 @@ export const TEMPLATES: Plan[] = [
     ],
   },
 
+  // ------------------------------------------------- Lean & Strong (balanced, 4-day)
+  {
+    id: 'tpl-lean-strong',
+    name: 'Lean & Strong — 4 Day',
+    description:
+      'A balanced 4-day Upper/Lower for building shape while leaning out. Run it on a ROLLING schedule: if you only train 3 times some weeks, just pick up at the next day instead of always skipping the same one — everything still gets hit roughly 2× per week.\n\nThe look people call "toned" is muscle plus lower body fat. Leanness comes from the diet side; this plan\'s job is to build and keep the muscle that creates the shape — glutes, hamstrings, back and shoulders — while training everything else properly. Reps sit mostly in the 8–15 range with higher-rep 15–25 work on the small muscles: that builds just as well as very high reps and keeps sessions efficient. Training in this range will not make you bulky; noticeable muscle gain is slow and needs a deliberate calorie surplus.\n\nEASING BACK INTO LEGS: volume starts at the low end on purpose. For the first 1–2 weeks do one fewer set on each leg exercise, keep loads light enough that the last rep still feels controlled, and stop 2–3 reps short of failure. Some soreness in the first couple of weeks is normal; it fades fast. Add load or a rep once a session feels comfortably repeatable.\n\nEATING AT MAINTENANCE OR IN A SLIGHT DEFICIT: keep volume where it is rather than ramping it up — recovery is reduced when you under-eat. Aim for roughly 1.6–2.2 g of protein per kg of bodyweight, and treat holding or slowly improving your strength as the win. Nutrition is outside what this app tracks; this is general guidance, not a diet plan.',
+    daysPerWeek: 4,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Lower A', [
+        comp('leg-press', 3, [10, 15], { rir: [3, 2], rest: 150, role: 'Quads — stable start' }),
+        comp('romanian-deadlift', 3, [8, 12], {
+          rir: [3, 2],
+          rest: 150,
+          tempo: STRETCH_TEMPO,
+          role: 'Hamstrings (stretch)',
+        }),
+        comp('hip-thrust', 3, [10, 15], { rir: [2, 1], rest: 120, role: 'Glutes' }),
+        iso('seated-leg-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Hamstrings (direct)' }),
+        iso('hip-abduction', 2, [15, 25], { role: 'Glute medius' }),
+        iso('standing-calf-raise', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Calves' }),
+        iso('cable-crunch', 3, [10, 20], { role: 'Abs (loaded)' }),
+      ]),
+      day('Upper A', [
+        comp('incline-db-press', 3, [8, 12], { rir: [3, 2], rest: 150, role: 'Upper chest' }),
+        comp('lat-pulldown', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Lats' }),
+        comp('chest-supported-row', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Mid-back' }),
+        iso('cable-lateral-raise', 3, [12, 20], { role: 'Side delts — shoulder shape' }),
+        iso('reverse-pec-deck', 2, [15, 20], { role: 'Rear delts / posture' }),
+        iso('triceps-pushdown', 2, [12, 20], { role: 'Triceps' }),
+        iso('ez-bar-curl', 2, [10, 15], { role: 'Biceps' }),
+      ]),
+      day('Lower B', [
+        comp('heels-elevated-squat', 3, [8, 12], {
+          rir: [3, 2],
+          rest: 150,
+          role: 'Quads — squat pattern',
+        }),
+        comp('bulgarian-split-squat', 3, [8, 12], {
+          rir: [3, 2],
+          rest: 120,
+          role: 'Single leg — hold a rail',
+        }),
+        comp('back-extension-45', 3, [10, 15], { rir: [2, 1], rest: 120, role: 'Glutes/hamstrings' }),
+        iso('lying-leg-curl', 3, [10, 15], { role: 'Hamstrings' }),
+        iso('leg-extension', 2, [12, 20], { role: 'Quads (direct)' }),
+        iso('seated-calf-raise', 3, [12, 20], { role: 'Calves — soleus' }),
+        iso('cable-crunch', 3, [10, 20], { role: 'Abs (loaded)' }),
+      ]),
+      day('Upper B', [
+        comp('machine-shoulder-press', 3, [8, 12], { rir: [3, 2], rest: 150, role: 'Shoulders' }),
+        comp('seated-cable-row', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Mid-back' }),
+        comp('neutral-pulldown', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Lats' }),
+        comp('machine-chest-press', 3, [10, 15], { rir: [2, 1], rest: 120, role: 'Chest' }),
+        iso('lateral-raise', 3, [12, 20], { role: 'Side delts' }),
+        iso('face-pull', 2, [15, 20], { role: 'Rear delts / rotators' }),
+        iso('incline-db-curl', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Biceps (stretch)' }),
+      ]),
+    ],
+  },
+
   // ---------------------------------------------------------------- 4-Day Upper/Lower
   {
     id: 'tpl-upper-lower',
