@@ -16,11 +16,13 @@ export function Train() {
   const settings = useStore((s) => s.settings)
   const startSession = useStore((s) => s.startSession)
   const startEmpty = useStore((s) => s.startEmptySession)
+  const deletePlan = useStore((s) => s.deletePlan)
 
   const [pickDayFor, setPickDayFor] = useState<Plan | null>(null)
   const [pendingStart, setPendingStart] = useState<
     { plan: Plan; dayId: string } | 'empty' | null
   >(null)
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null)
   const stats = summaryStats(sessions)
 
   function doStart(target: { plan: Plan; dayId: string } | 'empty') {
@@ -104,22 +106,35 @@ export function Train() {
         </div>
       ) : (
         plans.map((p) => (
-          <button
-            key={p.id}
-            className="card card-tap"
-            style={{ width: '100%', textAlign: 'left' }}
-            onClick={() => setPickDayFor(p)}
-          >
+          <div className="card" key={p.id}>
             <div className="row-between">
-              <div className="grow">
+              <button
+                className="grow"
+                style={{ textAlign: 'left', background: 'none' }}
+                onClick={() => setPickDayFor(p)}
+              >
                 <div style={{ fontWeight: 700, fontSize: 16 }}>{p.name}</div>
                 <div className="faint" style={{ fontSize: 13 }}>
-                  {p.days.length} day{p.days.length === 1 ? '' : 's'} · {p.daysPerWeek}×/week
+                  {p.days.length} day{p.days.length === 1 ? '' : 's'} · {p.daysPerWeek}×/week ·
+                  tap to start
                 </div>
-              </div>
-              <Icon name="chevron" className="faint" size={20} />
+              </button>
+              <button
+                className="icon-btn"
+                onClick={() => nav(`/plans/${p.id}`)}
+                aria-label="Edit plan"
+              >
+                <Icon name="edit" size={16} />
+              </button>
+              <button
+                className="icon-btn"
+                onClick={() => setConfirmDelete({ id: p.id, name: p.name })}
+                aria-label="Delete plan"
+              >
+                <Icon name="trash" size={16} />
+              </button>
             </div>
-          </button>
+          </div>
         ))
       )}
 
@@ -189,6 +204,54 @@ export function Train() {
             <Icon name="play" className="accent" size={20} />
           </button>
         ))}
+        <div className="row" style={{ gap: 10, marginTop: 16 }}>
+          <button
+            className="btn btn-ghost grow"
+            onClick={() => {
+              const id = pickDayFor?.id
+              setPickDayFor(null)
+              if (id) nav(`/plans/${id}`)
+            }}
+          >
+            <Icon name="edit" size={16} /> Edit plan
+          </button>
+          <button
+            className="btn btn-danger grow"
+            onClick={() => {
+              if (pickDayFor) setConfirmDelete({ id: pickDayFor.id, name: pickDayFor.name })
+              setPickDayFor(null)
+            }}
+          >
+            <Icon name="trash" size={16} /> Delete
+          </button>
+        </div>
+      </Sheet>
+
+      <Sheet
+        open={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        title="Delete this plan?"
+      >
+        <p className="hint" style={{ marginTop: 0 }}>
+          “{confirmDelete?.name}” will be removed from your plans. Your logged workout history and
+          exercise notes are not affected.
+        </p>
+        <button
+          className="btn btn-danger btn-block"
+          onClick={() => {
+            if (confirmDelete) deletePlan(confirmDelete.id)
+            setConfirmDelete(null)
+          }}
+        >
+          <Icon name="trash" size={16} /> Delete plan
+        </button>
+        <button
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 8 }}
+          onClick={() => setConfirmDelete(null)}
+        >
+          Cancel
+        </button>
       </Sheet>
 
       <Sheet

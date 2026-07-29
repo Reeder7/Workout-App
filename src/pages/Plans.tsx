@@ -11,7 +11,9 @@ export function Plans() {
   const addFromTemplate = useStore((s) => s.addPlanFromTemplate)
   const createEmpty = useStore((s) => s.createEmptyPlan)
   const duplicate = useStore((s) => s.duplicatePlan)
+  const deletePlan = useStore((s) => s.deletePlan)
   const [templatesOpen, setTemplatesOpen] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null)
 
   return (
     <div className="app">
@@ -86,6 +88,13 @@ export function Plans() {
               >
                 <Icon name="edit" size={16} />
               </button>
+              <button
+                className="icon-btn"
+                onClick={() => setConfirmDelete({ id: p.id, name: p.name })}
+                aria-label="Delete plan"
+              >
+                <Icon name="trash" size={16} />
+              </button>
             </div>
             {p.description && (
               <p className="hint" style={{ marginBottom: 0, marginTop: 10 }}>
@@ -95,6 +104,33 @@ export function Plans() {
           </div>
         ))
       )}
+
+      <Sheet
+        open={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        title="Delete this plan?"
+      >
+        <p className="hint" style={{ marginTop: 0 }}>
+          “{confirmDelete?.name}” will be removed from your plans. Your logged workout history and
+          exercise notes are not affected.
+        </p>
+        <button
+          className="btn btn-danger btn-block"
+          onClick={() => {
+            if (confirmDelete) deletePlan(confirmDelete.id)
+            setConfirmDelete(null)
+          }}
+        >
+          <Icon name="trash" size={16} /> Delete plan
+        </button>
+        <button
+          className="btn btn-ghost btn-block"
+          style={{ marginTop: 8 }}
+          onClick={() => setConfirmDelete(null)}
+        >
+          Cancel
+        </button>
+      </Sheet>
 
       <Sheet
         open={templatesOpen}
