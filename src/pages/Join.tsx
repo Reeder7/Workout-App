@@ -5,7 +5,14 @@ import { Icon } from '../components/Icon'
 import { PageHeader } from '../components/PageHeader'
 import { EmptyState } from '../components/EmptyState'
 import { isConfigured } from '../lib/supabase'
-import { refreshProfile, saveMyProfile, signInWithEmail, signOut, useAuth } from '../lib/auth'
+import {
+  refreshProfile,
+  saveMyProfile,
+  signInWithEmail,
+  signOut,
+  useAuth,
+  verifyEmailCode,
+} from '../lib/auth'
 import { toast } from '../lib/toast'
 
 /** Imperial entry converted to the canonical cm/kg the database stores. */
@@ -33,6 +40,8 @@ export function Join() {
   const [addr, setAddr] = useState('')
   const [sent, setSent] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [otp, setOtp] = useState('')
+  const [codeError, setCodeError] = useState<string | null>(null)
 
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
@@ -72,11 +81,29 @@ export function Join() {
       return
     }
     setBusy(true)
+    setCodeError(null)
     try {
       await signInWithEmail(addr)
       setSent(true)
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Could not send the link', 'danger')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function confirmCode() {
+    setBusy(true)
+    setCodeError(null)
+    try {
+      await verifyEmailCode(addr, otp)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'That code did not work'
+      setCodeError(
+        /expired|invalid/i.test(msg)
+          ? 'That code is wrong or has expired. Send a new one.'
+          : msg,
+      )
     } finally {
       setBusy(false)
     }
@@ -119,7 +146,7 @@ export function Join() {
         <PageHeader
           eyebrow="Spotter social"
           title="Sign in"
-          sub="One-time link by email. No password to remember or lose."
+          sub="A one-time code by email. No password to remember or lose."
           onBack={() => nav('/settings')}
         />
         {error && (
@@ -131,15 +158,63 @@ export function Join() {
           </div>
         )}
         {sent ? (
-          <EmptyState
-            glyph="note"
-            title="Check your email"
-            body={`A sign-in link is on its way to ${addr}. Open it on this phone — the link signs in the browser that opens it.`}
-          >
-            <button className="btn btn-ghost" onClick={() => setSent(false)}>
-              Use a different address
+          <div className="card">
+            <div style={{ fontWeight: 640, fontSize: 17, letterSpacing: '-0.014em' }}>
+              Enter the code from your email
+            </div>
+            <p className="hint" style={{ marginTop: 4 }}>
+              Sent to {addr}. Typing the code keeps you in this app — a link would open
+              whichever browser your mail app prefers, which is what fails.
+            </p>
+            <label className="field-label" htmlFor="otp" style={{ marginTop: 'var(--space-3)' }}>
+              6-digit code
+            </label>
+            <input
+              id="otp"
+              className="otp-input"
+              type="text"
+              inputMode="numeric"
+              /* iOS offers to autofill this straight from the email notification. */
+              autoComplete="one-time-code"
+              /* No maxLength: it counts raw characters, so a stray letter would
+                 eat into the six-digit budget and silently truncate a pasted
+                 code. The handler below strips then caps instead. */
+              placeholder="000000"
+              value={otp}
+              onChange={(e) => {
+                setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))
+                setCodeError(null)
+              }}
+            />
+            {codeError && (
+              <p className="hint" style={{ color: 'var(--danger)', marginTop: 'var(--space-2)' }}>
+                {codeError}
+              </p>
+            )}
+            <button
+              className="btn btn-primary btn-block"
+              style={{ marginTop: 'var(--space-3)' }}
+              disabled={busy || otp.length !== 6}
+              onClick={confirmCode}
+            >
+              {busy ? 'Checking…' : 'Sign in'}
             </button>
-          </EmptyState>
+            <div className="row" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
+              <button className="btn btn-ghost btn-sm grow" disabled={busy} onClick={send}>
+                Send a new code
+              </button>
+              <button
+                className="btn btn-ghost btn-sm grow"
+                onClick={() => {
+                  setSent(false)
+                  setOtp('')
+                  setCodeError(null)
+                }}
+              >
+                Change email
+              </button>
+            </div>
+          </div>
         ) : (
           <div className="card">
             <label className="field-label" htmlFor="email">
