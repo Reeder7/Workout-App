@@ -6,11 +6,17 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { setMemberSource } from './lib/members'
 import { supabaseMembers } from './lib/supabaseMembers'
 import { isConfigured } from './lib/supabase'
+import { initAuth } from './lib/auth'
 import './index.css'
 
 // Point the social layer at the backend before the first render, so screens
 // don't briefly show their "not connected" state.
-if (isConfigured) setMemberSource(supabaseMembers)
+if (isConfigured) {
+  setMemberSource(supabaseMembers)
+  // Restores the session and starts following sign-in/out. Fire and forget: the
+  // UI renders a loading state off useAuth() until it settles.
+  void initAuth()
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

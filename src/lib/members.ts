@@ -41,7 +41,9 @@ export function memberSource(): MemberSource {
  * spinning with no way out, which is what gym wifi and a paused Supabase
  * project both look like from the client.
  */
-export function withTimeout<T>(p: Promise<T>, ms = 15_000): Promise<T> {
+/* Takes PromiseLike because Supabase query builders are thenable but are not
+   Promises — they only run when awaited. */
+export function withTimeout<T>(p: PromiseLike<T>, ms = 15_000): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const t = setTimeout(
       () => reject(new Error('The server took too long to respond. Check your connection.')),

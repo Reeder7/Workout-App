@@ -12,6 +12,7 @@ import { Library } from './pages/Library'
 import { Settings } from './pages/Settings'
 import { ImportPlan } from './pages/ImportPlan'
 import { Members } from './pages/Members'
+import { Join } from './pages/Join'
 import { useStore } from './store/useStore'
 import { applyTheme, watchSystemTheme } from './lib/theme'
 
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/import" element={<ImportPlan />} />
         <Route path="/members" element={<Members />} />
+        <Route path="/join" element={<Join />} />
       </Routes>
       <TabBar />
       <ToastHost />
