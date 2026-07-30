@@ -12,11 +12,12 @@
 
   Suggested subject for both: Your Spotter sign-in code
 
-  WHY THE CODE AND NOT JUST THE LINK
-  {{ .Token }}           the 6-digit code — works from any browser
-  {{ .ConfirmationURL }} the link — only works if it opens in the same browser
-                         that asked for it, which mail apps rarely do
-  The code is primary here for that reason; the link is kept as a fallback.
+  WHY THERE IS NO LINK IN HERE
+  {{ .Token }} and {{ .ConfirmationURL }} wrap the SAME single-use token, so a mail
+  scanner that follows the href consumes it and the code the user then types fails
+  as already-used. Outlook runs exactly such a scanner (Safe Links). The link also
+  only ever worked when opened in the same browser that requested it, which mail
+  apps rarely honour. The code is therefore the only credential in this email.
 
   Table-based layout with inline styles on purpose: Outlook on Windows renders
   with the Word engine, which ignores flexbox, grid and most stylesheet rules.
@@ -65,10 +66,9 @@
         <tr>
           <td style="padding:16px 32px 0 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
             <p style="margin:0;font-size:13px;line-height:19px;color:#77828f;">
-              Or, if you are reading this in the same browser you requested it from,
-              <a href="{{ .ConfirmationURL }}" style="color:#0c625f;font-weight:600;">open this link</a>.
-              Tapping it from a mail app usually opens a different browser and will not work —
-              use the code above instead.
+              Open Spotter and type the code above. There is deliberately no link to tap —
+              a link would be opened by whichever browser this mail app prefers, which is not
+              the one waiting for you.
             </p>
           </td>
         </tr>
