@@ -28,6 +28,7 @@ export type IconName =
   | 'note'
   | 'swap'
   | 'share'
+  | 'more'
 
 const paths: Record<IconName, JSX.Element> = {
   dumbbell: (
@@ -104,6 +105,13 @@ const paths: Record<IconName, JSX.Element> = {
   swap: (
     <>
       <path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5" />
+    </>
+  ),
+  more: (
+    <>
+      <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" />
     </>
   ),
   download: <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" />,

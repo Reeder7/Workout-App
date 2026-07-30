@@ -494,8 +494,7 @@ button.lrow:active {
   padding: var(--space-10) var(--space-6);
   color: var(--ink-secondary);
 }
-.empty-glyph,
-.empty-emoji {
+.empty-glyph {
   width: 88px;
   height: 88px;
   margin: 0 auto var(--space-5);
@@ -834,59 +833,171 @@ button.lrow:active {
    ========================================================================= */
 .setgrid {
   display: grid;
-  grid-template-columns: 32px 1fr 1fr 60px 44px;
-  gap: var(--space-2);
+  grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr) 86px 40px;
+  gap: 6px;
   align-items: center;
 }
+/* Rows and the header carry the same 8px inset so their columns stay aligned
+   while the completed-row accent rail has somewhere to sit without clipping
+   the set number. */
 .setgrid-head {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-tertiary);
   font-weight: 600;
-  padding: 0 2px var(--space-1);
+  padding: var(--space-2) 0 var(--space-1) 8px;
+}
+.setrow {
+  padding-left: 8px;
+  margin-bottom: 6px;
 }
 .setgrid input {
   min-height: 44px;
-  padding: 10px 6px;
+  padding: 10px 4px;
   text-align: center;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.012em;
   font-variant-numeric: tabular-nums;
   border-radius: var(--radius-sm);
 }
+/* Ghost target: what completing the set would log if you type nothing. */
+.setgrid input::placeholder {
+  color: var(--ink-quaternary);
+  font-weight: 500;
+}
 .set-num {
-  width: 28px;
-  height: 28px;
-  margin: 0 auto;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-full);
   background: var(--surface-2);
   color: var(--ink-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+.setfoot {
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
 
-/* Prescription line above each set — quiet, secondary, never hue-only */
-.set-target {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: 0 2px 3px 36px;
+/* Exercise header */
+.ex-name {
+  font-size: 16px;
+  font-weight: 640;
+  letter-spacing: -0.014em;
+  line-height: 21px;
+}
+.ex-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: -4px 0;
+  border-radius: var(--radius-full);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.ex-info:active {
+  background: var(--accent-subtle);
+}
+.ex-meta {
   font-size: 12px;
+  line-height: 16px;
+}
+.icon-btn-sm {
+  width: 36px;
+  height: 36px;
+  background: transparent;
   color: var(--ink-secondary);
 }
-.set-target-label {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 11px;
+
+/* One prescription line per exercise, replacing a repeat above every row. */
+.presc {
+  margin-top: var(--space-2);
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-subtle);
+  color: var(--accent-ink);
+  font-size: 12px;
+  line-height: 17px;
   font-weight: 600;
-  color: var(--ink-tertiary);
+  letter-spacing: -0.003em;
+}
+
+.note-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: 8px 10px;
+  text-align: left;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--ink-secondary);
+  font-style: italic;
+}
+
+/* RIR stepper — a numeric keypad would cover half the screen mid-set. */
+.rir {
+  display: grid;
+  grid-template-columns: 26px 1fr 26px;
+  align-items: center;
+  height: 44px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.rir-step {
+  height: 44px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink-secondary);
+  background: transparent;
+}
+.rir-step:active:not(:disabled) {
+  background: var(--surface-3);
+  color: var(--ink-primary);
+}
+.rir-step:disabled {
+  color: var(--ink-quaternary);
+  cursor: not-allowed;
+}
+.rir-value {
+  height: 44px;
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-primary);
+  background: transparent;
+}
+.rir-value.is-ghost {
+  color: var(--ink-quaternary);
+  font-weight: 500;
+}
+.set-row-done .rir {
+  background: transparent;
+}
+
+/* Action rows inside a sheet */
+.lrow-action {
+  width: 100%;
+  text-align: left;
+  background: none;
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 56px;
+}
+.lrow-danger {
+  color: var(--danger);
 }
 
 /* Completion control: 28px circle inside a 44px target */
@@ -946,7 +1057,8 @@ button.lrow:active {
   border-radius: var(--radius-sm);
   box-shadow: inset 3px 0 0 var(--accent);
 }
-.set-row-done input {
+.set-row-done input,
+.set-row-done .set-num {
   background: transparent;
 }
 
