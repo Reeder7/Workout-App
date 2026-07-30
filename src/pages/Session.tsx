@@ -50,7 +50,6 @@ export function Session() {
   const [guideFor, setGuideFor] = useState<string | null>(null)
   const [notesOpen, setNotesOpen] = useState<Record<number, boolean>>({})
   const [swapIndex, setSwapIndex] = useState<number | null>(null)
-  const [moreIndex, setMoreIndex] = useState<number | null>(null)
 
   const elapsed = useElapsed(active?.date)
 
@@ -88,8 +87,6 @@ export function Session() {
     setRestEndsAt(Date.now() + seconds * 1000)
   }
 
-  const moreEx = moreIndex != null ? active.exercises[moreIndex] : null
-
   return (
     <div className="app">
       <PageHeader
@@ -123,7 +120,12 @@ export function Session() {
           onStepRir={(si, delta) => stepRir(ei, si, delta)}
           onRest={startRest}
           onGuide={() => setGuideFor(ex.exerciseId)}
-          onMore={() => setMoreIndex(ei)}
+          onSwap={() => setSwapIndex(ei)}
+          onRemove={() => {
+            removeExercise(ei)
+            setNotesOpen({})
+            toast('Exercise removed')
+          }}
         />
       ))}
 
@@ -153,61 +155,6 @@ export function Session() {
         onClose={() => setPickerOpen(false)}
         onPick={(e) => addExercise(e.id)}
       />
-
-      {/* Per-exercise actions live here so the set grid keeps the card's width. */}
-      <Sheet
-        open={moreIndex != null}
-        onClose={() => setMoreIndex(null)}
-        title={moreEx ? exerciseName(moreEx.exerciseId) : ''}
-      >
-        <button
-          className="lrow lrow-action"
-          onClick={() => {
-            if (moreEx) setGuideFor(moreEx.exerciseId)
-            setMoreIndex(null)
-          }}
-        >
-          <Icon name="info" size={18} className="accent" />
-          <span className="grow">How to perform</span>
-          <Icon name="chevron" size={16} className="faint" />
-        </button>
-        <button
-          className="lrow lrow-action"
-          onClick={() => {
-            if (moreIndex != null) setNotesOpen((o) => ({ ...o, [moreIndex]: true }))
-            setMoreIndex(null)
-          }}
-        >
-          <Icon name="note" size={18} className="accent" />
-          <span className="grow">
-            {(exerciseNotes[moreEx?.exerciseId ?? ''] ?? '').trim() ? 'Edit note' : 'Add a note'}
-          </span>
-          <Icon name="chevron" size={16} className="faint" />
-        </button>
-        <button
-          className="lrow lrow-action"
-          onClick={() => {
-            setSwapIndex(moreIndex)
-            setMoreIndex(null)
-          }}
-        >
-          <Icon name="swap" size={18} className="accent" />
-          <span className="grow">Swap exercise</span>
-          <Icon name="chevron" size={16} className="faint" />
-        </button>
-        <button
-          className="lrow lrow-action lrow-danger"
-          onClick={() => {
-            if (moreIndex != null) removeExercise(moreIndex)
-            setNotesOpen({})
-            setMoreIndex(null)
-            toast('Exercise removed')
-          }}
-        >
-          <Icon name="trash" size={18} />
-          <span className="grow">Remove from this workout</span>
-        </button>
-      </Sheet>
 
       <Sheet
         open={!!guideFor}
