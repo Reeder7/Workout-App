@@ -11,8 +11,10 @@ import { PageHeader } from '../components/PageHeader'
 import { ExerciseGuide } from '../components/ExerciseGuide'
 import { SessionExercise } from '../components/SessionExercise'
 import { SwapSheet } from '../components/SwapSheet'
+import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
 import { toast } from '../lib/toast'
 import { DELOAD } from '../lib/mesocycle'
+import type { Session as SessionType } from '../types'
 
 function useElapsed(startedAt?: number) {
   const [now, setNow] = useState(() => Date.now())
@@ -51,6 +53,7 @@ export function Session() {
   const [guideFor, setGuideFor] = useState<string | null>(null)
   const [notesOpen, setNotesOpen] = useState<Record<number, boolean>>({})
   const [swapIndex, setSwapIndex] = useState<number | null>(null)
+  const [finished, setFinished] = useState<SessionType | null>(null)
 
   const elapsed = useElapsed(active?.date)
 
@@ -69,6 +72,25 @@ export function Session() {
   }, [active])
 
   if (!active) {
+    // Straight after finishing, offer the summary card before leaving — this is
+    // the one moment the workout is worth sharing.
+    if (finished) {
+      const setsLogged = finished.exercises.reduce((t, ex) => t + ex.sets.length, 0)
+      return (
+        <div className="app">
+          <EmptyState
+            glyph="barbell"
+            title="Workout saved"
+            body={`${finished.name} · ${setsLogged} set${setsLogged === 1 ? '' : 's'} logged.`}
+          >
+            <ShareWorkoutButton session={finished} className="btn btn-primary" />
+            <button className="btn btn-ghost" onClick={() => nav('/')}>
+              Done
+            </button>
+          </EmptyState>
+        </div>
+      )
+    }
     return (
       <div className="app">
         <EmptyState
@@ -202,8 +224,16 @@ export function Session() {
           onClick={() => {
             finish()
             setConfirmFinish(false)
-            toast(`Workout saved · ${totals.done} sets`, 'success')
-            nav('/')
+            // finishSession prunes incomplete sets, so read back what was
+            // actually stored rather than reusing the in-progress copy.
+            const saved = useStore.getState().sessions[0]
+            if (saved) {
+              setFinished(saved)
+              toast(`Workout saved · ${totals.done} sets`, 'success')
+            } else {
+              toast('Nothing to save — no sets were completed')
+              nav('/')
+            }
           }}
         >
           <Icon name="check" size={18} /> Finish & save
