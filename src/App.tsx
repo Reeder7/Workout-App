@@ -14,7 +14,7 @@ import { useStore } from './store/useStore'
 import { applyTheme, watchSystemTheme } from './lib/theme'
 
 export default function App() {
-  const theme = useStore((s) => s.settings.theme ?? 'system')
+  const theme = useStore((s) => s.settings.theme ?? 'light')
 
   useEffect(() => {
     applyTheme(theme)

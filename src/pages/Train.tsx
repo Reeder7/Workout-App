@@ -73,8 +73,8 @@ export function Train() {
           style={{
             width: '100%',
             textAlign: 'left',
-            borderColor: 'var(--accent-dim)',
-            background: 'rgba(198,242,78,0.06)',
+            borderColor: 'var(--accent)',
+            background: 'var(--accent-subtle)',
           }}
           onClick={() => nav('/session')}
         >

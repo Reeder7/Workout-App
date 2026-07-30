@@ -5,7 +5,7 @@ import type { ThemePref } from '../types'
  * `data-theme="light" | "dark"`, so an explicit preference always wins and
  * 'system' follows the device.
  */
-export function applyTheme(pref: ThemePref = 'system'): void {
+export function applyTheme(pref: ThemePref = 'light'): void {
   const root = document.documentElement
   const prefersDark =
     typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches
