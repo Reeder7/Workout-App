@@ -36,7 +36,14 @@ export function getSupabase(): Promise<SupabaseClient> {
            * for routing — the two collide and sign-in silently does nothing.
            */
           flowType: 'pkce',
-          detectSessionInUrl: true,
+          /*
+           * Off on purpose. The SDK is imported lazily, so by the time it could
+           * read the URL, takeAuthCallback() has already consumed and cleared it
+           * — it has to, because HashRouter would otherwise treat the token
+           * fragment as a route and render nothing. Callbacks are handed to the
+           * SDK explicitly in lib/auth.ts instead.
+           */
+          detectSessionInUrl: false,
           persistSession: true,
           autoRefreshToken: true,
         },

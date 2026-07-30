@@ -13,6 +13,7 @@ import { Settings } from './pages/Settings'
 import { ImportPlan } from './pages/ImportPlan'
 import { Members } from './pages/Members'
 import { Join } from './pages/Join'
+import { NotFound } from './pages/NotFound'
 import { useStore } from './store/useStore'
 import { applyTheme, watchSystemTheme } from './lib/theme'
 
@@ -38,6 +39,10 @@ export default function App() {
         <Route path="/import" element={<ImportPlan />} />
         <Route path="/members" element={<Members />} />
         <Route path="/join" element={<Join />} />
+        {/* Nothing may render an empty page. A stale deep link, a bookmark to a
+            deleted plan, or an auth fragment that slipped past takeAuthCallback
+            all land here rather than on a blank screen. */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <TabBar />
       <ToastHost />

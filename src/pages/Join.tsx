@@ -122,6 +122,14 @@ export function Join() {
           sub="One-time link by email. No password to remember or lose."
           onBack={() => nav('/settings')}
         />
+        {error && (
+          <div className="card" style={{ marginBottom: 'var(--space-3)', boxShadow: 'var(--card-shadow), inset 3px 0 0 var(--danger)' }}>
+            <div style={{ fontWeight: 640, fontSize: 15 }}>That link didn't work</div>
+            <p className="hint" style={{ marginBottom: 0, marginTop: 4 }}>
+              {error}
+            </p>
+          </div>
+        )}
         {sent ? (
           <EmptyState
             glyph="note"
