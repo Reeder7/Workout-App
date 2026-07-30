@@ -22,6 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   handleReset = () => {
     try {
+      // Matches the persist key in useStore — see the note there.
       localStorage.removeItem('iron-log-v1')
     } catch {
       /* ignore */

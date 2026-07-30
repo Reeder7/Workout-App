@@ -177,7 +177,7 @@ export async function renderSummaryCard(data: CardData): Promise<Blob> {
   ctx.font = `600 26px ${font}`
   ctx.fillStyle = accentInk
   ctx.letterSpacing = '3px'
-  ctx.fillText('IRON LOG', PAD, y)
+  ctx.fillText('SPOTTER', PAD, y)
   ctx.letterSpacing = '0px'
   ctx.font = `500 26px ${font}`
   ctx.fillStyle = ink3
@@ -248,30 +248,34 @@ export async function renderSummaryCard(data: CardData): Promise<Blob> {
   y += 34
 
   /*
-   * How many lifts fit is decided here, not by a fixed cap: a two-line title or
-   * a deload badge eats vertical space, and a fixed cap overflowed the footer.
-   * Rows then stretch to fill whatever is left, so a short workout looks
-   * deliberate rather than leaving a hole.
+   * The list panel always reaches down to the footer, and the rows are centred
+   * inside it. Two earlier attempts were worse: a fixed row cap overflowed the
+   * footer on a two-line title, and stretching rows to fill left a visible hole
+   * whenever a session had only three lifts.
+   *
+   * How many lifts fit is therefore derived from the panel, not assumed.
    */
   const footerTop = CARD_H - PAD - 74
-  const fitAt = (reserve: number) =>
-    Math.max(1, Math.floor((footerTop - y - 36 - reserve) / MIN_ROW))
-  let shown = data.lines.slice(0, fitAt(0))
+  const listH = Math.max(160, footerTop - y - 14)
+  const capacity = (reserve: number) =>
+    Math.max(1, Math.floor((listH - 36 - reserve) / MIN_ROW))
+  let shown = data.lines.slice(0, capacity(0))
   let more = data.lines.length - shown.length
   if (more > 0) {
     // Reserve the "+N more" line, which may itself cost a row.
-    shown = data.lines.slice(0, fitAt(46))
+    shown = data.lines.slice(0, capacity(46))
     more = data.lines.length - shown.length
   }
   const moreH = more > 0 ? 46 : 0
-  const avail = footerTop - y - 36 - moreH
-  const rowH = Math.max(MIN_ROW, Math.min(MAX_ROW, avail / shown.length))
-  const listH = shown.length * rowH + 36 + moreH
+  const rowH = Math.max(MIN_ROW, Math.min(MAX_ROW, (listH - 36 - moreH) / shown.length))
+
   ctx.fillStyle = surface
   roundRect(ctx, PAD, y, innerW, listH, 30)
   ctx.fill()
 
-  let ry = y + rowH / 2 + 4
+  // Centre the block of rows in whatever height the panel ended up with.
+  const rowsH = shown.length * rowH
+  let ry = y + (listH - moreH - rowsH) / 2 + rowH / 2 - 16
   for (const line of shown) {
     // Best set first: it sets the right-hand column, and the name gets what's left.
     ctx.font = `600 30px ${font}`
