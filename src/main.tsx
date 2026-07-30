@@ -3,7 +3,14 @@ import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { setMemberSource } from './lib/members'
+import { supabaseMembers } from './lib/supabaseMembers'
+import { isConfigured } from './lib/supabase'
 import './index.css'
+
+// Point the social layer at the backend before the first render, so screens
+// don't briefly show their "not connected" state.
+if (isConfigured) setMemberSource(supabaseMembers)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

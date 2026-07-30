@@ -5,7 +5,7 @@ import { Icon } from '../components/Icon'
 import { PageHeader } from '../components/PageHeader'
 import { EmptyState } from '../components/EmptyState'
 import { Segmented } from '../components/Segmented'
-import { memberSource, memberSummary } from '../lib/members'
+import { memberSource, memberSummary, withTimeout } from '../lib/members'
 import { relativeDate } from '../lib/format'
 import { toast } from '../lib/toast'
 import type { MemberProfile, MemberStatus } from '../types'
@@ -21,13 +21,17 @@ export function Members() {
   const [members, setMembers] = useState<MemberProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [busyId, setBusyId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
+    setError(null)
     try {
-      setMembers(await source.list())
-    } catch {
-      toast("Couldn't load members", 'danger')
+      setMembers(await withTimeout(source.list()))
+    } catch (e) {
+      // Held on screen with a retry, not flashed in a toast: if this fails there
+      // is nothing else on the page and nothing else to do.
+      setError(e instanceof Error ? e.message : "Couldn't load members")
     } finally {
       setLoading(false)
     }
@@ -40,7 +44,7 @@ export function Members() {
   async function review(m: MemberProfile, status: MemberStatus) {
     setBusyId(m.id)
     try {
-      await source.setStatus(m.id, status)
+      await withTimeout(source.setStatus(m.id, status))
       // Reflect it locally rather than refetching — one row changed.
       setMembers((list) =>
         list.map((x) => (x.id === m.id ? { ...x, status, reviewedAt: Date.now() } : x)),
@@ -89,6 +93,12 @@ export function Members() {
             <p className="hint" style={{ marginTop: 'var(--space-5)' }}>
               Loading…
             </p>
+          ) : error ? (
+            <EmptyState glyph="search" title="Couldn't load members" body={error}>
+              <button className="btn btn-primary" onClick={() => void load()}>
+                Try again
+              </button>
+            </EmptyState>
           ) : shown.length === 0 ? (
             <EmptyState
               glyph="people"
