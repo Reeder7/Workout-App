@@ -1,0 +1,215 @@
+/* ============================================================================
+   Design tokens — light default, dark as a designed counterpart.
+   Contrast ratios in comments were measured, not estimated.
+   ========================================================================= */
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --surface-canvas: #f6f7f9;
+  --surface-1: #ffffff;
+  --surface-2: #eef1f4;
+  --surface-3: #e2e7ec;
+  --surface-inverse: #161d28;
+
+  /* Ink */
+  --ink-primary: #0e1420; /* 18.43:1 on surface-1 */
+  --ink-secondary: #54606f; /* 6.40:1 */
+  --ink-tertiary: #77828f; /* 3.91:1 — LARGE TEXT ONLY */
+  --ink-quaternary: #9aa4b0; /* placeholders / disabled only */
+  --ink-inverse: #ffffff;
+
+  /* Borders */
+  --border-subtle: #eceff3;
+  --border-default: #dfe4ea;
+  --border-strong: #7c8894; /* 3.62:1 — passes non-text */
+
+  /* Accent — deep teal */
+  --accent: #0b7c77; /* 5.04:1 */
+  --accent-hover: #0c6e6a;
+  --accent-pressed: #0c625f;
+  --accent-subtle: #ecf9f7;
+  --accent-subtle-2: #d3f4ef;
+  --accent-on: #ffffff;
+  --accent-ink: #0c625f; /* 7.17:1 — accent used as text */
+  --accent-ring: rgba(11, 124, 119, 0.18);
+
+  /* Semantic */
+  --success: #15803d;
+  --success-subtle: #ecfdf3;
+  --warning: #a16207;
+  --warning-subtle: #fef7e6;
+  --danger: #dc2626;
+  --danger-strong: #b91c1c;
+  --danger-subtle: #fef2f2;
+  --info: #1d4ed8;
+  --info-subtle: #eff4ff;
+
+  /* Chart — deliberately NOT the UI accent (that fails the chroma floor as a mark) */
+  --series-1: #109a92;
+  --series-2: #b45309;
+  --series-3: #6d28d9;
+  --chart-grid: #e8ecf0;
+  --chart-baseline: #cbd3db;
+  --chart-surface: #ffffff;
+
+  /* Volume-landmark zones */
+  --zone-under: #64748b;
+  --zone-productive: #15803d;
+  --zone-high: #b45309;
+  --zone-over: #dc2626;
+
+  /* Elevation — ink-tinted, never pure black */
+  --elev-0: none;
+  --elev-1: 0 1px 2px -1px rgba(14, 20, 32, 0.06), 0 1px 3px rgba(14, 20, 32, 0.04);
+  --elev-2: 0 2px 4px -2px rgba(14, 20, 32, 0.08), 0 4px 12px -2px rgba(14, 20, 32, 0.06);
+  --elev-3: 0 4px 8px -4px rgba(14, 20, 32, 0.1), 0 8px 24px -6px rgba(14, 20, 32, 0.08);
+  --elev-4: 0 -2px 8px -2px rgba(14, 20, 32, 0.08), 0 -16px 40px -8px rgba(14, 20, 32, 0.16);
+  --elev-5: 0 8px 24px -6px rgba(14, 20, 32, 0.18);
+
+  --scrim: rgba(14, 20, 32, 0.32);
+  --card-border: transparent; /* light cards use shadow, not a border */
+  --card-shadow: var(--elev-1);
+  --tabbar-bg: rgba(255, 255, 255, 0.88);
+  --tab-inactive: #6b7684; /* 4.62:1 */
+  --skeleton-sheen: rgba(14, 20, 32, 0.045);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --surface-canvas: #0c0f14;
+  --surface-1: #151a21;
+  --surface-2: #1c222b;
+  --surface-3: #252c36;
+  --surface-inverse: #f2f5f8;
+
+  --ink-primary: #f2f5f8; /* 15.97:1 */
+  --ink-secondary: #a2adba; /* 7.68:1 */
+  --ink-tertiary: #79848f; /* 4.59:1 — body-legal on dark */
+  --ink-quaternary: #5d6875;
+  --ink-inverse: #0e1420;
+
+  --border-subtle: #1f262f;
+  --border-default: #232a33;
+  --border-strong: #63707f;
+
+  --accent: #34bab0; /* 7.32:1 */
+  --accent-hover: #45c4ba;
+  --accent-pressed: #22a79e;
+  --accent-subtle: #10292b;
+  --accent-subtle-2: #14383a;
+  --accent-on: #04231f; /* 6.95:1 — never white here (2.39:1) */
+  --accent-ink: #6fd6cc; /* 10.13:1 */
+  --accent-ring: rgba(52, 186, 176, 0.28);
+
+  --success: #4ade80;
+  --success-subtle: #0f2a1b;
+  --warning: #fbbf24;
+  --warning-subtle: #2b2010;
+  --danger: #f87171;
+  --danger-strong: #ef4444;
+  --danger-subtle: #2c1518;
+  --info: #60a5fa;
+  --info-subtle: #111e33;
+
+  --series-1: #17a096;
+  --series-2: #c87f14;
+  --series-3: #8266e4;
+  --chart-grid: #222932;
+  --chart-baseline: #333c47;
+  --chart-surface: #151a21;
+
+  --zone-under: #94a3b8;
+  --zone-productive: #4ade80;
+  --zone-high: #fbbf24;
+  --zone-over: #f87171;
+
+  /* Elevation = surface-lift + a top highlight; shadows don't read on dark */
+  --elev-0: none;
+  --elev-1: none;
+  --elev-2: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --elev-3: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --elev-4: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 -24px 48px -12px rgba(0, 0, 0, 0.65);
+  --elev-5: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+
+  --scrim: rgba(0, 0, 0, 0.6);
+  --card-border: var(--border-default); /* dark cards use a border, not shadow */
+  --card-shadow: none;
+  --tabbar-bg: rgba(18, 23, 30, 0.88);
+  --tab-inactive: #8b96a3; /* 5.99:1 */
+  --skeleton-sheen: rgba(255, 255, 255, 0.055);
+}
+
+/* ---------------------------------------------------------------- primitives */
+:root {
+  /* Type — system stack resolves to SF Pro on iOS, Roboto on Android */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  /* Space (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-full: 999px;
+
+  --border-emphasis: 1.5px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* Motion */
+  --dur-instant: 80ms;
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 320ms;
+  --dur-ring: 640ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  --tabbar-h: 56px;
+  --maxw: 640px;
+}
+
+/* ------------------------------------------------- legacy token aliases
+   Existing markup references these names; mapping them keeps every screen
+   working while it inherits the new palette. New code should use the tokens
+   above directly. */
+:root {
+  --bg: var(--surface-canvas);
+  --surface: var(--surface-1);
+  --border: var(--border-default);
+  --text: var(--ink-primary);
+  --text-dim: var(--ink-secondary);
+  --text-faint: var(--ink-tertiary);
+  --accent-dim: var(--accent-ink);
+  --blue: var(--info);
+  --radius: var(--radius-xl);
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border-subtle: var(--border-strong);
+    --ink-tertiary: var(--ink-secondary);
+    --card-border: var(--border-strong);
+  }
+}

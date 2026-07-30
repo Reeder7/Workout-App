@@ -82,7 +82,7 @@ export const useStore = create<State>()(
       plans: [],
       sessions: [],
       customExercises: [],
-      settings: { unit: 'lb' },
+      settings: { unit: 'lb', theme: 'light' },
       activeSession: null,
       exerciseNotes: {},
 
@@ -386,7 +386,7 @@ export const useStore = create<State>()(
           plans: [],
           sessions: [],
           customExercises: [],
-          settings: { unit: 'lb' },
+          settings: { unit: 'lb', theme: 'light' },
           activeSession: null,
           exerciseNotes: {},
         }),
