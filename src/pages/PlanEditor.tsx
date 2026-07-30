@@ -6,6 +6,7 @@ import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
 import { ExercisePicker } from '../components/ExercisePicker'
 import { SwapSheet } from '../components/SwapSheet'
+import { SharePlanButton } from '../components/SharePlanButton'
 import { LANDMARKS, volumeZone, ZONE_LABEL, ZONE_COLOR, DEFAULTS } from '../data/landmarks'
 import type { MuscleGroup, Plan, PlanDay, PlanExercise, PrescribedSet } from '../types'
 
@@ -461,6 +462,9 @@ export function PlanEditor() {
         <button className="btn btn-primary btn-block" onClick={() => setEditMeta(false)}>
           Done
         </button>
+        <div style={{ marginTop: 10 }}>
+          <SharePlanButton plan={plan} />
+        </div>
         <button
           className="btn btn-ghost btn-block"
           style={{ marginTop: 10 }}

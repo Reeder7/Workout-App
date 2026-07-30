@@ -8,6 +8,7 @@ import { Progress } from './pages/Progress'
 import { ExerciseDetail } from './pages/ExerciseDetail'
 import { Library } from './pages/Library'
 import { Settings } from './pages/Settings'
+import { ImportPlan } from './pages/ImportPlan'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/progress/:exerciseId" element={<ExerciseDetail />} />
         <Route path="/library" element={<Library />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/import" element={<ImportPlan />} />
       </Routes>
       <TabBar />
     </>

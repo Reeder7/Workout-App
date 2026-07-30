@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore'
 import { TEMPLATES } from '../data/templates'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
+import { SharePlanButton } from '../components/SharePlanButton'
 
 export function Plans() {
   const nav = useNavigate()
@@ -101,6 +102,9 @@ export function Plans() {
                 {p.description}
               </p>
             )}
+            <div style={{ marginTop: 10 }}>
+              <SharePlanButton plan={p} className="btn btn-ghost btn-sm btn-block" label="Share with a friend" />
+            </div>
           </div>
         ))
       )}
