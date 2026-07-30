@@ -11,7 +11,9 @@ export function NotFound() {
   const { pathname } = useLocation()
   // A leftover auth fragment is the one unmatched path worth naming, since it is
   // the only one a user reaches by following a link they were sent.
-  const looksLikeAuth = /access_token|refresh_token|error_code|(^\/code=)/.test(pathname)
+  const looksLikeAuth = /access_token|refresh_token|error_code|error=|token_hash|(^\/code=)/.test(
+    pathname,
+  )
 
   return (
     <div className="app">

@@ -105,7 +105,7 @@ export function Settings() {
           <div className="grow">
             <div style={{ fontWeight: 600 }}>Sign in / your details</div>
             <div className="faint" style={{ fontSize: 12 }}>
-              Email link, then an admin approves you. Training data stays on this device.
+              A code by email, then an admin approves you. Training data stays on this device.
             </div>
           </div>
           <Icon name="chevron" size={18} className="faint" />

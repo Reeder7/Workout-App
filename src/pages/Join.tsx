@@ -6,6 +6,7 @@ import { PageHeader } from '../components/PageHeader'
 import { EmptyState } from '../components/EmptyState'
 import { isConfigured } from '../lib/supabase'
 import {
+  clearAuthError,
   refreshProfile,
   saveMyProfile,
   signInWithEmail,
@@ -14,7 +15,7 @@ import {
   verifyEmailCode,
 } from '../lib/auth'
 import { toast } from '../lib/toast'
-import { cooldownRemaining } from '../lib/authErrors'
+import { cooldownRemaining, fmtWait } from '../lib/authErrors'
 
 /** Imperial entry converted to the canonical cm/kg the database stores. */
 const toCm = (ft: string, inch: string) => {
@@ -35,7 +36,7 @@ const num = (s: string) => {
 export function Join() {
   const nav = useNavigate()
   const unit = useStore((s) => s.settings.unit)
-  const { loading, userId, email, profile, error } = useAuth()
+  const { loading, userId, email, profile, error, linkError } = useAuth()
   const imperial = unit === 'lb'
 
   const [addr, setAddr] = useState('')
@@ -43,6 +44,7 @@ export function Join() {
   const [busy, setBusy] = useState(false)
   const [otp, setOtp] = useState('')
   const [codeError, setCodeError] = useState<string | null>(null)
+  const [sendError, setSendError] = useState<string | null>(null)
   const [cooldown, setCooldown] = useState(() => cooldownRemaining())
 
   // Ticks the cooldown down. Only runs while there is one, so no idle timer.
@@ -89,16 +91,22 @@ export function Join() {
       toast('That does not look like an email address', 'danger')
       return
     }
+    // The complaint about the last link is spent once you act on it; leaving it up
+    // made a successful resend look like it had failed too.
+    clearAuthError()
     setBusy(true)
+    setSendError(null)
     setCodeError(null)
     try {
       await signInWithEmail(addr)
       setSent(true)
     } catch (e) {
-      // Held on screen rather than toasted: the rate-limit explanation is three
-      // lines long and a toast would take it away before it could be read.
-      setCodeError(e instanceof Error ? e.message : 'Could not send a code')
-      setSent(true)
+      /*
+       * Stays on the email form. Advancing to the code step on a failure showed
+       * "Enter the code from your email" next to "wait an hour", and pushed the
+       * user to type a code that was never sent.
+       */
+      setSendError(e instanceof Error ? e.message : 'Could not send a code')
     } finally {
       setCooldown(cooldownRemaining())
       setBusy(false)
@@ -162,11 +170,17 @@ export function Join() {
           sub="A one-time code by email. No password to remember or lose."
           onBack={() => nav('/settings')}
         />
-        {error && (
-          <div className="card" style={{ marginBottom: 'var(--space-3)', boxShadow: 'var(--card-shadow), inset 3px 0 0 var(--danger)' }}>
+        {linkError && (
+          <div
+            className="card"
+            style={{
+              marginBottom: 'var(--space-3)',
+              boxShadow: 'var(--card-shadow), inset 3px 0 0 var(--danger)',
+            }}
+          >
             <div style={{ fontWeight: 640, fontSize: 15 }}>That link didn't work</div>
             <p className="hint" style={{ marginBottom: 0, marginTop: 4 }}>
-              {error}
+              {linkError}
             </p>
           </div>
         )}
@@ -218,7 +232,7 @@ export function Join() {
                 disabled={busy || cooldown > 0}
                 onClick={send}
               >
-                {cooldown > 0 ? `New code in ${cooldown}s` : 'Send a new code'}
+                {cooldown > 0 ? `New code in ${fmtWait(cooldown)}` : 'Send a new code'}
               </button>
               <button
                 className="btn btn-ghost btn-sm grow"
@@ -246,13 +260,18 @@ export function Join() {
               value={addr}
               onChange={(e) => setAddr(e.target.value)}
             />
+            {sendError && (
+              <p className="hint" style={{ color: 'var(--danger)', marginTop: 'var(--space-2)' }}>
+                {sendError}
+              </p>
+            )}
             <button
               className="btn btn-primary btn-block"
               style={{ marginTop: 'var(--space-3)' }}
               disabled={busy || cooldown > 0}
               onClick={send}
             >
-              {busy ? 'Sending…' : cooldown > 0 ? `Wait ${cooldown}s` : 'Email me a code'}
+              {busy ? 'Sending…' : cooldown > 0 ? `Wait ${fmtWait(cooldown)}` : 'Email me a code'}
             </button>
             <p className="hint" style={{ marginBottom: 0, marginTop: 'var(--space-3)' }}>
               Your training data stays on this device either way. Signing in is only for the
@@ -307,6 +326,7 @@ export function Join() {
           {error}
         </p>
       )}
+
 
       <div className="card">
         <label className="field-label" htmlFor="name">
