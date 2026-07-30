@@ -49,6 +49,26 @@ export function Settings() {
       <p className="page-sub">Everything is stored privately on this device.</p>
 
       <div className="section-head">
+        <h2>Appearance</h2>
+      </div>
+      <div className="card">
+        <div className="row" style={{ gap: 8 }}>
+          {(['system', 'light', 'dark'] as const).map((t) => (
+            <button
+              key={t}
+              className={`btn btn-sm grow${(settings.theme ?? 'system') === t ? ' btn-primary' : ''}`}
+              onClick={() => setSettings({ theme: t })}
+            >
+              {t === 'system' ? 'Auto' : t === 'light' ? 'Light' : 'Dark'}
+            </button>
+          ))}
+        </div>
+        <p className="hint" style={{ marginBottom: 0, marginTop: 10 }}>
+          Auto follows your phone's light/dark setting.
+        </p>
+      </div>
+
+      <div className="section-head">
         <h2>Units</h2>
       </div>
       <div className="card">

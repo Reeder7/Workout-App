@@ -154,7 +154,11 @@ export interface Session {
 
 export type Unit = 'lb' | 'kg'
 
+export type ThemePref = 'system' | 'light' | 'dark'
+
 export interface Settings {
   unit: Unit
   name?: string
+  /** Colour theme preference; 'system' follows the device setting. */
+  theme?: ThemePref
 }
