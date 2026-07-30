@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { authRedirectUrl, getSupabase, isConfigured } from './supabase'
 import { withTimeout } from './members'
 import { takeStashedAuthError } from './authCallback'
+import { explainAuthError, markSent } from './authErrors'
 import type { AuthCallback } from './authCallback'
 import type { MemberProfile, MemberStatus } from '../types'
 
@@ -97,16 +98,12 @@ export async function initAuth(callback?: AuthCallback) {
           refresh_token: callback.refreshToken,
         }),
       )
-      if (error) set({ error: `Sign-in failed: ${error.message}` })
+      if (error) set({ error: explainAuthError(error.message) })
     } else if (callback?.kind === 'pkce' && callback.code) {
       const { error } = await withTimeout(sb.auth.exchangeCodeForSession(callback.code))
-      if (error) {
-        // The usual cause is opening the link in a different browser from the one
-        // that requested it, which is where the PKCE verifier lives.
-        set({
-          error: `Sign-in failed: ${error.message}. Open the link in the same browser you requested it from.`,
-        })
-      }
+      // Almost always the verifier missing because the link opened in a different
+      // browser. explainAuthError turns that into the advice to use the code.
+      if (error) set({ error: explainAuthError(error.message) })
     }
 
     const { data } = await sb.auth.getSession()
@@ -149,7 +146,10 @@ export async function signInWithEmail(email: string) {
       options: { emailRedirectTo: authRedirectUrl() },
     }),
   )
-  if (error) throw new Error(error.message)
+  // Stamped even on failure: a rejected request still counted against the quota
+  // in every case worth protecting against, notably the rate limit itself.
+  markSent()
+  if (error) throw new Error(explainAuthError(error.message))
 }
 
 /**
@@ -166,7 +166,7 @@ export async function verifyEmailCode(email: string, token: string) {
   const { error } = await withTimeout(
     sb.auth.verifyOtp({ email: email.trim(), token: token.trim(), type: 'email' }),
   )
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(explainAuthError(error.message))
   set({ error: null })
   await refreshProfile()
 }
