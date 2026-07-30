@@ -15,6 +15,7 @@ import { Sheet } from '../components/Sheet'
 import { VolumeBar } from '../components/VolumeBar'
 import { EmptyState } from '../components/EmptyState'
 import { PageHeader } from '../components/PageHeader'
+import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
 import type { MuscleGroup } from '../types'
 
 export function Progress() {
@@ -219,9 +220,10 @@ export function Progress() {
                 ))}
               </div>
             ))}
+            <ShareWorkoutButton session={detail} className="btn btn-primary btn-block" />
             <button
               className="btn btn-danger btn-block"
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 10 }}
               onClick={() => {
                 deleteSession(detail.id)
                 setOpenSession(null)

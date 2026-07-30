@@ -811,13 +811,19 @@ button.lrow:active {
   -webkit-transform: translateZ(0) translateY(-100%);
   transition:
     opacity var(--dur-base) var(--ease-standard),
-    transform var(--dur-base) var(--ease-standard);
+    transform var(--dur-base) var(--ease-standard),
+    visibility var(--dur-base);
+  /* pointer-events alone still leaves the bar's buttons in the tab order, so a
+     keyboard user could focus a duplicate Finish they cannot see. visibility
+     takes them out of the focus order too. */
+  visibility: hidden;
   pointer-events: none;
 }
 .compact-bar.show {
   opacity: 1;
   transform: translateZ(0) translateY(0);
   -webkit-transform: translateZ(0) translateY(0);
+  visibility: visible;
   pointer-events: auto;
 }
 .compact-inner {
@@ -1017,6 +1023,39 @@ button.lrow:active {
   line-height: 17px;
   font-weight: 600;
   letter-spacing: -0.003em;
+}
+
+/* ============================================================================
+   Shareable summary card preview
+   ========================================================================= */
+.card-preview {
+  display: block;
+  width: 100%;
+  /* Matches the 4:5 render, so the box doesn't resize when the image lands. */
+  aspect-ratio: 1080 / 1350;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  box-shadow: var(--elev-2);
+}
+.card-preview.is-loading {
+  position: relative;
+  overflow: hidden;
+}
+.card-preview.is-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--skeleton-sheen), transparent);
+  animation: sheen 1.4s var(--ease-standard) infinite;
+}
+@keyframes sheen {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 /* ============================================================================
