@@ -152,6 +152,25 @@ export async function signInWithEmail(email: string) {
   if (error) throw new Error(error.message)
 }
 
+/**
+ * Verifies a 6-digit code from the email.
+ *
+ * This is the path that actually works from a phone. A magic link is opened by
+ * whichever browser the mail app hands it to — Outlook opens Safari, and an
+ * installed PWA has its own storage — so the PKCE verifier stored by the browser
+ * that *requested* the link is usually not there when it is *opened*. A code has
+ * no verifier and no redirect, so it works from anywhere.
+ */
+export async function verifyEmailCode(email: string, token: string) {
+  const sb = await getSupabase()
+  const { error } = await withTimeout(
+    sb.auth.verifyOtp({ email: email.trim(), token: token.trim(), type: 'email' }),
+  )
+  if (error) throw new Error(error.message)
+  set({ error: null })
+  await refreshProfile()
+}
+
 export async function signOut() {
   const sb = await getSupabase()
   await sb.auth.signOut()

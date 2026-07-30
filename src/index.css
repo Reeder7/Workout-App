@@ -1035,6 +1035,21 @@ button.lrow:active {
   margin-bottom: 6px;
 }
 
+/* One-time code: wide tracking so six digits are scannable at a glance */
+.otp-input {
+  font-size: 28px;
+  font-weight: 640;
+  letter-spacing: 0.28em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  min-height: 60px;
+  padding: 12px;
+}
+.otp-input::placeholder {
+  letter-spacing: 0.28em;
+  font-weight: 500;
+}
+
 /* ============================================================================
    Photo capture
    ========================================================================= */
