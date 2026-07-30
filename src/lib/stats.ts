@@ -86,6 +86,21 @@ function exerciseOf(id: string, custom: Exercise[]): Exercise | undefined {
   return EXERCISE_BY_ID[id] ?? custom.find((e) => e.id === id)
 }
 
+/**
+ * How much a logged set counts toward volume, based on how close to failure it
+ * was taken. The MEV/MAV/MRV landmarks are defined in *hard* sets, so a set
+ * left 5 reps shy of failure shouldn't count the same as one taken to 1 RIR.
+ *
+ * A set with no recorded RIR counts in full: absence of data is not evidence
+ * the set was easy, and most sets logged without RIR are ordinary working sets.
+ */
+export function setCredit(rir?: number): number {
+  if (rir == null) return 1
+  if (rir <= 3) return 1
+  if (rir <= 4) return 0.5
+  return 0
+}
+
 /** Hard sets per muscle group over the last `days` days (primary = 1, secondary = 0.5). */
 export function weeklySetsByMuscle(
   sessions: Session[],
@@ -100,7 +115,9 @@ export function weeklySetsByMuscle(
     for (const ex of s.exercises) {
       const meta = exerciseOf(ex.exerciseId, custom)
       if (!meta || meta.excludeFromVolume) continue
-      const n = ex.sets.length
+      // Credit each set by proximity to failure rather than counting bodies.
+      const n = ex.sets.reduce((t, st) => t + setCredit(st.rir), 0)
+      if (n === 0) continue
       counts[meta.primary] = (counts[meta.primary] ?? 0) + n
       for (const sec of meta.secondary) {
         counts[sec] = (counts[sec] ?? 0) + n * 0.5

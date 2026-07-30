@@ -97,6 +97,10 @@ export const DEFAULTS = {
   eccentricTempoSec: [2, 3] as [number, number],
   mesocycleWeeks: 5, // 4 loading + 1 deload
   weeklySetRamp: 1,
+  // Deload: cut volume hard, load lightly, and stay well clear of failure.
+  deloadVolumeFactor: 0.5,
+  deloadLoadFactor: 0.9,
+  deloadRirFloor: 4,
   setsPerMuscleSessionCap: 10,
   proteinGPerKg: 1.6,
   proteinGPerKgDeficit: 2.2,

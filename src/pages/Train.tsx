@@ -9,6 +9,8 @@ import { Sheet } from '../components/Sheet'
 import { ProgressRing } from '../components/ProgressRing'
 import { EmptyState } from '../components/EmptyState'
 import { toast } from '../lib/toast'
+import { blockState, DELOAD } from '../lib/mesocycle'
+import { DEFAULTS } from '../data/landmarks'
 import type { Plan } from '../types'
 
 export function Train() {
@@ -20,6 +22,7 @@ export function Train() {
   const startSession = useStore((s) => s.startSession)
   const startEmpty = useStore((s) => s.startEmptySession)
   const deletePlan = useStore((s) => s.deletePlan)
+  const startBlock = useStore((s) => s.startBlock)
 
   const [pickDayFor, setPickDayFor] = useState<Plan | null>(null)
   const [pendingStart, setPendingStart] = useState<
@@ -60,6 +63,11 @@ export function Train() {
 
   // Weekly target comes from the plan itself rather than a hardcoded number.
   const weekTarget = plans.length ? Math.max(...plans.map((p) => p.daysPerWeek)) : 4
+
+  // Block status follows the plan you're actually running: the one with a live
+  // block, else the only plan you have.
+  const activePlan = plans.find((p) => p.blockStartedAt) ?? (plans.length === 1 ? plans[0] : undefined)
+  const block = activePlan ? blockState(activePlan) : null
 
   return (
     <div className="app">
@@ -128,6 +136,50 @@ export function Train() {
           </div>
         )}
       </div>
+
+      {block && activePlan && (
+        <div className={`block-strip${block.isDeload ? ' is-deload' : ''}`}>
+          <div className="row-between" style={{ gap: 'var(--space-3)' }}>
+            <div className="grow">
+              <div className="block-week">
+                {block.isDeload ? 'Deload week' : `Block week ${block.week} of ${block.totalWeeks}`}
+              </div>
+              <div className="block-sub">
+                {block.isOverdue
+                  ? 'This block has run past its deload — start a new one.'
+                  : block.isDeload
+                    ? DELOAD.summary
+                    : block.weeksToDeload === 0
+                      ? 'Deload next week. Push this one.'
+                      : `Deload in ${block.weeksToDeload} week${
+                          block.weeksToDeload === 1 ? '' : 's'
+                        }. Add about ${DEFAULTS.weeklySetRamp} set per muscle from last week.`}
+              </div>
+            </div>
+            {(block.isDeload || block.isOverdue) && (
+              <button
+                className="btn btn-sm"
+                onClick={() => {
+                  startBlock(activePlan.id)
+                  toast('New block started', 'success')
+                }}
+              >
+                New block
+              </button>
+            )}
+          </div>
+          <div className="block-pips" aria-hidden="true">
+            {Array.from({ length: block.totalWeeks }, (_, i) => (
+              <span
+                key={i}
+                className={`block-pip${i + 1 < block.week ? ' done' : ''}${
+                  i + 1 === block.week ? ' now' : ''
+                }${i + 1 === block.totalWeeks ? ' deload' : ''}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="section-head" id="plan-list">
         <h2>Your plans</h2>

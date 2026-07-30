@@ -11,6 +11,7 @@ import type {
 } from '../types'
 import { EXERCISES } from '../data/exercises'
 import { TEMPLATES } from '../data/templates'
+import { blockState, deloadScheme } from '../lib/mesocycle'
 
 export function uid(prefix = 'id'): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -54,6 +55,8 @@ interface State {
   /** Re-copy a plan's days from its source template, keeping the plan's id. */
   refreshPlanFromTemplate: (planId: string) => boolean
   createEmptyPlan: () => Plan
+  /** Begin (or restart) a plan's training block from today. */
+  startBlock: (planId: string, weeks?: number) => void
 
   // active workout
   startSession: (plan?: Plan, day?: PlanDay) => void
@@ -155,17 +158,37 @@ export const useStore = create<State>()(
         return plan
       },
 
+      startBlock: (planId, weeks) =>
+        set((s) => ({
+          plans: s.plans.map((p) =>
+            p.id === planId
+              ? { ...p, blockStartedAt: Date.now(), blockWeeks: weeks ?? p.blockWeeks }
+              : p,
+          ),
+        })),
+
       startSession: (plan, day) => {
+        // First session from a plan starts its block, so week tracking needs no
+        // separate setup step.
+        if (plan && !plan.blockStartedAt) {
+          set((s) => ({
+            plans: s.plans.map((p) =>
+              p.id === plan.id && !p.blockStartedAt ? { ...p, blockStartedAt: Date.now() } : p,
+            ),
+          }))
+        }
+        const deloading = !!plan && blockState(plan)?.isDeload === true
         const session: Session = {
           id: uid('sess'),
           date: Date.now(),
+          deload: deloading || undefined,
           planId: plan?.id,
           dayId: day?.id,
           name: day ? `${plan?.name ?? ''} · ${day.name}`.trim() : 'Workout',
           exercises: (day?.exercises ?? []).map((pe) => {
             // A per-set scheme is authoritative; otherwise fall back to the
             // flat sets/reps/rir prescription repeated for each set.
-            const scheme: PrescribedSet[] =
+            const prescribed: PrescribedSet[] =
               pe.scheme && pe.scheme.length > 0
                 ? pe.scheme
                 : Array.from({ length: Math.max(1, pe.sets) }, () => ({
@@ -174,6 +197,9 @@ export const useStore = create<State>()(
                     rir: pe.rir,
                     restSec: pe.restSec,
                   }))
+            // In the deload week the session is generated lighter rather than
+            // relying on the lifter to remember to hold back.
+            const scheme = deloading ? deloadScheme(prescribed) : prescribed
             return {
               exerciseId: pe.exerciseId,
               note: pe.note,

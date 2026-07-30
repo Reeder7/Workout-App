@@ -12,6 +12,7 @@ import { ExerciseGuide } from '../components/ExerciseGuide'
 import { SessionExercise } from '../components/SessionExercise'
 import { SwapSheet } from '../components/SwapSheet'
 import { toast } from '../lib/toast'
+import { DELOAD } from '../lib/mesocycle'
 
 function useElapsed(startedAt?: number) {
   const [now, setNow] = useState(() => Date.now())
@@ -104,6 +105,15 @@ export function Session() {
         }
       />
 
+      {active.deload && (
+        <div className="block-strip is-deload" style={{ marginTop: 0 }}>
+          <div className="block-week">Deload session</div>
+          <div className="block-sub">
+            Sets are already cut and RIR raised. {DELOAD.summary}
+          </div>
+        </div>
+      )}
+
       {active.exercises.map((ex, ei) => (
         <SessionExercise
           key={`${ex.exerciseId}-${ei}`}
@@ -113,6 +123,7 @@ export function Session() {
           sessions={sessions}
           note={exerciseNotes[ex.exerciseId]}
           notesOpen={!!notesOpen[ei]}
+          deload={active.deload}
           onToggleNotes={() => setNotesOpen((o) => ({ ...o, [ei]: !o[ei] }))}
           onUpdateSet={(si, patch) => updateSet(ei, si, patch)}
           onAddSet={() => addSet(ei)}
