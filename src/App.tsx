@@ -11,6 +11,7 @@ import { ExerciseDetail } from './pages/ExerciseDetail'
 import { Library } from './pages/Library'
 import { Settings } from './pages/Settings'
 import { ImportPlan } from './pages/ImportPlan'
+import { Members } from './pages/Members'
 import { useStore } from './store/useStore'
 import { applyTheme, watchSystemTheme } from './lib/theme'
 
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/library" element={<Library />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/import" element={<ImportPlan />} />
+        <Route path="/members" element={<Members />} />
       </Routes>
       <TabBar />
       <ToastHost />

@@ -29,6 +29,8 @@ export type IconName =
   | 'swap'
   | 'share'
   | 'trend'
+  | 'camera'
+  | 'people'
 
 const paths: Record<IconName, JSX.Element> = {
   dumbbell: (
@@ -105,6 +107,19 @@ const paths: Record<IconName, JSX.Element> = {
   swap: (
     <>
       <path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M4 8.5h3l1.5-2.5h7L17 8.5h3v10H4z" />
+      <circle cx="12" cy="13" r="3.4" />
+    </>
+  ),
+  people: (
+    <>
+      <circle cx="9" cy="8.5" r="3.2" />
+      <path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
+      <path d="M16 5.6a3.2 3.2 0 010 5.8M17.5 14.9c1.9.6 3 2.4 3 4.6" />
     </>
   ),
   trend: (
