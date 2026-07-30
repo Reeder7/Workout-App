@@ -7,6 +7,7 @@ import { EmptyState } from '../components/EmptyState'
 import { isConfigured } from '../lib/supabase'
 import {
   clearAuthError,
+  joinWithCode,
   refreshProfile,
   saveMyProfile,
   signInWithEmail,
@@ -45,6 +46,10 @@ export function Join() {
   const [otp, setOtp] = useState('')
   const [codeError, setCodeError] = useState<string | null>(null)
   const [sendError, setSendError] = useState<string | null>(null)
+  const [code, setCode] = useState('')
+  // Email is the fallback now: it needs custom SMTP before it reaches anyone but
+  // the project's own team members.
+  const [useEmail, setUseEmail] = useState(false)
   const [cooldown, setCooldown] = useState(() => cooldownRemaining())
 
   // Ticks the cooldown down. Only runs while there is one, so no idle timer.
@@ -113,6 +118,37 @@ export function Join() {
     }
   }
 
+  async function join() {
+    if (!code.trim()) {
+      setSendError('Enter the access code you were given')
+      return
+    }
+    if (!name.trim()) {
+      setSendError('Enter the name your friends will see')
+      return
+    }
+    setBusy(true)
+    setSendError(null)
+    try {
+      await joinWithCode({
+        code,
+        displayName: name,
+        age: num(age),
+        heightCm: imperial ? toCm(ft, inch) : num(cm),
+        weightKg: num(wt)
+          ? imperial
+            ? Math.round((num(wt)! / 2.2046) * 10) / 10
+            : num(wt)
+          : undefined,
+      })
+      toast('Sent for approval', 'success')
+    } catch (e) {
+      setSendError(e instanceof Error ? e.message : 'Could not join')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function confirmCode() {
     setBusy(true)
     setCodeError(null)
@@ -166,8 +202,12 @@ export function Join() {
       <div className="app">
         <PageHeader
           eyebrow="Spotter social"
-          title="Sign in"
-          sub="A one-time code by email. No password to remember or lose."
+          title="Join"
+          sub={
+            useEmail
+              ? 'A one-time code by email. Only works for the project owner until custom SMTP is set up.'
+              : 'Enter the access code you were given, pick a name, and the admin approves you.'
+          }
           onBack={() => nav('/settings')}
         />
         {linkError && (
@@ -184,7 +224,82 @@ export function Join() {
             </p>
           </div>
         )}
-        {sent ? (
+        {!useEmail ? (
+          <>
+            <div className="card">
+              <label className="field-label" htmlFor="acode">
+                Access code
+              </label>
+              <input
+                id="acode"
+                className="otp-input"
+                type="text"
+                autoCapitalize="characters"
+                autoComplete="off"
+                spellCheck={false}
+                placeholder="••••••"
+                value={code}
+                onChange={(e) => {
+                  setCode(e.target.value)
+                  setSendError(null)
+                }}
+              />
+
+              <label className="field-label" htmlFor="jname" style={{ marginTop: 'var(--space-4)' }}>
+                Your name
+              </label>
+              <input
+                id="jname"
+                placeholder="What your friends call you"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  setSendError(null)
+                }}
+              />
+
+              <label className="field-label" htmlFor="jage" style={{ marginTop: 'var(--space-4)' }}>
+                Age <span className="faint">— optional</span>
+              </label>
+              <input
+                id="jage"
+                type="number"
+                inputMode="numeric"
+                placeholder="—"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+              />
+
+              {sendError && (
+                <p className="hint" style={{ color: 'var(--danger)', marginTop: 'var(--space-3)' }}>
+                  {sendError}
+                </p>
+              )}
+              <button
+                className="btn btn-primary btn-block"
+                style={{ marginTop: 'var(--space-4)' }}
+                disabled={busy}
+                onClick={join}
+              >
+                <Icon name="check" size={18} /> {busy ? 'Joining…' : 'Join'}
+              </button>
+              <p className="hint" style={{ marginBottom: 0, marginTop: 'var(--space-3)' }}>
+                No email needed. Your training data stays on this device either way —
+                signing in is only for the shared feed.
+              </p>
+            </div>
+            <button
+              className="btn btn-ghost btn-block btn-sm"
+              style={{ marginTop: 'var(--space-2)' }}
+              onClick={() => {
+                setUseEmail(true)
+                setSendError(null)
+              }}
+            >
+              Use an email code instead
+            </button>
+          </>
+        ) : sent ? (
           <div className="card">
             <div style={{ fontWeight: 640, fontSize: 17, letterSpacing: '-0.014em' }}>
               Enter the code from your email
@@ -274,9 +389,19 @@ export function Join() {
               {busy ? 'Sending…' : cooldown > 0 ? `Wait ${fmtWait(cooldown)}` : 'Email me a code'}
             </button>
             <p className="hint" style={{ marginBottom: 0, marginTop: 'var(--space-3)' }}>
-              Your training data stays on this device either way. Signing in is only for the
-              shared feed.
+              Recoverable if you lose this phone, unlike an access code — but it needs custom
+              SMTP before it reaches anyone but the project owner.
             </p>
+            <button
+              className="btn btn-ghost btn-block btn-sm"
+              style={{ marginTop: 'var(--space-2)' }}
+              onClick={() => {
+                setUseEmail(false)
+                setSendError(null)
+              }}
+            >
+              Use an access code instead
+            </button>
           </div>
         )}
       </div>

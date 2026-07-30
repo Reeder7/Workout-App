@@ -177,7 +177,8 @@ export type MemberStatus = 'pending' | 'approved' | 'rejected'
 
 export interface MemberProfile {
   id: string
-  email: string
+  /** Absent for members who joined with an access code rather than an email. */
+  email?: string
   displayName: string
   /** Optional: collected only because relative-strength comparisons want them. */
   age?: number

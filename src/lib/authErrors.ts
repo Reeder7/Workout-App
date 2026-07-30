@@ -78,6 +78,18 @@ export function explainAuthError(raw: string): string {
   if (m.includes('you can only request this after') || m.includes('security purposes')) {
     return 'A code was just sent. Wait a moment before asking for another.'
   }
+  if (m.includes('access code is not right')) {
+    return "That access code isn't right. Check it with whoever invited you."
+  }
+  if (m.includes('no access code has been set')) {
+    return 'No access code has been set up yet. Ask the admin to set one.'
+  }
+  if (m.includes('anonymous sign-ins are disabled') || m.includes('anonymous_provider_disabled')) {
+    return 'Joining by code is turned off for this project. Enable anonymous sign-ins in the Supabase dashboard.'
+  }
+  if (m.includes('a name is required')) {
+    return 'Enter the name your friends will see.'
+  }
   if (m.includes('not authorized')) {
     return "Supabase's built-in email sender only delivers to the project's own team members. Set up custom SMTP before inviting anyone else."
   }

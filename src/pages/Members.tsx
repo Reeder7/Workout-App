@@ -119,7 +119,8 @@ export function Members() {
                       <div className="grow">
                         <div style={{ fontWeight: 640, fontSize: 16 }}>{m.displayName}</div>
                         <div className="faint" style={{ fontSize: 12 }}>
-                          {m.email}
+                          {/* Members who joined with an access code have no email. */}
+                          {m.email ?? 'Joined with an access code'}
                         </div>
                         {summary && (
                           <div className="faint" style={{ fontSize: 12, marginTop: 2 }}>

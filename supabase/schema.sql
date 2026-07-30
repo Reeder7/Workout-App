@@ -238,7 +238,10 @@ grant execute on function public.set_member_status(uuid, text) to authenticated;
 --
 --   update public.profiles
 --   set status = 'approved', is_admin = true, reviewed_at = now()
---   where email = 'your@email.com';
+--   where display_name = 'Your Name';
+--
+-- Match on display_name, not email: a member who joined with an access code has
+-- no email address, so an email match would find nothing.
 --
 -- Until you do this, nothing is approved and the feed is empty for everyone,
 -- including you. That is the intended fail-closed state.
