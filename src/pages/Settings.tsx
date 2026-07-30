@@ -98,6 +98,21 @@ export function Settings() {
       </div>
 
       <div className="section-head">
+        <h2>Spotter social</h2>
+      </div>
+      <button className="card card-tap" style={{ width: '100%', textAlign: 'left' }} onClick={() => nav('/join')}>
+        <div className="row-between">
+          <div className="grow">
+            <div style={{ fontWeight: 600 }}>Sign in / your details</div>
+            <div className="faint" style={{ fontSize: 12 }}>
+              Email link, then an admin approves you. Training data stays on this device.
+            </div>
+          </div>
+          <Icon name="chevron" size={18} className="faint" />
+        </div>
+      </button>
+
+      <div className="section-head">
         <h2>Members</h2>
       </div>
       <button className="card card-tap" style={{ width: '100%', textAlign: 'left' }} onClick={() => nav('/members')}>

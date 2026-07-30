@@ -1025,6 +1025,16 @@ button.lrow:active {
   letter-spacing: -0.003em;
 }
 
+/* Form field label — inputs are borderless, so the label carries the structure */
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-secondary);
+  margin-bottom: 6px;
+}
+
 /* ============================================================================
    Photo capture
    ========================================================================= */
