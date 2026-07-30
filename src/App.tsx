@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { TabBar } from './components/TabBar'
 import { Train } from './pages/Train'
@@ -9,8 +10,17 @@ import { ExerciseDetail } from './pages/ExerciseDetail'
 import { Library } from './pages/Library'
 import { Settings } from './pages/Settings'
 import { ImportPlan } from './pages/ImportPlan'
+import { useStore } from './store/useStore'
+import { applyTheme, watchSystemTheme } from './lib/theme'
 
 export default function App() {
+  const theme = useStore((s) => s.settings.theme ?? 'system')
+
+  useEffect(() => {
+    applyTheme(theme)
+    return watchSystemTheme(() => theme)
+  }, [theme])
+
   return (
     <>
       <Routes>
