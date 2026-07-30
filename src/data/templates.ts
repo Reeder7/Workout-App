@@ -399,7 +399,7 @@ export const TEMPLATES: Plan[] = [
         comp('machine-chest-press', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Mid chest' }),
         iso('high-low-cable-fly', 3, [12, 15], { tempo: STRETCH_TEMPO, role: 'Chest (stretch)' }),
         iso('lateral-raise', 4, [12, 20], { role: 'Side delts' }),
-        comp('close-grip-bench', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Triceps compound' }),
+        comp('jm-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Triceps compound' }),
         iso('katana-extension', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
       ]),
       day('Pull B', [

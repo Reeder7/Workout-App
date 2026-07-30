@@ -1354,6 +1354,36 @@ export const EXERCISES: Exercise[] = [
     science: 'Constant tension with an end-range contraction of the lateral/medial heads.',
   },
   {
+    id: 'jm-press',
+    name: 'JM Press',
+    primary: 'Triceps',
+    secondary: ['Chest', 'Shoulders'],
+    equipment: 'Barbell',
+    category: 'Compound',
+    repRange: [8, 12],
+    notes: 'A hybrid of the close-grip bench and the skullcrusher: the elbows travel forward as you lower, so the triceps take far more of the load than in a close-grip bench while it still presses like a compound. Worth knowing that Nippard rates this B tier and calls it "a bit overrated" — he prefers the close-grip bench (A tier) for raw overload. It earns its place when you want a genuinely triceps-dominant press rather than another chest press.',
+    howTo: [
+      'Lie on a bench with a pronated grip just inside shoulder-width, bar over the upper chest.',
+      'Lower by letting the elbows travel forward and down — a blend of a bench press and a skullcrusher path.',
+      'Keep the elbows tucked; the bar finishes just above the upper chest / base of the throat.',
+      'Press back up along the same arc by extending the elbows to lockout.',
+    ],
+    cues: [
+      'Elbows travel forward and down, staying tucked',
+      'Bar tracks to the upper chest, not the sternum',
+      'Start light — the groove takes practice',
+    ],
+    mistakes: [
+      'Loading it like a normal bench before learning the path',
+      'Flaring the elbows out to the sides',
+      'Lowering to the sternum, which turns it back into a close-grip bench',
+    ],
+    science:
+      'The forward elbow path increases the elbow-extension demand and reduces the chest contribution relative to a close-grip bench, while keeping the overload capacity of a pressing movement.',
+    caution:
+      'The bar travels over the throat, and the groove is unfamiliar at first. Learn it with an empty or very light bar, use a rack with safeties (or a spotter), and add load slowly. If it feels awkward on your elbows, a skullcrusher or overhead extension gets the same job done.',
+  },
+  {
     id: 'close-grip-bench',
     name: 'Close-Grip Bench Press',
     primary: 'Triceps',
