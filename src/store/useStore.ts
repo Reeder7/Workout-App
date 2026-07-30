@@ -441,6 +441,8 @@ export const useStore = create<State>()(
           exerciseNotes: {},
         }),
     }),
+    // Do not rename this key. It is where every plan, workout and note lives;
+    // changing it makes existing installs look like a fresh, empty app.
     { name: 'iron-log-v1' },
   ),
 )

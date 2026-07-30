@@ -26,7 +26,7 @@ export function Settings() {
     const a = document.createElement('a')
     const stamp = new Date().toISOString().slice(0, 10)
     a.href = url
-    a.download = `iron-log-backup-${stamp}.json`
+    a.download = `spotter-backup-${stamp}.json`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -139,7 +139,7 @@ export function Settings() {
       </button>
 
       <p className="faint center" style={{ fontSize: 11, marginTop: 20 }}>
-        Iron Log · your training, tracked. v0.1
+        Spotter · your training, tracked. v0.1
       </p>
 
       <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} title="Reset everything?">

@@ -1,8 +1,8 @@
-# Iron Log — Workout Tracker
+# Spotter — Workout Tracker
 
 A mobile-first workout app: **design plans, log lifts, and track your progress**.
-Dark, athletic UI inspired by the STNDRD layout, with training principles and
-exercise selection notes drawn from Jeff Nippard's evidence-based content.
+Light and dark themes, with training principles and exercise selection notes
+drawn from Jeff Nippard's evidence-based content.
 
 It's an installable **PWA** — open it in your phone's browser and "Add to Home
 Screen" for an app-like experience that works offline. All your data is stored
