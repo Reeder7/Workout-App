@@ -1,0 +1,86 @@
+<!--
+  Spotter — auth email body.
+
+  WHERE THIS GOES
+  Supabase dashboard → Authentication → Emails. Paste this into the message body
+  of BOTH of these templates:
+      1. "Magic link or OTP"   — used when the address already has an account
+      2. "Confirm sign up"     — used the first time an address is seen
+  The docs do not settle which one a brand-new address gets, and every friend you
+  invite is a brand-new address, so both need the code or their first email will
+  arrive without one.
+
+  Suggested subject for both: Your Spotter sign-in code
+
+  WHY THE CODE AND NOT JUST THE LINK
+  {{ .Token }}           the 6-digit code — works from any browser
+  {{ .ConfirmationURL }} the link — only works if it opens in the same browser
+                         that asked for it, which mail apps rarely do
+  The code is primary here for that reason; the link is kept as a fallback.
+
+  Table-based layout with inline styles on purpose: Outlook on Windows renders
+  with the Word engine, which ignores flexbox, grid and most stylesheet rules.
+
+  IMPORTANT — this template alone is not enough for anyone but you.
+  Supabase's built-in mailer "will only send messages to these addresses" meaning
+  project team members; "All other addresses will fail with the error message
+  Email address not authorized." (supabase.com/docs/guides/auth/auth-smtp)
+  So your friends receive nothing until custom SMTP is configured, no matter what
+  this template says. See the same doc page.
+-->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+       style="background:#f6f7f9;margin:0;padding:24px 0;">
+  <tr>
+    <td align="center" style="padding:0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="440"
+             style="width:440px;max-width:440px;background:#ffffff;border-radius:16px;">
+        <tr>
+          <td style="padding:32px 32px 8px 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+            <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:#0c625f;text-transform:uppercase;">
+              Spotter
+            </div>
+            <h1 style="margin:12px 0 0 0;font-size:24px;line-height:30px;font-weight:700;color:#0e1420;">
+              Your sign-in code
+            </h1>
+            <p style="margin:8px 0 0 0;font-size:15px;line-height:22px;color:#54606f;">
+              Enter this in the app. It expires shortly and can only be used once.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:24px 32px 8px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+                   style="background:#eef1f4;border-radius:12px;">
+              <tr>
+                <td align="center"
+                    style="padding:22px 12px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:34px;line-height:40px;font-weight:700;color:#0e1420;letter-spacing:8px;">
+                  {{ .Token }}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:16px 32px 0 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+            <p style="margin:0;font-size:13px;line-height:19px;color:#77828f;">
+              Or, if you are reading this in the same browser you requested it from,
+              <a href="{{ .ConfirmationURL }}" style="color:#0c625f;font-weight:600;">open this link</a>.
+              Tapping it from a mail app usually opens a different browser and will not work —
+              use the code above instead.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:24px 32px 32px 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+            <div style="border-top:1px solid #eceff3;padding-top:16px;font-size:12px;line-height:18px;color:#9aa4b0;">
+              If you didn't ask for this, you can ignore it — nobody can sign in without the code.
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
