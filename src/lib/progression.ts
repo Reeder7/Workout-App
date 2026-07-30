@@ -26,9 +26,12 @@ export interface Advice {
 }
 
 /**
- * Smallest sensible load jump for the equipment. Barbells move in plate pairs,
- * dumbbells and most selectorised machines in fixed increments, and cables in
- * whatever the stack allows — 5 lb is the safe common denominator.
+ * Smallest load jump the equipment actually allows.
+ *
+ * Barbells and Smith machines move in plate pairs, so the smallest jump is
+ * twice the smallest plate — a pair of 2.5s is 5 lb on the bar. Cable stacks and
+ * selectorised machines take a single 2.5 lb adder, so they move in half that.
+ * Dumbbells come in fixed pairs and usually step 5 lb.
  */
 export function loadStep(equipment: Equipment, unit: 'lb' | 'kg'): number {
   const lb = unit === 'lb'
@@ -40,7 +43,7 @@ export function loadStep(equipment: Equipment, unit: 'lb' | 'kg'): number {
       return lb ? 5 : 2
     case 'Machine':
     case 'Cable':
-      return lb ? 5 : 2.5
+      return lb ? 2.5 : 1.25
     default:
       // Bodyweight, band, sled: load isn't the lever, reps or time are.
       return 0
