@@ -64,6 +64,11 @@ interface State {
   swapExerciseInActive: (index: number, newExerciseId: string) => void
   addSet: (exerciseIndex: number) => void
   updateSet: (exerciseIndex: number, setIndex: number, patch: Partial<LoggedSet>) => void
+  /**
+   * Nudge a set's RIR, resolving the current value from live state so two fast
+   * taps can't both read the same stale prop and collapse into one step.
+   */
+  stepRir: (exerciseIndex: number, setIndex: number, delta: number) => void
   removeSet: (exerciseIndex: number, setIndex: number) => void
   finishSession: () => void
   discardActiveSession: () => void
@@ -173,10 +178,12 @@ export const useStore = create<State>()(
               exerciseId: pe.exerciseId,
               note: pe.note,
               restSec: pe.restSec,
+              // rir is deliberately left unset: it is an observation, not a
+              // prescription. The target below drives the ghost value, and
+              // completing a set commits it only if nothing was entered.
               sets: scheme.map((ps) => ({
                 reps: 0,
                 weight: 0,
-                rir: ps.rir,
                 done: false,
                 target: {
                   repMin: ps.repMin,
@@ -271,6 +278,23 @@ export const useStore = create<State>()(
             return {
               ...ex,
               sets: ex.sets.map((st, j) => (j === setIndex ? { ...st, ...patch } : st)),
+            }
+          })
+          return { activeSession: { ...s.activeSession, exercises } }
+        }),
+      stepRir: (exerciseIndex, setIndex, delta) =>
+        set((s) => {
+          if (!s.activeSession) return s
+          const exercises = s.activeSession.exercises.map((ex, i) => {
+            if (i !== exerciseIndex) return ex
+            return {
+              ...ex,
+              sets: ex.sets.map((st, j) => {
+                if (j !== setIndex) return st
+                // An unset RIR steps from the prescription, not from zero.
+                const from = st.rir ?? st.target?.rir ?? 2
+                return { ...st, rir: Math.min(6, Math.max(0, from + delta)) }
+              }),
             }
           })
           return { activeSession: { ...s.activeSession, exercises } }
