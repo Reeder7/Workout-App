@@ -67,7 +67,7 @@ export function SwapSheet({ exerciseId, onClose, onSwap, warning }: Props) {
                 {e.primary} · {e.equipment} · {e.category}
               </div>
             </div>
-            <span className="accent" style={{ fontSize: 13, fontWeight: 700 }}>
+            <span className="accent" style={{ fontSize: 13, fontWeight: 640 }}>
               Swap
             </span>
           </button>

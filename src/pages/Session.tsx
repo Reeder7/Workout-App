@@ -116,7 +116,7 @@ export function Session() {
           <div className="card" key={`${ex.exerciseId}-${ei}`}>
             <div className="row-between" style={{ marginBottom: 8 }}>
               <div className="grow">
-                <div style={{ fontWeight: 700, fontSize: 16 }}>
+                <div style={{ fontWeight: 640, fontSize: 16 }}>
                   {exerciseName(ex.exerciseId)}
                 </div>
                 <div className="faint" style={{ fontSize: 12 }}>

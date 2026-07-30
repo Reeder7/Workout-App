@@ -81,7 +81,7 @@ export function Train() {
           <div className="row-between">
             <div>
               <div className="eyebrow accent">Workout in progress</div>
-              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>{active.name}</div>
+              <div style={{ fontSize: 18, fontWeight: 640, marginTop: 4 }}>{active.name}</div>
               <div className="faint" style={{ fontSize: 13 }}>
                 {active.exercises.length} exercises · tap to resume
               </div>
@@ -113,7 +113,7 @@ export function Train() {
                 style={{ textAlign: 'left', background: 'none' }}
                 onClick={() => setPickDayFor(p)}
               >
-                <div style={{ fontWeight: 700, fontSize: 16 }}>{p.name}</div>
+                <div style={{ fontWeight: 640, fontSize: 16 }}>{p.name}</div>
                 <div className="faint" style={{ fontSize: 13 }}>
                   {p.days.length} day{p.days.length === 1 ? '' : 's'} · {p.daysPerWeek}×/week ·
                   tap to start

@@ -250,7 +250,7 @@ export function PlanEditor() {
         <input
           value={currentDay.name}
           onChange={(e) => updateDay(currentDay.id, { name: e.target.value })}
-          style={{ fontWeight: 700, fontSize: 16 }}
+          style={{ fontWeight: 640, fontSize: 16 }}
         />
         {plan.days.length > 1 && (
           <button
@@ -274,7 +274,7 @@ export function PlanEditor() {
         <div className="card" key={pe.id}>
           <div className="row-between" style={{ marginBottom: 10 }}>
             <div className="grow">
-              <div style={{ fontWeight: 700 }}>{exName(pe.exerciseId)}</div>
+              <div style={{ fontWeight: 640 }}>{exName(pe.exerciseId)}</div>
               <div className="faint" style={{ fontSize: 12 }}>
                 {(EXERCISE_BY_ID[pe.exerciseId] ?? allExercises.find((e) => e.id === pe.exerciseId))
                   ?.primary ?? 'Custom'}
