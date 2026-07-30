@@ -615,43 +615,125 @@ button.lrow:active {
 }
 
 /* ============================================================================
-   Progress bar
+   Volume landmark bar
    ========================================================================= */
-.bar {
+.vol {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.vol:first-child {
+  padding-top: var(--space-1);
+}
+.vol:last-of-type {
+  border-bottom: none;
+}
+.vol-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: 6px;
+}
+.vol-muscle {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.006em;
+}
+.vol-count {
+  font-size: 14px;
+  font-weight: 640;
+  color: var(--ink-primary);
+}
+.vol-track {
   position: relative;
-  width: 100%;
+  height: 10px;
   border-radius: var(--radius-full);
   background: var(--surface-2);
   overflow: hidden;
 }
-.bar-fill {
+/* One hue for the whole fill: a multi-stop gradient would imply the bar itself
+   crosses zones, when it's the endpoint that carries the meaning. */
+.vol-fill {
   height: 100%;
   border-radius: var(--radius-full);
-  transition: width var(--dur-slow) var(--ease-out);
+  transition:
+    width var(--dur-slow) var(--ease-out),
+    background-color var(--dur-base) var(--ease-standard);
 }
-.bar-fill.tone-accent {
-  background: var(--accent);
-}
-.bar-fill.tone-success {
-  background: var(--success);
-}
-.bar-fill.tone-warning {
-  background: var(--warning);
-}
-.bar-fill.tone-danger {
-  background: var(--danger);
-}
-.bar-fill.tone-neutral {
-  background: var(--zone-under);
-}
-.bar-marker {
+/* Landmarks live inside the track so the scale needs no legend. */
+.vol-tick {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 2px;
-  border-radius: 1px;
-  background: var(--surface-1);
-  opacity: 0.9;
+  background: var(--ink-primary);
+  opacity: 0.22;
+}
+.vol-tick-max {
+  width: 2px;
+  background: var(--zone-over);
+  opacity: 0.55;
+}
+.vol-status {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 16px;
+}
+/* Status is never hue-only: the dot carries colour, the words carry meaning. */
+.vol-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  transform: translateY(-1px);
+}
+.vol-zone {
+  font-weight: 600;
+  color: var(--ink-primary);
+  flex-shrink: 0;
+}
+.vol-hint {
+  min-width: 0;
+}
+.vol-scale {
+  margin-top: 3px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+   Line chart
+   ========================================================================= */
+.chart {
+  position: relative;
+}
+.chart-axis {
+  fill: var(--ink-tertiary);
+  font-size: 9.5px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.chart-tip {
+  position: absolute;
+  top: 0;
+  padding: 5px 9px;
+  border-radius: var(--radius-xs);
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--elev-2);
+}
+.chart-tip-sub {
+  opacity: 0.7;
+  font-weight: 500;
 }
 
 /* ============================================================================

@@ -40,7 +40,7 @@ export const LANDMARKS: Record<MuscleGroup, VolumeLandmark> = {
   Shins: { mv: [0, 0], mev: [2, 4], mav: [6, 12], mrv: 16 },
 }
 
-export type VolumeZone = 'below-mev' | 'mev' | 'mav' | 'above-mrv' | 'none'
+export type VolumeZone = 'below-mev' | 'mev' | 'mav' | 'high' | 'above-mrv' | 'none'
 
 /** Classify a weekly set count for a muscle against its landmarks. */
 export function volumeZone(muscle: MuscleGroup, sets: number): VolumeZone {
@@ -49,23 +49,38 @@ export function volumeZone(muscle: MuscleGroup, sets: number): VolumeZone {
   if (sets > l.mrv) return 'above-mrv'
   if (sets < l.mev[0]) return 'below-mev'
   if (sets <= l.mav[0]) return 'mev'
+  // Past the productive ramp but still recoverable — worth naming, because
+  // lumping it in with MAV hides that you are approaching your ceiling.
+  if (sets > l.mav[1]) return 'high'
   return 'mav'
 }
 
 export const ZONE_LABEL: Record<VolumeZone, string> = {
-  'below-mev': 'below MEV',
-  mev: 'effective',
-  mav: 'productive',
-  'above-mrv': 'over MRV',
+  'below-mev': 'Below MEV',
+  mev: 'Effective',
+  mav: 'Productive',
+  high: 'High',
+  'above-mrv': 'Over MRV',
+  none: '',
+}
+
+/** One-line reading of what the zone means, for the detail row. */
+export const ZONE_HINT: Record<VolumeZone, string> = {
+  'below-mev': 'below the threshold for growth',
+  mev: 'enough to grow, with room to add',
+  mav: 'in the productive range',
+  high: 'near your recoverable ceiling',
+  'above-mrv': 'past what you can recover from',
   none: '',
 }
 
 export const ZONE_COLOR: Record<VolumeZone, string> = {
-  'below-mev': 'var(--text-faint)',
-  mev: 'var(--accent-dim)',
-  mav: 'var(--accent)',
-  'above-mrv': 'var(--danger)',
-  none: 'var(--border)',
+  'below-mev': 'var(--zone-under)',
+  mev: 'var(--accent)',
+  mav: 'var(--zone-productive)',
+  high: 'var(--zone-high)',
+  'above-mrv': 'var(--zone-over)',
+  none: 'var(--border-default)',
 }
 
 /**

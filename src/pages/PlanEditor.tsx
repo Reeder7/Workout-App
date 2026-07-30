@@ -7,7 +7,8 @@ import { Sheet } from '../components/Sheet'
 import { ExercisePicker } from '../components/ExercisePicker'
 import { SwapSheet } from '../components/SwapSheet'
 import { SharePlanButton } from '../components/SharePlanButton'
-import { LANDMARKS, volumeZone, ZONE_LABEL, ZONE_COLOR, DEFAULTS } from '../data/landmarks'
+import { DEFAULTS } from '../data/landmarks'
+import { VolumeBar } from '../components/VolumeBar'
 import type { MuscleGroup, Plan, PlanDay, PlanExercise, PrescribedSet } from '../types'
 
 export function PlanEditor() {
@@ -555,64 +556,9 @@ export function PlanEditor() {
           points, not constants: start near MEV and ramp.
         </p>
         {weeklyVolume.length === 0 && <p className="faint">Add exercises to see volume.</p>}
-        {weeklyVolume.map(([m, n]) => {
-          const l = LANDMARKS[m]
-          if (!l) return null
-          const zone = volumeZone(m, n)
-          const scaleMax = l.mrv * 1.15
-          const pct = Math.min(100, (n / scaleMax) * 100)
-          const mevPct = Math.min(100, (l.mev[0] / scaleMax) * 100)
-          const mrvPct = Math.min(100, (l.mrv / scaleMax) * 100)
-          return (
-            <div key={m} style={{ marginBottom: 14 }}>
-              <div className="row-between" style={{ fontSize: 13, marginBottom: 4 }}>
-                <span style={{ fontWeight: 600 }}>{m}</span>
-                <span className="mono muted">
-                  {n % 1 === 0 ? n : n.toFixed(1)}
-                  <span className="faint"> / MEV {l.mev[0]} · MAV {l.mav[0]}–{l.mav[1]} · MRV {l.mrv}</span>
-                </span>
-              </div>
-              <div
-                style={{
-                  position: 'relative',
-                  height: 10,
-                  borderRadius: 5,
-                  background: 'var(--surface-2)',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{ width: `${pct}%`, height: '100%', background: ZONE_COLOR[zone] }}
-                />
-                {/* MEV and MRV threshold ticks */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: `${mevPct}%`,
-                    top: 0,
-                    bottom: 0,
-                    width: 2,
-                    background: 'var(--text-faint)',
-                  }}
-                />
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: `${mrvPct}%`,
-                    top: 0,
-                    bottom: 0,
-                    width: 2,
-                    background: 'var(--danger)',
-                    opacity: 0.7,
-                  }}
-                />
-              </div>
-              <div className="tag" style={{ color: ZONE_COLOR[zone], marginTop: 3 }}>
-                {ZONE_LABEL[zone]}
-              </div>
-            </div>
-          )
-        })}
+        {weeklyVolume.map(([m, n]) => (
+          <VolumeBar key={m} muscle={m} sets={n} detail />
+        ))}
         <p className="hint" style={{ marginTop: 14, marginBottom: 0 }}>
           Volume is the strongest lever for growth, but with clear diminishing returns — and it's
           bounded by what you can recover from. Below MEV you likely won't grow; past MRV you
