@@ -111,14 +111,26 @@ grant execute on function public.join_with_code(text, text, int, numeric, numeri
 -- SET THE FIRST CODE
 --
 -- set_invite_code() checks that the caller is an admin, and in the SQL Editor
--- there is no caller, so bootstrap it directly. Change the code, then run:
+-- there is no caller, so bootstrap it with plain SQL. Run this as a second
+-- statement, after changing the code:
+--
+--   -- Set (or change) the access code. Pick your own; 6 characters minimum.
+--   -- `set search_path` makes the unqualified crypt() resolve wherever pgcrypto
+--   -- lives, so this works whether it sits in `extensions` or `public`.
+--   set search_path = public, extensions;
 --
 --   insert into public.app_config (key, value)
---   values ('invite_code', extensions.crypt('change-this-code', extensions.gen_salt('bf')))
+--   values ('invite_code', crypt('CHANGE-THIS-CODE', gen_salt('bf')))
 --   on conflict (key) do update set value = excluded.value, updated_at = now();
 --
--- Pick something not guessable — a wrong code costs an attacker one anonymous
+--   -- Confirm it stored a bcrypt hash. Should print one row whose preview starts
+--   -- with $2a$ or $2b$ — the code itself is never recoverable from this.
+--   select key, left(value, 7) || '...' as hash_preview, updated_at
+--   from public.app_config where key = 'invite_code';
+--
+-- Pick something not guessable. A wrong code costs an attacker one anonymous
 -- sign-in against a 30-per-hour IP limit, but a short code is still a short code.
+-- Note this direct insert skips set_invite_code's own length check.
 --
 -- ALSO REQUIRED, one toggle:
 --   Authentication → Providers → enable "Anonymous sign-ins".

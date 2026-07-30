@@ -21,9 +21,19 @@ Four steps, no email involved.
 4. **SQL Editor** → set the code, choosing your own:
 
    ```sql
+   -- Set (or change) the access code. Pick your own; 6 characters minimum.
+   -- `set search_path` makes the unqualified crypt() resolve wherever pgcrypto
+   -- lives, so this works whether it sits in `extensions` or `public`.
+   set search_path = public, extensions;
+   
    insert into public.app_config (key, value)
-   values ('invite_code', extensions.crypt('your-code-here', extensions.gen_salt('bf')))
+   values ('invite_code', crypt('CHANGE-THIS-CODE', gen_salt('bf')))
    on conflict (key) do update set value = excluded.value, updated_at = now();
+   
+   -- Confirm it stored a bcrypt hash. Should print one row whose preview starts
+   -- with $2a$ or $2b$ — the code itself is never recoverable from this.
+   select key, left(value, 7) || '...' as hash_preview, updated_at
+   from public.app_config where key = 'invite_code';
    ```
 
 Then join through the app yourself, and in the **SQL Editor** make yourself the
