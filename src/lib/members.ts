@@ -36,6 +36,30 @@ export function memberSource(): MemberSource {
   return source
 }
 
+/**
+ * Reject rather than hang. A request that never settles leaves a screen
+ * spinning with no way out, which is what gym wifi and a paused Supabase
+ * project both look like from the client.
+ */
+export function withTimeout<T>(p: Promise<T>, ms = 15_000): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const t = setTimeout(
+      () => reject(new Error('The server took too long to respond. Check your connection.')),
+      ms,
+    )
+    p.then(
+      (v) => {
+        clearTimeout(t)
+        resolve(v)
+      },
+      (e) => {
+        clearTimeout(t)
+        reject(e)
+      },
+    )
+  })
+}
+
 /* --------------------------------------------------------------- formatting */
 
 export function heightLabel(cm: number | undefined, unit: 'lb' | 'kg'): string | null {
