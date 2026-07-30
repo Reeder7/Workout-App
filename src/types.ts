@@ -168,3 +168,23 @@ export interface Settings {
   /** Colour theme preference; 'system' follows the device setting. */
   theme?: ThemePref
 }
+
+/* ============================================================================
+   Social layer. Members are approved by hand, so every account has a status.
+   ========================================================================= */
+
+export type MemberStatus = 'pending' | 'approved' | 'rejected'
+
+export interface MemberProfile {
+  id: string
+  email: string
+  displayName: string
+  /** Optional: collected only because relative-strength comparisons want them. */
+  age?: number
+  heightCm?: number
+  weightKg?: number
+  status: MemberStatus
+  createdAt: number
+  /** Set when an admin approves or rejects. */
+  reviewedAt?: number
+}

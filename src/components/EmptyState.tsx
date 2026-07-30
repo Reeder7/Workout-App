@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export type GlyphName = 'barbell' | 'trend' | 'plan' | 'search' | 'note'
+export type GlyphName = 'barbell' | 'trend' | 'plan' | 'search' | 'note' | 'people'
 
 /**
  * Line glyphs for empty states. Drawn rather than emoji: emoji render as a
@@ -42,6 +42,13 @@ function Glyph({ name }: { name: GlyphName }) {
         <g {...common}>
           <circle cx="20" cy="20" r="8.5" />
           <path d="M26.5 26.5L34 34" />
+        </g>
+      )}
+      {name === 'people' && (
+        <g {...common}>
+          <circle cx="17.5" cy="16" r="5" />
+          <path d="M8.5 34c0-4.5 4-8 9-8s9 3.5 9 8" />
+          <path d="M27 11.5a5 5 0 010 9M30 32.5c0-3.4 1.6-6 4-7" />
         </g>
       )}
       {name === 'note' && (

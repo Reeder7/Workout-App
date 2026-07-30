@@ -1026,6 +1026,86 @@ button.lrow:active {
 }
 
 /* ============================================================================
+   Photo capture
+   ========================================================================= */
+.shot,
+.shot-empty {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shot-clear {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Fixed dark scrim, not a theme token: it sits on the photo, not the page. */
+  background: rgba(14, 20, 32, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+}
+.shot-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  background: var(--surface-2);
+  border: 1.5px dashed var(--border-strong);
+  color: var(--ink-secondary);
+  text-align: center;
+}
+.shot-empty:active {
+  background: var(--surface-3);
+}
+.shot-empty.is-busy {
+  cursor: progress;
+}
+.shot-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+.shot-label {
+  font-size: 15px;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+  color: var(--ink-primary);
+}
+.shot-hint {
+  font-size: 13px;
+  line-height: 18px;
+  max-width: 30ch;
+  color: var(--ink-tertiary);
+}
+.shot-meta {
+  margin-top: var(--space-2);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
    Shareable summary card preview
    ========================================================================= */
 .card-preview {

@@ -98,6 +98,21 @@ export function Settings() {
       </div>
 
       <div className="section-head">
+        <h2>Members</h2>
+      </div>
+      <button className="card card-tap" style={{ width: '100%', textAlign: 'left' }} onClick={() => nav('/members')}>
+        <div className="row-between">
+          <div className="grow">
+            <div style={{ fontWeight: 600 }}>Approve members</div>
+            <div className="faint" style={{ fontSize: 12 }}>
+              Review signups before they can see the feed.
+            </div>
+          </div>
+          <Icon name="chevron" size={18} className="faint" />
+        </div>
+      </button>
+
+      <div className="section-head">
         <h2>Backup & data</h2>
       </div>
       <div className="card">
