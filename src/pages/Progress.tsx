@@ -12,9 +12,10 @@ import {
 import { fmtNum, fmtWeight, relativeDate, fmtDuration } from '../lib/format'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
-import { ProgressBar } from '../components/ProgressBar'
+import { VolumeBar } from '../components/VolumeBar'
 import { EmptyState } from '../components/EmptyState'
 import { PageHeader } from '../components/PageHeader'
+import type { MuscleGroup } from '../types'
 
 export function Progress() {
   const nav = useNavigate()
@@ -40,7 +41,6 @@ export function Progress() {
   const weeklyEntries = (Object.entries(weekly) as [string, number][]).sort(
     (a, b) => b[1] - a[1],
   )
-  const maxWeekly = Math.max(1, ...weeklyEntries.map(([, n]) => n))
 
   const detail = sessions.find((s) => s.id === openSession)
 
@@ -85,23 +85,16 @@ export function Progress() {
         <>
           <div className="section-head">
             <h2>Sets this week</h2>
-            <span className="tag">by muscle</span>
+            <span className="tag">vs. landmarks</span>
           </div>
           <div className="card">
             {weeklyEntries.map(([m, val]) => (
-              <div key={m} style={{ marginBottom: 12 }}>
-                <div className="row-between" style={{ fontSize: 13, marginBottom: 5 }}>
-                  <span style={{ fontWeight: 600 }}>{m}</span>
-                  <span className="mono muted">{val % 1 === 0 ? val : val.toFixed(1)}</span>
-                </div>
-                <ProgressBar
-                  value={val}
-                  max={maxWeekly}
-                  tone={val >= 10 ? 'accent' : 'neutral'}
-                  height={7}
-                />
-              </div>
+              <VolumeBar key={m} muscle={m as MuscleGroup} sets={val} />
             ))}
+            <p className="hint" style={{ marginBottom: 0, marginTop: 4 }}>
+              Each bar is scaled to that muscle's own MRV, with ticks at MEV and MRV. Secondary
+              involvement counts as half a set.
+            </p>
           </div>
         </>
       )}
