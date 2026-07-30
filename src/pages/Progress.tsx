@@ -12,6 +12,9 @@ import {
 import { fmtNum, fmtWeight, relativeDate, fmtDuration } from '../lib/format'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
+import { ProgressBar } from '../components/ProgressBar'
+import { EmptyState } from '../components/EmptyState'
+import { PageHeader } from '../components/PageHeader'
 
 export function Progress() {
   const nav = useNavigate()
@@ -44,27 +47,23 @@ export function Progress() {
   if (sessions.length === 0) {
     return (
       <div className="app">
-        <div className="eyebrow">Analytics</div>
-        <h1 className="page-title">Progress</h1>
-        <div className="empty">
-          <div className="empty-emoji">📈</div>
-          <p>No data yet.</p>
-          <p className="hint">
-            Finish a workout and your PRs, volume, and per-lift trends show up here.
-          </p>
-          <button className="btn btn-primary" style={{ marginTop: 8 }} onClick={() => nav('/')}>
+        <PageHeader eyebrow="Analytics" title="Progress" />
+        <EmptyState
+          glyph="trend"
+          title="No data yet"
+          body="Finish a workout and your PRs, volume, and per-lift trends show up here."
+        >
+          <button className="btn btn-primary" onClick={() => nav('/')}>
             Start training
           </button>
-        </div>
+        </EmptyState>
       </div>
     )
   }
 
   return (
     <div className="app">
-      <div className="eyebrow">Analytics</div>
-      <h1 className="page-title">Progress</h1>
-      <p className="page-sub">Your lifts, tracked over time.</p>
+      <PageHeader eyebrow="Analytics" title="Progress" sub="Your lifts, tracked over time." />
 
       <div className="stat-grid">
         <div className="stat">
@@ -89,36 +88,20 @@ export function Progress() {
             <span className="tag">by muscle</span>
           </div>
           <div className="card">
-            {weeklyEntries.map(([m, val]) => {
-              const inRange = val >= 10
-              return (
-                <div key={m} style={{ marginBottom: 10 }}>
-                  <div
-                    className="row-between"
-                    style={{ fontSize: 13, marginBottom: 4 }}
-                  >
-                    <span style={{ fontWeight: 600 }}>{m}</span>
-                    <span className="mono muted">{val % 1 === 0 ? val : val.toFixed(1)}</span>
-                  </div>
-                  <div
-                    style={{
-                      height: 7,
-                      borderRadius: 4,
-                      background: 'var(--surface-2)',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(val / maxWeekly) * 100}%`,
-                        height: '100%',
-                        background: inRange ? 'var(--accent)' : 'var(--accent-dim)',
-                      }}
-                    />
-                  </div>
+            {weeklyEntries.map(([m, val]) => (
+              <div key={m} style={{ marginBottom: 12 }}>
+                <div className="row-between" style={{ fontSize: 13, marginBottom: 5 }}>
+                  <span style={{ fontWeight: 600 }}>{m}</span>
+                  <span className="mono muted">{val % 1 === 0 ? val : val.toFixed(1)}</span>
                 </div>
-              )
-            })}
+                <ProgressBar
+                  value={val}
+                  max={maxWeekly}
+                  tone={val >= 10 ? 'accent' : 'neutral'}
+                  height={7}
+                />
+              </div>
+            ))}
           </div>
         </>
       )}

@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from 'react'
+import { Icon } from './Icon'
 
 interface Props {
   children: ReactNode
@@ -33,7 +34,9 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="app">
           <div className="empty" style={{ paddingTop: 60 }}>
-            <div className="empty-emoji">🛠️</div>
+            <div className="empty-glyph">
+              <Icon name="settings" size={38} />
+            </div>
             <h1 className="page-title" style={{ fontSize: 22 }}>
               Something went wrong
             </h1>

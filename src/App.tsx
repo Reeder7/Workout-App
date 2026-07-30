@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { TabBar } from './components/TabBar'
+import { ToastHost } from './components/ToastHost'
 import { Train } from './pages/Train'
 import { Session } from './pages/Session'
 import { Plans } from './pages/Plans'
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/import" element={<ImportPlan />} />
       </Routes>
       <TabBar />
+      <ToastHost />
     </>
   )
 }

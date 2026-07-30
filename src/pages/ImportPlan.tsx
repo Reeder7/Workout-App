@@ -68,7 +68,9 @@ export function ImportPlan() {
     return (
       <div className="app">
         <div className="empty" style={{ paddingTop: 60 }}>
-          <div className="empty-emoji">🔗</div>
+          <div className="empty-glyph">
+            <Icon name="share" size={38} />
+          </div>
           <h1 className="page-title" style={{ fontSize: 22 }}>
             Couldn’t read that link
           </h1>
@@ -88,7 +90,9 @@ export function ImportPlan() {
     return (
       <div className="app">
         <div className="empty" style={{ paddingTop: 60 }}>
-          <div className="empty-emoji">✅</div>
+          <div className="empty-glyph">
+            <Icon name="check" size={38} />
+          </div>
           <h1 className="page-title" style={{ fontSize: 22 }}>
             Added to your plans
           </h1>

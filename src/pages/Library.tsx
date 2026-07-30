@@ -5,6 +5,7 @@ import { MUSCLE_GROUPS } from '../data/exercises'
 import { LANDMARKS, DEFAULTS } from '../data/landmarks'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
+import { PageHeader } from '../components/PageHeader'
 import type { Exercise, MuscleGroup } from '../types'
 
 const PRINCIPLES = [
@@ -84,19 +85,16 @@ export function Library() {
 
   return (
     <div className="app">
-      <div className="row-between">
-        <div>
-          <div className="eyebrow">Knowledge</div>
-          <h1 className="page-title">Library</h1>
-        </div>
-        <button className="icon-btn" onClick={() => nav('/settings')} aria-label="Settings">
-          <Icon name="settings" size={18} />
-        </button>
-      </div>
-      <p className="page-sub">
-        {all.length} exercises with evidence-based selection notes, plus core training
-        principles.
-      </p>
+      <PageHeader
+        eyebrow="Knowledge"
+        title="Library"
+        sub={`${all.length} exercises with evidence-based selection notes, plus core training principles.`}
+        actions={
+          <button className="icon-btn" onClick={() => nav('/settings')} aria-label="Settings">
+            <Icon name="settings" size={18} />
+          </button>
+        }
+      />
 
       <input
         placeholder="Search exercises…"

@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
+import { Segmented } from '../components/Segmented'
+import { PageHeader } from '../components/PageHeader'
+import { toast } from '../lib/toast'
 
 export function Settings() {
   const nav = useNavigate()
@@ -16,7 +19,6 @@ export function Settings() {
 
   const fileRef = useRef<HTMLInputElement>(null)
   const [confirmReset, setConfirmReset] = useState(false)
-  const [msg, setMsg] = useState<string | null>(null)
 
   function doExport() {
     const blob = new Blob([exportData()], { type: 'application/json' })
@@ -33,36 +35,34 @@ export function Settings() {
     const reader = new FileReader()
     reader.onload = () => {
       const ok = importData(String(reader.result))
-      setMsg(ok ? 'Backup imported successfully.' : 'Could not read that file.')
+      if (ok) toast('Backup imported', 'success')
+      else toast("That file couldn't be read", 'danger')
     }
     reader.readAsText(file)
   }
 
   return (
     <div className="app">
-      <div className="row-between" style={{ marginBottom: 8 }}>
-        <button className="icon-btn" onClick={() => nav('/library')} aria-label="Back">
-          <Icon name="back" size={18} />
-        </button>
-      </div>
-      <h1 className="page-title">Settings</h1>
-      <p className="page-sub">Everything is stored privately on this device.</p>
+      <PageHeader
+        title="Settings"
+        sub="Everything is stored privately on this device."
+        onBack={() => nav('/library')}
+      />
 
       <div className="section-head">
         <h2>Appearance</h2>
       </div>
       <div className="card">
-        <div className="row" style={{ gap: 8 }}>
-          {(['system', 'light', 'dark'] as const).map((t) => (
-            <button
-              key={t}
-              className={`btn btn-sm grow${(settings.theme ?? 'system') === t ? ' btn-primary' : ''}`}
-              onClick={() => setSettings({ theme: t })}
-            >
-              {t === 'system' ? 'Auto' : t === 'light' ? 'Light' : 'Dark'}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          label="Theme"
+          value={settings.theme ?? 'system'}
+          onChange={(theme) => setSettings({ theme })}
+          options={[
+            { value: 'system', label: 'Auto' },
+            { value: 'light', label: 'Light' },
+            { value: 'dark', label: 'Dark' },
+          ]}
+        />
         <p className="hint" style={{ marginBottom: 0, marginTop: 10 }}>
           Auto follows your phone's light/dark setting.
         </p>
@@ -72,17 +72,15 @@ export function Settings() {
         <h2>Units</h2>
       </div>
       <div className="card">
-        <div className="row" style={{ gap: 10 }}>
-          {(['lb', 'kg'] as const).map((u) => (
-            <button
-              key={u}
-              className={`btn grow${settings.unit === u ? ' btn-primary' : ''}`}
-              onClick={() => setSettings({ unit: u })}
-            >
-              {u === 'lb' ? 'Pounds (lb)' : 'Kilograms (kg)'}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          label="Weight unit"
+          value={settings.unit}
+          onChange={(unit) => setSettings({ unit })}
+          options={[
+            { value: 'lb', label: 'Pounds (lb)' },
+            { value: 'kg', label: 'Kilograms (kg)' },
+          ]}
+        />
         <p className="hint" style={{ marginBottom: 0, marginTop: 10 }}>
           This changes the label only — your logged numbers aren't converted.
         </p>
@@ -106,7 +104,8 @@ export function Settings() {
         <div className="row-between" style={{ marginBottom: 12 }}>
           <div>
             <div style={{ fontWeight: 600 }}>
-              {plans.length} plans · {sessions.length} workouts
+              {plans.length} plan{plans.length === 1 ? '' : 's'} · {sessions.length} workout
+              {sessions.length === 1 ? '' : 's'}
             </div>
             <div className="faint" style={{ fontSize: 12 }}>
               Export a backup to keep your data safe or move it to another device.
@@ -132,11 +131,6 @@ export function Settings() {
             e.target.value = ''
           }}
         />
-        {msg && (
-          <p className="hint" style={{ marginBottom: 0, marginTop: 10 }}>
-            {msg}
-          </p>
-        )}
       </div>
 
       <div className="spacer" />

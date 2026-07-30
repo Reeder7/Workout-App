@@ -359,6 +359,29 @@ input[type='number'] {
   color: var(--ink-tertiary);
 }
 
+/* A tappable section action. Must not reuse .tag — an uppercase tertiary label
+   next to an identical uppercase heading reads as a second heading, not a
+   control. Sentence case + accent + chevron is the affordance. */
+.section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 28px;
+  padding: 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.004em;
+  color: var(--accent-ink);
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+}
+.section-link:active {
+  opacity: 0.6;
+}
+.section-link svg {
+  margin-top: 1px;
+}
+
 /* ============================================================================
    Tab bar
    ========================================================================= */
@@ -471,6 +494,7 @@ button.lrow:active {
   padding: var(--space-10) var(--space-6);
   color: var(--ink-secondary);
 }
+.empty-glyph,
 .empty-emoji {
   width: 88px;
   height: 88px;
@@ -482,10 +506,327 @@ button.lrow:active {
   justify-content: center;
   font-size: 38px;
 }
+.empty-glyph {
+  color: var(--accent);
+}
 .empty p {
   max-width: 280px;
   margin-left: auto;
   margin-right: auto;
+}
+.empty-title {
+  font-size: 17px;
+  font-weight: 640;
+  letter-spacing: -0.012em;
+  color: var(--ink-primary);
+  margin: 0 auto var(--space-2);
+}
+.empty-actions {
+  margin-top: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* ============================================================================
+   Segmented control
+   ========================================================================= */
+.segmented {
+  position: relative;
+  display: grid;
+  padding: 3px;
+  gap: 0;
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+.segmented-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  border-radius: calc(var(--radius-md) - 3px);
+  background: var(--segmented-thumb);
+  box-shadow: var(--elev-1);
+  transition: transform var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+.segmented-opt {
+  position: relative;
+  z-index: 1;
+  min-height: 38px;
+  padding: 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.004em;
+  color: var(--ink-secondary);
+  border-radius: calc(var(--radius-md) - 3px);
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+.segmented-opt[aria-checked='true'] {
+  color: var(--ink-primary);
+}
+.segmented-opt:active {
+  color: var(--ink-primary);
+}
+
+/* ============================================================================
+   Progress ring
+   ========================================================================= */
+.ring {
+  position: relative;
+  flex-shrink: 0;
+}
+.ring svg {
+  display: block;
+}
+.ring-track {
+  stroke: var(--surface-3);
+}
+.ring-fill {
+  stroke: var(--accent);
+  transition: stroke-dashoffset var(--dur-ring) var(--ease-out);
+}
+.ring-fill.is-complete {
+  stroke: var(--success);
+}
+.ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.ring-value {
+  font-size: 19px;
+  font-weight: 640;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-primary);
+}
+.ring-caption {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-tertiary);
+  margin-top: 4px;
+}
+
+/* ============================================================================
+   Progress bar
+   ========================================================================= */
+.bar {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--dur-slow) var(--ease-out);
+}
+.bar-fill.tone-accent {
+  background: var(--accent);
+}
+.bar-fill.tone-success {
+  background: var(--success);
+}
+.bar-fill.tone-warning {
+  background: var(--warning);
+}
+.bar-fill.tone-danger {
+  background: var(--danger);
+}
+.bar-fill.tone-neutral {
+  background: var(--zone-under);
+}
+.bar-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--surface-1);
+  opacity: 0.9;
+}
+
+/* ============================================================================
+   Toast
+   ========================================================================= */
+.toast-host {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + var(--space-3));
+  z-index: 120;
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--space-4);
+  pointer-events: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+.toast {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  padding: 11px 16px;
+  border-radius: var(--radius-full);
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.004em;
+  box-shadow: var(--elev-5);
+  animation: toast-in var(--dur-base) var(--ease-spring);
+}
+.toast.tone-success {
+  color: var(--ink-inverse);
+}
+.toast.tone-success svg {
+  color: var(--success);
+}
+.toast.tone-danger svg {
+  color: var(--danger);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+}
+
+/* ============================================================================
+   Page header — large inline title, compact sticky bar after scroll
+   ========================================================================= */
+.page-head-top {
+  margin-bottom: var(--space-2);
+}
+.head-sentinel {
+  height: 1px;
+  margin-top: calc(-1 * var(--space-4));
+}
+.compact-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-top: env(safe-area-inset-top);
+  background: var(--tabbar-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border-subtle);
+  opacity: 0;
+  transform: translateZ(0) translateY(-100%);
+  -webkit-transform: translateZ(0) translateY(-100%);
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-standard);
+  pointer-events: none;
+}
+.compact-bar.show {
+  opacity: 1;
+  transform: translateZ(0) translateY(0);
+  -webkit-transform: translateZ(0) translateY(0);
+  pointer-events: auto;
+}
+.compact-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 52px;
+  padding: 0 var(--space-2) 0 var(--space-2);
+}
+.compact-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 640;
+  letter-spacing: -0.014em;
+  padding: 0 var(--space-1);
+}
+.compact-actions {
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+.icon-btn-bare {
+  background: transparent;
+}
+
+/* ============================================================================
+   Hero action row
+   ========================================================================= */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--surface-1);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+}
+.hero-copy {
+  flex: 1;
+  min-width: 0;
+}
+.hero-title {
+  font-size: 17px;
+  font-weight: 640;
+  letter-spacing: -0.014em;
+  line-height: 22px;
+}
+.hero-sub {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-secondary);
+  margin-top: 2px;
+}
+/* The resume-workout variant is one wide tap target, so it stays a row. */
+.hero-active {
+  transition:
+    transform var(--dur-fast) var(--ease-standard),
+    box-shadow var(--dur-fast) var(--ease-standard);
+}
+.hero-active:active {
+  transform: scale(0.99);
+  box-shadow: var(--elev-2);
+}
+/* The idle variant stacks: progress on top, the CTA as a full-width button. */
+.hero-block {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+.hero-cta {
+  margin-top: var(--space-4);
+}
+.hero-metrics {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+.hero-metric {
+  flex: 1;
+  min-width: 0;
+}
+.hero-metric-value {
+  font-size: 18px;
+  font-weight: 640;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 22px;
 }
 
 /* ============================================================================
@@ -625,19 +966,56 @@ button.lrow:active {
   animation: fade var(--dur-base) var(--ease-out);
 }
 .sheet {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: var(--maxw);
   max-height: 88dvh;
-  overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--surface-1);
   border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
   box-shadow: var(--elev-4);
-  padding: var(--space-2) var(--space-5) calc(env(safe-area-inset-bottom) + var(--space-5));
+  padding: 0 var(--space-5) calc(env(safe-area-inset-bottom) + var(--space-5));
   animation: slideup var(--dur-slow) var(--ease-out);
+  transition: transform var(--dur-base) var(--ease-out);
+  touch-action: pan-y;
+}
+/* Detents give predictable open heights so a sheet doesn't jump between
+   near-empty and near-full as its content changes. */
+.sheet.detent-medium {
+  height: 56dvh;
+}
+.sheet.detent-large {
+  height: 88dvh;
 }
 :root[data-theme='dark'] .sheet {
   background: var(--surface-3);
+}
+.sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.sheet-title {
+  font-size: 18px;
+  font-weight: 640;
+  letter-spacing: -0.014em;
+  margin: 0 0 var(--space-3);
+  flex-shrink: 0;
+}
+/* A 28px grab strip: big enough to hit, and it keeps the drag gesture off the
+   scrollable body so the two never compete. */
+.sheet-grabber {
+  flex-shrink: 0;
+  padding: var(--space-2) 0 var(--space-1);
+  margin: 0 calc(-1 * var(--space-5));
+  cursor: grab;
+  touch-action: none;
+}
+.sheet-grabber:active {
+  cursor: grabbing;
 }
 .sheet-handle {
   width: 36px;
@@ -645,7 +1023,7 @@ button.lrow:active {
   border-radius: var(--radius-full);
   background: var(--border-strong);
   opacity: 0.5;
-  margin: var(--space-2) auto var(--space-3);
+  margin: var(--space-1) auto var(--space-2);
 }
 @keyframes slideup {
   from {

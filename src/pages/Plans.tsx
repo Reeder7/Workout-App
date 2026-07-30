@@ -4,7 +4,10 @@ import { useStore } from '../store/useStore'
 import { TEMPLATES } from '../data/templates'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
+import { EmptyState } from '../components/EmptyState'
+import { PageHeader } from '../components/PageHeader'
 import { SharePlanButton } from '../components/SharePlanButton'
+import { toast } from '../lib/toast'
 
 export function Plans() {
   const nav = useNavigate()
@@ -18,12 +21,11 @@ export function Plans() {
 
   return (
     <div className="app">
-      <div className="eyebrow">Programming</div>
-      <h1 className="page-title">Plans</h1>
-      <p className="page-sub">
-        Build training splits the evidence-based way — 2× weekly frequency, smart volume, and
-        rep targets baked in.
-      </p>
+      <PageHeader
+        eyebrow="Programming"
+        title="Plans"
+        sub="Build training splits the evidence-based way — 2× weekly frequency, smart volume, and rep targets baked in."
+      />
 
       <div className="row" style={{ gap: 10, marginBottom: 4 }}>
         <button
@@ -45,21 +47,15 @@ export function Plans() {
       </div>
 
       {plans.length === 0 ? (
-        <div className="empty">
-          <div className="empty-emoji">📋</div>
-          <p>No plans yet.</p>
-          <p className="hint">
-            Start from a proven template (Full Body, Upper/Lower, or Push/Pull/Legs) or build
-            your own.
-          </p>
-          <button
-            className="btn btn-primary"
-            style={{ marginTop: 8 }}
-            onClick={() => setTemplatesOpen(true)}
-          >
+        <EmptyState
+          glyph="plan"
+          title="No plans yet"
+          body="Start from a proven template (Full Body, Upper/Lower, or Push/Pull/Legs) or build your own."
+        >
+          <button className="btn btn-primary" onClick={() => setTemplatesOpen(true)}>
             Browse templates
           </button>
-        </div>
+        </EmptyState>
       ) : (
         plans.map((p) => (
           <div className="card" key={p.id}>
@@ -77,7 +73,10 @@ export function Plans() {
               </button>
               <button
                 className="icon-btn"
-                onClick={() => duplicate(p.id)}
+                onClick={() => {
+                  duplicate(p.id)
+                  toast('Plan duplicated', 'success')
+                }}
                 aria-label="Duplicate plan"
               >
                 <Icon name="copy" size={16} />
@@ -121,7 +120,10 @@ export function Plans() {
         <button
           className="btn btn-danger btn-block"
           onClick={() => {
-            if (confirmDelete) deletePlan(confirmDelete.id)
+            if (confirmDelete) {
+              deletePlan(confirmDelete.id)
+              toast('Plan deleted')
+            }
             setConfirmDelete(null)
           }}
         >
@@ -140,6 +142,7 @@ export function Plans() {
         open={templatesOpen}
         onClose={() => setTemplatesOpen(false)}
         title="Start from a template"
+        detent="large"
       >
         <p className="hint" style={{ marginTop: 0 }}>
           Evidence-based splits inspired by Jeff Nippard's programming. Adding one copies it into
