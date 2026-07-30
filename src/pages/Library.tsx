@@ -154,7 +154,7 @@ export function Library() {
       </div>
       {PRINCIPLES.map((p) => (
         <div className="card" key={p.title}>
-          <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.title}</div>
+          <div style={{ fontWeight: 640, marginBottom: 4 }}>{p.title}</div>
           <p className="hint" style={{ margin: 0 }}>
             {p.body}
           </p>

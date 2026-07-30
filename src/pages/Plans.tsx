@@ -69,7 +69,7 @@ export function Plans() {
                 style={{ textAlign: 'left', background: 'none' }}
                 onClick={() => nav(`/plans/${p.id}`)}
               >
-                <div style={{ fontWeight: 700, fontSize: 17 }}>{p.name}</div>
+                <div style={{ fontWeight: 640, fontSize: 17 }}>{p.name}</div>
                 <div className="faint" style={{ fontSize: 13 }}>
                   {p.days.length} day{p.days.length === 1 ? '' : 's'} · {p.daysPerWeek}×/week ·{' '}
                   {p.days.reduce((t, d) => t + d.exercises.length, 0)} exercises
@@ -147,7 +147,7 @@ export function Plans() {
         </p>
         {TEMPLATES.map((t) => (
           <div className="card" key={t.id}>
-            <div style={{ fontWeight: 700, fontSize: 16 }}>{t.name}</div>
+            <div style={{ fontWeight: 640, fontSize: 16 }}>{t.name}</div>
             <div className="faint" style={{ fontSize: 12, marginBottom: 6 }}>
               {t.daysPerWeek}×/week · {t.days.length} sessions
             </div>

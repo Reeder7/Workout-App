@@ -142,7 +142,7 @@ export function ImportPlan() {
 
       {plan!.days.map((d) => (
         <div className="card" key={d.id}>
-          <div style={{ fontWeight: 700, marginBottom: 8 }}>{d.name}</div>
+          <div style={{ fontWeight: 640, marginBottom: 8 }}>{d.name}</div>
           {d.exercises.map((pe) => {
             const sets = pe.scheme?.length ?? pe.sets
             const first = pe.scheme?.[0]

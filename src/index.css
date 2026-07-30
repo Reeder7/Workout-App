@@ -16,7 +16,7 @@ body {
   color: var(--ink-primary);
   font-family: var(--font-sans);
   font-size: 15px;
-  font-weight: 450;
+  font-weight: 400;
   line-height: 22px;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
@@ -110,7 +110,7 @@ input[type='number'] {
 /* Screen title — 26px, clamped to 2 lines so long plan names can't clip */
 .page-title {
   font-size: 26px;
-  font-weight: 700;
+  font-weight: 640;
   line-height: 32px;
   letter-spacing: -0.02em;
   margin: var(--space-1) 0 var(--space-1);
@@ -131,7 +131,7 @@ input[type='number'] {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 14px;
   color: var(--ink-tertiary);
 }
@@ -144,7 +144,7 @@ input[type='number'] {
 }
 .section-head h2 {
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   line-height: 14px;
@@ -340,7 +340,7 @@ input[type='number'] {
   padding: 0 10px;
   border-radius: var(--radius-full);
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: 0.04em;
   background: var(--surface-2);
   border: none;
@@ -353,7 +353,7 @@ input[type='number'] {
 
 .tag {
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-tertiary);
@@ -430,13 +430,13 @@ input[type='number'] {
 }
 .stat-value {
   font-size: 26px;
-  font-weight: 700;
+  font-weight: 640;
   line-height: 32px;
   letter-spacing: -0.02em;
 }
 .stat-label {
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-tertiary);
@@ -502,7 +502,7 @@ button.lrow:active {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-tertiary);
-  font-weight: 650;
+  font-weight: 600;
   padding: 0 2px var(--space-1);
 }
 .setgrid input {
@@ -510,7 +510,7 @@ button.lrow:active {
   padding: 10px 6px;
   text-align: center;
   font-size: 22px;
-  font-weight: 620;
+  font-weight: 600;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
   border-radius: var(--radius-sm);
@@ -544,7 +544,7 @@ button.lrow:active {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--ink-tertiary);
 }
 
@@ -766,7 +766,7 @@ button.lrow:active {
 }
 .timer-time {
   font-size: 30px;
-  font-weight: 680;
+  font-weight: 620;
   line-height: 34px;
   letter-spacing: -0.025em;
   color: var(--accent-ink);
@@ -803,7 +803,7 @@ button.lrow:active {
   background: var(--accent-subtle);
   color: var(--accent-ink);
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;

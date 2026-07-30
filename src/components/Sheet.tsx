@@ -25,7 +25,7 @@ export function Sheet({ open, onClose, title, children }: Props) {
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
         <div className="sheet-handle" />
         {title && (
-          <h2 style={{ fontSize: 18, fontWeight: 800, margin: '0 0 14px' }}>{title}</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 640, margin: '0 0 14px' }}>{title}</h2>
         )}
         {children}
       </div>
