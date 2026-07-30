@@ -2,9 +2,9 @@
    Fonts — self-hosted variable subsets (no external CDN, CSP-safe)
    ========================================================================= */
 @font-face {
-  font-family: 'Jakarta';
-  src: url('./fonts/jakarta.woff2') format('woff2-variations');
-  font-weight: 200 800;
+  font-family: 'Geist';
+  src: url('./fonts/geist.woff2') format('woff2-variations');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -159,7 +159,7 @@
   /* Type — system stack resolves to SF Pro on iOS, Roboto on Android */
   --font-fallback: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto,
     'Helvetica Neue', Arial, sans-serif;
-  --font-sans: 'Jakarta', var(--font-fallback);
+  --font-sans: 'Geist', var(--font-fallback);
 
   /* Space (4px base) */
   --space-1: 4px;
