@@ -14,6 +14,7 @@ import {
   verifyEmailCode,
 } from '../lib/auth'
 import { toast } from '../lib/toast'
+import { cooldownRemaining } from '../lib/authErrors'
 
 /** Imperial entry converted to the canonical cm/kg the database stores. */
 const toCm = (ft: string, inch: string) => {
@@ -42,6 +43,14 @@ export function Join() {
   const [busy, setBusy] = useState(false)
   const [otp, setOtp] = useState('')
   const [codeError, setCodeError] = useState<string | null>(null)
+  const [cooldown, setCooldown] = useState(() => cooldownRemaining())
+
+  // Ticks the cooldown down. Only runs while there is one, so no idle timer.
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const t = setInterval(() => setCooldown(cooldownRemaining()), 1000)
+    return () => clearInterval(t)
+  }, [cooldown])
 
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
@@ -86,8 +95,12 @@ export function Join() {
       await signInWithEmail(addr)
       setSent(true)
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'Could not send the link', 'danger')
+      // Held on screen rather than toasted: the rate-limit explanation is three
+      // lines long and a toast would take it away before it could be read.
+      setCodeError(e instanceof Error ? e.message : 'Could not send a code')
+      setSent(true)
     } finally {
+      setCooldown(cooldownRemaining())
       setBusy(false)
     }
   }
@@ -200,8 +213,12 @@ export function Join() {
               {busy ? 'Checking…' : 'Sign in'}
             </button>
             <div className="row" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
-              <button className="btn btn-ghost btn-sm grow" disabled={busy} onClick={send}>
-                Send a new code
+              <button
+                className="btn btn-ghost btn-sm grow"
+                disabled={busy || cooldown > 0}
+                onClick={send}
+              >
+                {cooldown > 0 ? `New code in ${cooldown}s` : 'Send a new code'}
               </button>
               <button
                 className="btn btn-ghost btn-sm grow"
@@ -232,10 +249,10 @@ export function Join() {
             <button
               className="btn btn-primary btn-block"
               style={{ marginTop: 'var(--space-3)' }}
-              disabled={busy}
+              disabled={busy || cooldown > 0}
               onClick={send}
             >
-              {busy ? 'Sending…' : 'Send me a link'}
+              {busy ? 'Sending…' : cooldown > 0 ? `Wait ${cooldown}s` : 'Email me a code'}
             </button>
             <p className="hint" style={{ marginBottom: 0, marginTop: 'var(--space-3)' }}>
               Your training data stays on this device either way. Signing in is only for the
