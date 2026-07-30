@@ -2,15 +2,17 @@ import { Icon } from './Icon'
 import { RirStepper } from './RirStepper'
 import { ExerciseNoteEditor } from './ExerciseNoteEditor'
 import { describeScheme, ghostFor, isHoldOnly, lastLoggedSets } from '../lib/prescription'
+import { progressionAdvice } from '../lib/progression'
 import type { Exercise, LoggedExercise, LoggedSet, Session } from '../types'
 
 interface Props {
   ex: LoggedExercise
   meta?: Exercise
-  unit: string
+  unit: 'lb' | 'kg'
   sessions: Session[]
   note?: string
   notesOpen: boolean
+  deload?: boolean
   onToggleNotes: () => void
   onUpdateSet: (setIndex: number, patch: Partial<LoggedSet>) => void
   onAddSet: () => void
@@ -29,6 +31,7 @@ export function SessionExercise({
   sessions,
   note,
   notesOpen,
+  deload,
   onToggleNotes,
   onUpdateSet,
   onAddSet,
@@ -43,6 +46,8 @@ export function SessionExercise({
   const scheme = describeScheme(ex.sets)
   const hasNote = !!(note ?? '').trim()
   const holds = isHoldOnly(ex.sets)
+  // Prior sessions only — advice about today shouldn't read today's own sets.
+  const advice = progressionAdvice(meta, sessions, unit, { deload })
 
   /**
    * Completing a set fills anything still blank from the ghost values, so the
@@ -74,6 +79,19 @@ export function SessionExercise({
       </div>
 
       {scheme && <div className="presc">{scheme}</div>}
+
+      {advice.headline && (
+        <div className={`advice tone-${advice.tone}`}>
+          {/* An upward trend arrow would be wrong for a back-off or a deload. */}
+          <Icon
+            name={
+              advice.verdict === 'add-load' || advice.verdict === 'add-reps' ? 'trend' : 'info'
+            }
+            size={14}
+          />
+          <span className="grow">{advice.headline}</span>
+        </div>
+      )}
 
       <div className="ex-actions">
         <button className="btn btn-sm btn-ghost" onClick={onGuide}>

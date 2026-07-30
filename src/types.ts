@@ -114,6 +114,10 @@ export interface Plan {
   builtIn?: boolean
   /** Template this plan was created from, so it can be refreshed later. */
   sourceTemplateId?: string
+  /** Start of the current training block; drives week and deload tracking. */
+  blockStartedAt?: number
+  /** Block length in weeks, including the deload. Defaults to the spec value. */
+  blockWeeks?: number
 }
 
 export interface LoggedSet {
@@ -144,6 +148,8 @@ export interface LoggedExercise {
 export interface Session {
   id: string
   date: number
+  /** Generated during a deload week: fewer sets, RIR held clear of failure. */
+  deload?: boolean
   planId?: string
   dayId?: string
   name: string

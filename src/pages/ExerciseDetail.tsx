@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import { exerciseHistory } from '../lib/stats'
+import { progressionAdvice } from '../lib/progression'
 import { LineChart, type LinePoint } from '../components/LineChart'
 import { Icon } from '../components/Icon'
 import { ExerciseGuide } from '../components/ExerciseGuide'
@@ -31,6 +32,8 @@ export function ExerciseDetail() {
     () => exerciseHistory(sessions, exerciseId ?? ''),
     [sessions, exerciseId],
   )
+
+  const advice = useMemo(() => progressionAdvice(meta, sessions, unit), [meta, sessions, unit])
 
   const points: LinePoint[] = history.map((p) => ({
     x: p.date,
@@ -115,6 +118,35 @@ export function ExerciseDetail() {
             <div className="stat">
               <div className="stat-value">{history.length}</div>
               <div className="stat-label">Sessions</div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {meta && advice.headline && (
+        <>
+          <div className="section-head">
+            <h2>Next session</h2>
+            <span className="tag">double progression</span>
+          </div>
+          <div className={`card advice-card tone-${advice.tone}`}>
+            <div className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
+              <span className="advice-mark" aria-hidden="true">
+                <Icon
+                  name={
+                    advice.verdict === 'add-load' || advice.verdict === 'add-reps'
+                      ? 'trend'
+                      : 'info'
+                  }
+                  size={16}
+                />
+              </span>
+              <div className="grow">
+                <div className="advice-headline">{advice.headline}</div>
+                <p className="hint" style={{ margin: '4px 0 0' }}>
+                  {advice.reason}
+                </p>
+              </div>
             </div>
           </div>
         </>
