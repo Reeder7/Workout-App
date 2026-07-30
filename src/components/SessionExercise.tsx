@@ -18,7 +18,8 @@ interface Props {
   onStepRir: (setIndex: number, delta: number) => void
   onRest: (seconds: number) => void
   onGuide: () => void
-  onMore: () => void
+  onSwap: () => void
+  onRemove: () => void
 }
 
 export function SessionExercise({
@@ -35,7 +36,8 @@ export function SessionExercise({
   onStepRir,
   onRest,
   onGuide,
-  onMore,
+  onSwap,
+  onRemove,
 }: Props) {
   const last = lastLoggedSets(sessions, ex.exerciseId)
   const scheme = describeScheme(ex.sets)
@@ -61,22 +63,30 @@ export function SessionExercise({
     <div className="card">
       <div className="row-between" style={{ gap: 'var(--space-2)' }}>
         <div className="grow">
-          <div className="row" style={{ gap: 6 }}>
-            <span className="ex-name">{meta?.name ?? 'Exercise'}</span>
-            <button className="ex-info" onClick={onGuide} aria-label="How to perform this lift">
-              <Icon name="info" size={16} />
-            </button>
-          </div>
+          <div className="ex-name">{meta?.name ?? 'Exercise'}</div>
           <div className="faint ex-meta">
             {meta ? `${meta.primary} · ${meta.equipment}` : 'Custom'}
           </div>
         </div>
-        <button className="icon-btn icon-btn-sm" onClick={onMore} aria-label="More options">
-          <Icon name="more" size={18} />
+        <button className="icon-btn icon-btn-sm" onClick={onRemove} aria-label="Remove exercise">
+          <Icon name="trash" size={16} />
         </button>
       </div>
 
       {scheme && <div className="presc">{scheme}</div>}
+
+      <div className="ex-actions">
+        <button className="btn btn-sm btn-ghost" onClick={onGuide}>
+          <Icon name="info" size={15} /> How to
+        </button>
+        <button className="btn btn-sm btn-ghost" onClick={onToggleNotes}>
+          <Icon name="note" size={15} /> Notes
+          {hasNote && <span className="dot" aria-label="has a note" />}
+        </button>
+        <button className="btn btn-sm btn-ghost" onClick={onSwap}>
+          <Icon name="swap" size={15} /> Swap
+        </button>
+      </div>
 
       {notesOpen ? (
         <div style={{ marginTop: 'var(--space-2)' }}>

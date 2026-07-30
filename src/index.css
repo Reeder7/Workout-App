@@ -892,19 +892,26 @@ button.lrow:active {
   letter-spacing: -0.014em;
   line-height: 21px;
 }
-.ex-info {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin: -4px 0;
-  border-radius: var(--radius-full);
-  color: var(--accent);
-  flex-shrink: 0;
+/* How to / Notes / Swap stay on screen — they are all one-tap actions used
+   mid-set, so they don't belong behind an overflow menu. Negative side margin
+   lets the ghost buttons' padding align their labels with the card edge. */
+.ex-actions {
+  display: flex;
+  gap: 2px;
+  margin: var(--space-2) calc(-1 * var(--space-2)) 0;
 }
-.ex-info:active {
-  background: var(--accent-subtle);
+.ex-actions .btn {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 4px;
+  gap: 5px;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  flex-shrink: 0;
 }
 .ex-meta {
   font-size: 12px;
@@ -987,18 +994,6 @@ button.lrow:active {
   background: transparent;
 }
 
-/* Action rows inside a sheet */
-.lrow-action {
-  width: 100%;
-  text-align: left;
-  background: none;
-  font-size: 15px;
-  font-weight: 600;
-  min-height: 56px;
-}
-.lrow-danger {
-  color: var(--danger);
-}
 
 /* Completion control: 28px circle inside a 44px target */
 .set-done {
