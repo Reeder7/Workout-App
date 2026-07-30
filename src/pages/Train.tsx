@@ -6,6 +6,9 @@ import { summaryStats, sessionVolume } from '../lib/stats'
 import { relativeDate, fmtDuration, fmtNum } from '../lib/format'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
+import { ProgressRing } from '../components/ProgressRing'
+import { EmptyState } from '../components/EmptyState'
+import { toast } from '../lib/toast'
 import type { Plan } from '../types'
 
 export function Train() {
@@ -55,55 +58,96 @@ export function Train() {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
+  // Weekly target comes from the plan itself rather than a hardcoded number.
+  const weekTarget = plans.length ? Math.max(...plans.map((p) => p.daysPerWeek)) : 4
+
   return (
     <div className="app">
       <div className="eyebrow">{greeting}</div>
-      <h1 className="page-title">Let's train.</h1>
+      <h1 className="page-title">{settings.name ? `Let's train, ${settings.name}.` : "Let's train."}</h1>
       <p className="page-sub">
         {stats.totalSessions === 0
           ? 'Log your first workout to start building your history.'
-          : `${stats.thisWeek} session${stats.thisWeek === 1 ? '' : 's'} this week · ${fmtNum(
-              stats.totalVolume,
-            )} ${settings.unit} lifted all-time`}
+          : `${fmtNum(stats.totalVolume)} ${settings.unit} lifted across ${
+              stats.totalSessions
+            } workout${stats.totalSessions === 1 ? '' : 's'}`}
       </p>
 
-      {active && (
-        <button
-          className="card card-tap"
-          style={{
-            width: '100%',
-            textAlign: 'left',
-            borderColor: 'var(--accent)',
-            background: 'var(--accent-subtle)',
-          }}
-          onClick={() => nav('/session')}
-        >
-          <div className="row-between">
-            <div>
-              <div className="eyebrow accent">Workout in progress</div>
-              <div style={{ fontSize: 18, fontWeight: 640, marginTop: 4 }}>{active.name}</div>
-              <div className="faint" style={{ fontSize: 13 }}>
-                {active.exercises.length} exercises · tap to resume
+      {/* Hero: the one thing you came here to do, plus this week at a glance. */}
+      <div className="hero-wrap">
+        {active ? (
+          <button
+            className="hero hero-active"
+            style={{ width: '100%', textAlign: 'left' }}
+            onClick={() => nav('/session')}
+          >
+            <ProgressRing
+              value={active.exercises.reduce(
+                (t, ex) => t + ex.sets.filter((s) => s.done).length,
+                0,
+              )}
+              max={Math.max(
+                1,
+                active.exercises.reduce((t, ex) => t + ex.sets.length, 0),
+              )}
+              caption="sets"
+            />
+            <div className="hero-copy">
+              <div className="eyebrow accent">In progress</div>
+              <div className="hero-title truncate">{active.name}</div>
+              <div className="hero-sub">{active.exercises.length} exercises · tap to resume</div>
+            </div>
+            <Icon name="play" className="accent" size={26} />
+          </button>
+        ) : (
+          <div className="hero hero-block">
+            <div className="row" style={{ gap: 'var(--space-4)' }}>
+              <ProgressRing value={stats.thisWeek} max={weekTarget} caption="this wk" />
+              <div className="hero-copy">
+                <div className="hero-title">
+                  {stats.thisWeek >= weekTarget
+                    ? 'Week complete'
+                    : `${weekTarget - stats.thisWeek} to go this week`}
+                </div>
+                <div className="hero-sub">
+                  {stats.thisWeek} of {weekTarget} sessions logged
+                </div>
               </div>
             </div>
-            <Icon name="play" className="accent" size={28} />
+            <button
+              className="btn btn-primary btn-block hero-cta"
+              onClick={() => {
+                if (plans.length === 1) setPickDayFor(plans[0])
+                else if (plans.length === 0) nav('/plans')
+                else document.getElementById('plan-list')?.scrollIntoView({ block: 'start' })
+              }}
+            >
+              <Icon name="play" size={18} />
+              {plans.length === 0 ? 'Create a plan' : 'Start a workout'}
+            </button>
           </div>
-        </button>
-      )}
+        )}
+      </div>
 
-      <div className="section-head">
-        <h2>Start a workout</h2>
+      <div className="section-head" id="plan-list">
+        <h2>Your plans</h2>
+        {plans.length > 0 && (
+          <button className="section-link" onClick={() => nav('/plans')}>
+            Templates <Icon name="chevron" size={14} />
+          </button>
+        )}
       </div>
 
       {plans.length === 0 ? (
-        <div className="card">
-          <p className="hint" style={{ marginTop: 0 }}>
-            You don't have any plans yet. Build one from a proven template or from scratch.
-          </p>
-          <button className="btn btn-primary btn-block" onClick={() => nav('/plans')}>
+        <EmptyState
+          glyph="plan"
+          title="No plans yet"
+          body="Build one from a proven template, or start from scratch."
+        >
+          <button className="btn btn-primary" onClick={() => nav('/plans')}>
             <Icon name="plus" size={18} /> Create a plan
           </button>
-        </div>
+        </EmptyState>
       ) : (
         plans.map((p) => (
           <div className="card" key={p.id}>
@@ -150,8 +194,8 @@ export function Train() {
         <>
           <div className="section-head">
             <h2>Recent</h2>
-            <button className="tag" onClick={() => nav('/progress')}>
-              View all
+            <button className="section-link" onClick={() => nav('/progress')}>
+              View all <Icon name="chevron" size={14} />
             </button>
           </div>
           {sessions.slice(0, 5).map((s) => (
@@ -239,7 +283,10 @@ export function Train() {
         <button
           className="btn btn-danger btn-block"
           onClick={() => {
-            if (confirmDelete) deletePlan(confirmDelete.id)
+            if (confirmDelete) {
+              deletePlan(confirmDelete.id)
+              toast('Plan deleted')
+            }
             setConfirmDelete(null)
           }}
         >

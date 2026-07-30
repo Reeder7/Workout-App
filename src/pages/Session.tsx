@@ -6,10 +6,13 @@ import { Icon } from '../components/Icon'
 import { ExercisePicker } from '../components/ExercisePicker'
 import { RestTimer } from '../components/RestTimer'
 import { Sheet } from '../components/Sheet'
+import { EmptyState } from '../components/EmptyState'
+import { PageHeader } from '../components/PageHeader'
 import { ExerciseGuide } from '../components/ExerciseGuide'
 import { ExerciseNoteEditor } from '../components/ExerciseNoteEditor'
 import { SwapSheet } from '../components/SwapSheet'
 import { fmtWeight } from '../lib/format'
+import { toast } from '../lib/toast'
 import type { Session as SessionType } from '../types'
 
 function useElapsed(startedAt?: number) {
@@ -76,13 +79,15 @@ export function Session() {
   if (!active) {
     return (
       <div className="app">
-        <div className="empty">
-          <div className="empty-emoji">🏋️</div>
-          <p>No active workout.</p>
+        <EmptyState
+          glyph="barbell"
+          title="No active workout"
+          body="Pick a plan on the Train tab to start logging sets."
+        >
           <button className="btn btn-primary" onClick={() => nav('/')}>
             Go to Train
           </button>
-        </div>
+        </EmptyState>
       </div>
     )
   }
@@ -93,21 +98,16 @@ export function Session() {
 
   return (
     <div className="app">
-      <div className="row-between" style={{ marginBottom: 2 }}>
-        <button className="icon-btn" onClick={() => nav('/')} aria-label="Back">
-          <Icon name="back" size={18} />
-        </button>
-        <div className="pill mono">
-          <Icon name="timer" size={13} /> {elapsed}
-        </div>
-      </div>
-
-      <h1 className="page-title" style={{ fontSize: 24, marginTop: 8 }}>
-        {active.name}
-      </h1>
-      <p className="page-sub">
-        {active.exercises.length} exercises · {completedSets} sets done
-      </p>
+      <PageHeader
+        title={active.name}
+        sub={`${active.exercises.length} exercises · ${completedSets} sets done`}
+        onBack={() => nav('/')}
+        actions={
+          <div className="pill mono">
+            <Icon name="timer" size={13} /> {elapsed}
+          </div>
+        }
+      />
 
       {active.exercises.map((ex, ei) => {
         const meta = exerciseById(ex.exerciseId)
@@ -319,6 +319,7 @@ export function Session() {
         open={!!guideFor}
         onClose={() => setGuideFor(null)}
         title={guideFor ? exerciseName(guideFor) : ''}
+        detent="large"
       >
         {guideFor && <ExerciseGuide exercise={exerciseById(guideFor)} />}
       </Sheet>
@@ -326,7 +327,11 @@ export function Session() {
       <SwapSheet
         exerciseId={swapIndex != null ? active.exercises[swapIndex]?.exerciseId ?? null : null}
         onClose={() => setSwapIndex(null)}
-        onSwap={(id) => swapIndex != null && swapExercise(swapIndex, id)}
+        onSwap={(id) => {
+          if (swapIndex == null) return
+          swapExercise(swapIndex, id)
+          toast('Exercise swapped', 'success')
+        }}
         warning={
           swapIndex != null && active.exercises[swapIndex]?.sets.some((st) => st.done)
             ? 'You have completed sets on this exercise. Swapping keeps the set structure but clears those logged numbers.'
@@ -345,6 +350,7 @@ export function Session() {
           onClick={() => {
             finish()
             setConfirmFinish(false)
+            toast(`Workout saved · ${completedSets} sets`, 'success')
             nav('/')
           }}
         >
@@ -356,6 +362,7 @@ export function Session() {
           onClick={() => {
             discard()
             setConfirmFinish(false)
+            toast('Workout discarded')
             nav('/')
           }}
         >
