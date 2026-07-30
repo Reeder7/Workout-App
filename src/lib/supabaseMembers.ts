@@ -4,7 +4,7 @@ import type { MemberProfile, MemberStatus } from '../types'
 
 interface ProfileRow {
   id: string
-  email: string
+  email: string | null
   display_name: string
   age: number | null
   height_cm: number | null
@@ -17,7 +17,7 @@ interface ProfileRow {
 function toProfile(r: ProfileRow): MemberProfile {
   return {
     id: r.id,
-    email: r.email,
+    email: r.email ?? undefined,
     displayName: r.display_name,
     age: r.age ?? undefined,
     heightCm: r.height_cm ?? undefined,

@@ -57,7 +57,7 @@ function set(patch: Partial<AuthState>) {
 
 interface ProfileRow {
   id: string
-  email: string
+  email: string | null
   display_name: string
   age: number | null
   height_cm: number | null
@@ -69,7 +69,7 @@ interface ProfileRow {
 
 const toProfile = (r: ProfileRow): MemberProfile => ({
   id: r.id,
-  email: r.email,
+  email: r.email ?? undefined,
   displayName: r.display_name,
   age: r.age ?? undefined,
   heightCm: r.height_cm ?? undefined,
@@ -235,6 +235,59 @@ export async function verifyEmailCode(email: string, token: string) {
   await refreshProfile()
 }
 
+export interface ProfileInput {
+  displayName: string
+  age?: number
+  heightCm?: number
+  weightKg?: number
+}
+
+export interface JoinInput extends ProfileInput {
+  code: string
+}
+
+/**
+ * Joins with an access code instead of an email.
+ *
+ * Signs in anonymously first — a real auth user with the `authenticated` role and
+ * no email address — then redeems the code server-side. The code is never checked
+ * before sign-in on purpose: anonymous sign-ins are IP rate-limited by GoTrue, so
+ * guessing has to get past that, whereas a pre-auth check callable by `anon` would
+ * have had no ceiling at all.
+ */
+export async function joinWithCode(input: JoinInput) {
+  const sb = await withTimeout(getSupabase())
+
+  // Reuse an existing session rather than minting another anonymous user each
+  // time someone corrects a typo in the code.
+  const { data: existing } = await withTimeout(sb.auth.getSession())
+  if (!existing.session) {
+    const { error } = await withTimeout(sb.auth.signInAnonymously())
+    if (error) throw new Error(explainAuthError(error.message))
+  }
+
+  const { error } = await withTimeout(
+    sb.rpc('join_with_code', {
+      code: input.code.trim(),
+      display_name: input.displayName.trim(),
+      age: input.age ?? null,
+      height_cm: input.heightCm ?? null,
+      weight_kg: input.weightKg ?? null,
+    }),
+  )
+  if (error) {
+    /*
+     * A wrong code leaves an anonymous user with no profile row. Signing back out
+     * keeps the app from looking half-joined, and the orphan is invisible: every
+     * policy keys off an approved profile, which it does not have.
+     */
+    if (!existing.session) await signOut()
+    throw new Error(explainAuthError(error.message))
+  }
+  clearAuthError()
+  await refreshProfile()
+}
+
 export async function signOut() {
   try {
     const sb = await withTimeout(getSupabase())
@@ -249,13 +302,6 @@ export async function signOut() {
     set({ userId: null, email: null, profile: null, error: null, linkError: null })
     clearStashedAuthError()
   }
-}
-
-export interface ProfileInput {
-  displayName: string
-  age?: number
-  heightCm?: number
-  weightKg?: number
 }
 
 /**
