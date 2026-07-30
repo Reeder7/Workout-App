@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { authRedirectUrl, getSupabase, isConfigured } from './supabase'
 import { withTimeout } from './members'
+import { takeStashedAuthError } from './authCallback'
+import type { AuthCallback } from './authCallback'
 import type { MemberProfile, MemberStatus } from '../types'
 
 export interface AuthState {
@@ -67,12 +69,46 @@ async function loadProfile(userId: string) {
 
 let started = false
 
-/** Reads the stored session and follows sign-in and sign-out from then on. */
-export async function initAuth() {
+/**
+ * Reads the stored session, applies any auth callback taken out of the URL, and
+ * follows sign-in and sign-out from then on.
+ */
+export async function initAuth(callback?: AuthCallback) {
   if (started || !isConfigured) return
   started = true
+
+  // An error from the link is reported even if the SDK never loads. A message
+  // stashed before a reload counts too, so a refresh doesn't hide the reason.
+  const failure = callback?.kind === 'error' ? callback.message : takeStashedAuthError()
+  if (failure) {
+    set({ error: failure, loading: false })
+    if (callback?.kind === 'error') return
+  }
+
   try {
     const sb = await getSupabase()
+
+    // Callbacks are applied by hand because detectSessionInUrl is off; see the
+    // comment in lib/supabase.ts for why.
+    if (callback?.kind === 'implicit' && callback.accessToken && callback.refreshToken) {
+      const { error } = await withTimeout(
+        sb.auth.setSession({
+          access_token: callback.accessToken,
+          refresh_token: callback.refreshToken,
+        }),
+      )
+      if (error) set({ error: `Sign-in failed: ${error.message}` })
+    } else if (callback?.kind === 'pkce' && callback.code) {
+      const { error } = await withTimeout(sb.auth.exchangeCodeForSession(callback.code))
+      if (error) {
+        // The usual cause is opening the link in a different browser from the one
+        // that requested it, which is where the PKCE verifier lives.
+        set({
+          error: `Sign-in failed: ${error.message}. Open the link in the same browser you requested it from.`,
+        })
+      }
+    }
+
     const { data } = await sb.auth.getSession()
     const user = data.session?.user ?? null
 
