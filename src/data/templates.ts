@@ -413,6 +413,8 @@ export const TEMPLATES: Plan[] = [
         iso('cable-rear-delt-fly', 3, [12, 20], { role: 'Rear delts' }),
         iso('bayesian-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Biceps long head' }),
         iso('barbell-shrug', 3, [10, 15], { role: 'Traps' }),
+        // Last slot on purpose: grip fatigue here can't compromise the pulls.
+        iso('wrist-curl', 2, [12, 20], { rest: 60, role: 'Wrist flexors' }),
       ]),
       day('Legs B — Posterior / Hip', [
         comp('romanian-deadlift', 3, [6, 10], { rir: [3, 2], rest: 180, role: 'Hip hinge' }),
