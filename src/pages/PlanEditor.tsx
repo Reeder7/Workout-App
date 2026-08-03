@@ -8,6 +8,7 @@ import { ExercisePicker } from '../components/ExercisePicker'
 import { SwapSheet } from '../components/SwapSheet'
 import { SharePlanButton } from '../components/SharePlanButton'
 import { DEFAULTS } from '../data/landmarks'
+import { templateUpdateAvailable } from '../data/templates'
 import { VolumeBar } from '../components/VolumeBar'
 import type { MuscleGroup, Plan, PlanDay, PlanExercise, PrescribedSet } from '../types'
 
@@ -63,6 +64,7 @@ export function PlanEditor() {
   }
 
   const currentDay = plan.days.find((d) => d.id === activeDayId) ?? plan.days[0]
+  const updateAvailable = templateUpdateAvailable(plan)
 
   function save(mutator: (draft: Plan) => void) {
     const draft: Plan = structuredClone(plan!)
@@ -229,6 +231,24 @@ export function PlanEditor() {
         </h1>
       </button>
       {plan.description && <p className="page-sub">{plan.description}</p>}
+
+      {/* A saved plan is a snapshot, so template changes don't reach it on their
+          own. Surface that here rather than only inside the details sheet. */}
+      {updateAvailable && (
+        <div className="notice">
+          <div className="grow">
+            <div className="notice-title">Programming updated</div>
+            <div className="notice-body">
+              The built-in template this plan came from has changed. Refreshing replaces this
+              plan's days with the new version — your own edits to it are lost, your logged
+              history and notes are not.
+            </div>
+          </div>
+          <button className="btn btn-sm" onClick={() => setConfirmRefresh(true)}>
+            Review
+          </button>
+        </div>
+      )}
 
       {/* Day tabs */}
       <div className="chips" style={{ marginTop: 8 }}>

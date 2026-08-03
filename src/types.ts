@@ -114,6 +114,15 @@ export interface Plan {
   builtIn?: boolean
   /** Template this plan was created from, so it can be refreshed later. */
   sourceTemplateId?: string
+  /**
+   * Programming revision. Bumped on a built-in template whenever its exercises,
+   * sets or targets change. A saved plan records the revision it was cloned
+   * from, so the two can be compared without mistaking the user's own edits for
+   * an upstream update.
+   */
+  revision?: number
+  /** The template revision this plan was cloned or last refreshed from. */
+  sourceTemplateRevision?: number
   /** Start of the current training block; drives week and deload tracking. */
   blockStartedAt?: number
   /** Block length in weeks, including the deload. Defaults to the spec value. */
