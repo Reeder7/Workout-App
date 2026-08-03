@@ -351,16 +351,16 @@ export const TEMPLATES: Plan[] = [
     id: 'tpl-ppl-knee',
     name: 'Push · Pull · Legs (Knee-Resilient) — 6 Day',
     description:
-      'A full 6-day Push/Pull/Legs where the leg days are knee-conscious: an isometric primer, quad AND hamstring priority, hip/glute work for valgus control, knee-friendly tempo and single-leg work, and low-impact sled finishers — no jumping or impact. Every exercise has its own set-by-set prescription. Load the legs pain-guided: keep knee pain ≤3/10 and settling by the next morning. Not medical advice — clear your loading with your PT/surgeon.',
+      'A full 6-day Push/Pull/Legs where the leg days are knee-conscious: an isometric primer, quad AND hamstring priority, hip/glute work for valgus control, knee-friendly tempo and single-leg work, and low-impact sled finishers — no jumping or impact. Every exercise is capped at three working sets, and every one has its own set-by-set prescription. Load the legs pain-guided: keep knee pain ≤3/10 and settling by the next morning. Not medical advice — clear your loading with your PT/surgeon.',
     daysPerWeek: 6,
     createdAt: 0,
     builtIn: true,
     days: [
       day('Push A', [
-        comp('smith-incline-press', 4, [6, 10], { rir: [3, 1], rest: 180, role: 'Upper chest' }),
+        comp('smith-incline-press', 3, [6, 10], { rir: [3, 1], rest: 180, role: 'Upper chest' }),
         comp('flat-db-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Mid chest' }),
         comp('machine-shoulder-press', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Front delts' }),
-        iso('cable-lateral-raise', 4, [12, 20], { role: 'Side delts' }),
+        iso('cable-lateral-raise', 3, [12, 20], { role: 'Side delts' }),
         iso('overhead-triceps-ext', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
         iso('triceps-pushdown', 2, [12, 20], { role: 'Triceps lateral' }),
       ]),
@@ -375,7 +375,7 @@ export const TEMPLATES: Plan[] = [
       ]),
       day('Legs A — Quad focus', [
         hold('wall-sit', 3, [30, 45], { role: 'Isometric primer' }),
-        comp('heels-elevated-squat', 4, [8, 12], {
+        comp('heels-elevated-squat', 3, [8, 12], {
           rir: [3, 1],
           rest: 150,
           tempo: '3-1-3-0',
@@ -384,6 +384,10 @@ export const TEMPLATES: Plan[] = [
         iso('leg-extension', 3, [10, 15], { tempo: '3-0-1-0', role: 'Quad isolation' }),
         iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' }),
         iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 60, role: 'Glute med / valgus' }),
+        iso('standing-calf-raise', 3, [8, 15], {
+          tempo: STRETCH_TEMPO,
+          role: 'Gastrocnemius (knee straight)',
+        }),
         mk(
           'backward-sled-drag',
           [
@@ -395,10 +399,10 @@ export const TEMPLATES: Plan[] = [
         ),
       ]),
       day('Push B', [
-        comp('ohp', 4, [5, 8], { rir: [3, 1], rest: 180, role: 'Vertical press' }),
+        comp('ohp', 3, [5, 8], { rir: [3, 1], rest: 180, role: 'Vertical press' }),
         comp('machine-chest-press', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Mid chest' }),
         iso('high-low-cable-fly', 3, [12, 15], { tempo: STRETCH_TEMPO, role: 'Chest (stretch)' }),
-        iso('lateral-raise', 4, [12, 20], { role: 'Side delts' }),
+        iso('lateral-raise', 3, [12, 20], { role: 'Side delts' }),
         comp('jm-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Triceps compound' }),
         iso('katana-extension', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
       ]),
@@ -411,12 +415,16 @@ export const TEMPLATES: Plan[] = [
         iso('barbell-shrug', 3, [10, 15], { role: 'Traps' }),
       ]),
       day('Legs B — Posterior / Hip', [
-        comp('romanian-deadlift', 4, [6, 10], { rir: [3, 2], rest: 180, role: 'Hip hinge' }),
-        iso('seated-leg-curl', 4, [8, 15], { tempo: STRETCH_TEMPO, role: 'Hamstrings (stretch)' }),
+        comp('romanian-deadlift', 3, [6, 10], { rir: [3, 2], rest: 180, role: 'Hip hinge' }),
+        iso('seated-leg-curl', 3, [8, 15], { tempo: STRETCH_TEMPO, role: 'Hamstrings (stretch)' }),
         iso('nordic-curl', 3, [3, 6], { rir: [2, 1], rest: 120, role: 'Eccentric hamstring' }),
         comp('hip-thrust', 3, [8, 15], { rir: [2, 1], rest: 120, role: 'Glutes' }),
         iso('back-extension-45', 3, [10, 15], { role: 'Posterior chain' }),
         iso('tke', 3, [12, 20], { rir: [1, 0], rest: 60, role: 'Quad activation' }),
+        iso('seated-calf-raise', 3, [10, 20], {
+          tempo: STRETCH_TEMPO,
+          role: 'Soleus (knee bent)',
+        }),
         iso('tibialis-raise', 3, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
         mk(
           'sled-push',
