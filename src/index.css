@@ -968,6 +968,53 @@ button.lrow:active {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+/* ============================================================================
+   Per-set prescription editor (Plan editor)
+
+   Same five-column shape as the logging grid above, but the columns are sized
+   for editing rather than for one-tap entry: REPS holds a min–max pair, so it
+   gets the flexible column, and RIR/REST are only as wide as three digits need.
+   ========================================================================= */
+.schemegrid {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 54px 64px 32px;
+  gap: 6px;
+  align-items: center;
+}
+/* Reorder / swap / delete for one exercise in the plan editor. Its own row so
+   the four buttons keep full 44px tap targets without crushing the name. */
+.scheme-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.schemegrid-head {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-tertiary);
+  font-weight: 600;
+  padding: var(--space-2) 0 var(--space-1);
+}
+.schemegrid input {
+  min-height: 44px;
+  padding: 10px 2px;
+  text-align: center;
+  /* 16px is the floor that stops iOS Safari zooming the page on focus. */
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  border-radius: var(--radius-sm);
+}
+/* A set number that also carries a label ("Top", "Back") has to grow. */
+.schemegrid .set-num {
+  flex-direction: column;
+  height: auto;
+  min-height: 24px;
+  padding: 3px 0;
+  gap: 1px;
+}
+
 .setfoot {
   gap: var(--space-2);
   margin-top: var(--space-1);
