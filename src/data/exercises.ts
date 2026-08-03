@@ -1256,6 +1256,35 @@ export const EXERCISES: Exercise[] = [
     mistakes: ['Swinging the shoulder', 'Short ROM', 'Rushing the reps'],
     science: 'A braced elbow isolates elbow flexion for high activation and a strong peak contraction.',
   },
+  {
+    id: 'spider-curl',
+    name: 'Spider Curl',
+    primary: 'Biceps',
+    secondary: ['Forearms'],
+    equipment: 'Dumbbell',
+    category: 'Isolation',
+    repRange: [10, 15],
+    notes: 'Chest down on an incline bench with the arms hanging straight down. Shoulder flexion shortens the long head, so the short head takes over — the mirror image of a Bayesian or incline curl. The prone position also makes cheating almost impossible.',
+    howTo: [
+      'Set an incline bench to ~45° and lie chest-down against the pad.',
+      'Let both arms hang straight down, perpendicular to the floor, holding dumbbells (or an EZ-bar).',
+      'Curl up by flexing the elbows only, keeping the upper arms vertical and still.',
+      'Squeeze at the top, then lower all the way to a full stretch.',
+    ],
+    cues: [
+      'Upper arms stay vertical — only the forearms move',
+      'Chest stays pinned to the pad',
+      'Full lockout at the bottom every rep',
+    ],
+    mistakes: [
+      'Letting the elbows drift back (turns it into a row)',
+      'Peeling the chest off the pad to heave the weight',
+      'Stopping short of full extension',
+    ],
+    science:
+      'The flexed shoulder shortens the long head, biasing the short head; peak tension lands near the contracted position, complementing stretch-biased curls.',
+    tags: ['Short-head'],
+  },
 
   // ============================ TRICEPS ============================
   {

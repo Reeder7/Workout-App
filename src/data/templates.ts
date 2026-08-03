@@ -412,6 +412,9 @@ export const TEMPLATES: Plan[] = [
         iso('straight-arm-pulldown', 2, [12, 20], { tempo: STRETCH_TEMPO, role: 'Lats (isolation)' }),
         iso('cable-rear-delt-fly', 3, [12, 20], { role: 'Rear delts' }),
         iso('bayesian-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Biceps long head' }),
+        // Paired with the Bayesian curl: shoulder flexed instead of extended, so
+        // the short head does the work the long head just did.
+        iso('spider-curl', 2, [10, 15], { role: 'Biceps short head' }),
         iso('barbell-shrug', 3, [10, 15], { role: 'Traps' }),
         // Last slot on purpose: grip fatigue here can't compromise the pulls.
         iso('wrist-curl', 2, [12, 20], { rest: 60, role: 'Wrist flexors' }),
