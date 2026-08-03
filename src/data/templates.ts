@@ -420,8 +420,17 @@ export const TEMPLATES: Plan[] = [
         iso('wrist-curl', 2, [12, 20], { rest: 60, role: 'Wrist flexors' }),
       ]),
       day('Legs B — Posterior / Hip', [
-        comp('romanian-deadlift', 3, [6, 10], { rir: [3, 2], rest: 180, role: 'Hip hinge' }),
-        iso('seated-leg-curl', 3, [8, 15], { tempo: STRETCH_TEMPO, role: 'Hamstrings (stretch)' }),
+        // Unilateral so the stronger leg can't carry the weaker one — reps are
+        // per leg, so lighter and higher-rep than the barbell version.
+        comp('single-leg-rdl', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Hip hinge (per leg)' }),
+        // One leg at a time: extension ROM differs between the legs, so each
+        // side works through the range it actually has.
+        iso('seated-leg-curl', 3, [8, 15], {
+          tempo: STRETCH_TEMPO,
+          role: 'Hamstrings (stretch, per leg)',
+        }),
+        // Deliberately kept bilateral — the eccentric overload is the point and
+        // a single-leg nordic is far past what one leg can control.
         iso('nordic-curl', 3, [3, 6], { rir: [2, 1], rest: 120, role: 'Eccentric hamstring' }),
         comp('hip-thrust', 3, [8, 15], { rir: [2, 1], rest: 120, role: 'Glutes' }),
         iso('back-extension-45', 3, [10, 15], { role: 'Posterior chain' }),

@@ -13,6 +13,38 @@ of the plan, of each exercise's set count — full credit for the exercise's
 
 ---
 
+## Standing constraint: asymmetric knee extension ROM
+
+**Status:** standing constraint, not a task. Recorded 2026-08-03.
+
+The non-surgical leg **hyperextends**; the surgical leg does not. The two legs
+therefore reach different amounts of knee extension, so a bilateral hamstring
+movement cannot put both sides at the same muscle length — the hyperextending
+side reaches a longer position at the same hip angle, and the surgical side
+runs out of range first.
+
+Consequences for programming decisions:
+
+- **Prefer unilateral hamstring work** where the loading position depends on
+  knee extension. Each leg then works through the range it actually has instead
+  of being averaged against the other. Currently unilateral: seated leg curl,
+  single-leg RDL.
+- **Match the stretch, not the depth.** Reps and depth will not look the same
+  side to side, and forcing them to match means one side is short and the other
+  is at end range. The felt stretch is the target.
+- **Don't cue a locked stance knee.** On the hyperextending leg, locking back
+  into full extension shifts load to the posterior capsule and masks hamstring
+  tension. Soft knee on both sides.
+- **The Nordic curl stays bilateral by choice.** Eccentric overload is the
+  reason it's in the program, and a single-leg Nordic is well past what one leg
+  can control. Accepting that the hyperextending side reaches further is the
+  trade being made here, knowingly.
+- **Watch for load asymmetry over time.** Once there's per-exercise history, a
+  persistent gap in working load between legs on the single-leg lifts is the
+  signal worth acting on — not the ROM difference itself, which is structural.
+
+---
+
 ## Traps sit below MEV
 
 **Status:** open. Raised 2026-08-03.

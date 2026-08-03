@@ -930,6 +930,74 @@ export const EXERCISES: Exercise[] = [
     science: 'A hip hinge loading the hamstrings in a deep stretch with constant tension.',
   },
   {
+    id: 'single-leg-rdl',
+    name: 'Single-Leg Romanian Deadlift',
+    primary: 'Hamstrings',
+    secondary: ['Glutes', 'Back'],
+    equipment: 'Dumbbell',
+    category: 'Compound',
+    repRange: [8, 12],
+    tags: ['Single-leg', 'Knee-friendly'],
+    notes:
+      'Same hinge and same deep hamstring stretch as an RDL, but one leg at a time, so a stronger side can’t quietly carry a weaker one. The stance hip has to resist rotation and the foot has to resist rolling, which is where the balance demand comes from. Log reps per leg. Knee stays soft and nearly fixed throughout, so knee-joint load is low.',
+    howTo: [
+      'Hold one dumbbell in the hand opposite the stance leg (or one in each hand for less balance demand).',
+      'Stand on one leg with a soft knee; let the free leg hang or trail slightly behind.',
+      'Hinge at the hip, pushing the free leg back as a counterweight and keeping the hips level.',
+      'Descend until the hamstring is strongly stretched, then drive the hip forward to stand tall.',
+    ],
+    cues: [
+      'Hips stay square — don’t let the free-side hip open to the ceiling',
+      'Free leg extends back as a counterweight, not up for balance',
+      'Grip the floor with the whole foot; barefoot or flat shoes help',
+      'Fix your eyes on one spot to steady the balance',
+    ],
+    mistakes: [
+      'Rotating open through the hips (turns it into a twist, not a hinge)',
+      'Going so heavy that balance becomes the limiter before the hamstring',
+      'Bending the knee through the rep instead of hinging at the hip',
+      'Locking the stance knee back into full extension — on a knee that hyperextends this parks the load on the posterior capsule and hides the hamstring stretch',
+      'Matching depth side to side rather than matching the stretch you actually feel',
+      'Touching down between reps — reset only if the set has broken down',
+    ],
+    science:
+      'A unilateral hip hinge loading the hamstrings in a deep stretch, with an added frontal- and transverse-plane stability demand at the hip, knee and ankle.',
+  },
+  {
+    id: 'single-leg-balance-bosu',
+    name: 'Single-Leg Balance (BOSU / Pad)',
+    primary: 'Shins',
+    secondary: [],
+    equipment: 'Other',
+    category: 'Isolation',
+    repRange: [20, 45],
+    tags: ['Rehab', 'Activation', 'Knee-friendly', 'Isometric'],
+    notes:
+      'Dedicated ankle and proprioceptive work on an unstable surface, logged in seconds per leg. Deliberately kept separate from loaded lifting: an unstable surface reduces the force you can produce, so it makes a poor platform for a working set — but that same instability is exactly the point when balance itself is the target. Progress by time, then by closing your eyes or adding reaches, not by adding load.',
+    howTo: [
+      'Stand on a BOSU (dome up), balance pad or folded mat on one leg, knee soft.',
+      'Find a quiet balance and hold, keeping the hips level and the arch of the foot active.',
+      'Hold for time, then swap legs.',
+      'Progress: eyes closed, then slow reaches with the free leg (front, side, back).',
+    ],
+    cues: [
+      'Toes spread, whole foot gripping',
+      'Hips level — don’t hitch the free side up',
+      'Knee soft and tracking over the middle of the foot',
+      'Small corrections at the ankle, not the whole body',
+    ],
+    mistakes: [
+      'Holding a wall or rail the whole time (no balance demand left)',
+      'Letting the knee collapse inward',
+      'Adding load or a hinge and turning it into an unstable working set',
+    ],
+    science:
+      'Unstable-surface work trains ankle and hip stabilisers and proprioceptive control. Because it lowers prime-mover force output, it belongs alongside loaded training rather than inside it.',
+    caution:
+      'Balance work only — no heavy load on the unstable surface. Have something within reach to steady yourself, especially with the eyes closed.',
+    excludeFromVolume: true,
+  },
+  {
     id: 'stiff-leg-deadlift',
     name: 'Stiff-Leg Deadlift',
     primary: 'Hamstrings',
