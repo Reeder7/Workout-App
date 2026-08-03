@@ -273,14 +273,16 @@ export function PlanEditor() {
 
       {currentDay.exercises.map((pe, i) => (
         <div className="card" key={pe.id}>
-          <div className="row-between" style={{ marginBottom: 10 }}>
-            <div className="grow">
-              <div style={{ fontWeight: 640 }}>{exName(pe.exerciseId)}</div>
-              <div className="faint" style={{ fontSize: 12 }}>
-                {(EXERCISE_BY_ID[pe.exerciseId] ?? allExercises.find((e) => e.id === pe.exerciseId))
-                  ?.primary ?? 'Custom'}
-              </div>
+          {/* Name first, actions on their own row: four 44px targets beside the
+              title left it barely 130px, which wrapped long names to 3 lines. */}
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontWeight: 640 }}>{exName(pe.exerciseId)}</div>
+            <div className="faint" style={{ fontSize: 12 }}>
+              {(EXERCISE_BY_ID[pe.exerciseId] ?? allExercises.find((e) => e.id === pe.exerciseId))
+                ?.primary ?? 'Custom'}
             </div>
+          </div>
+          <div className="scheme-actions">
             <button
               className="icon-btn"
               onClick={() => moveExercise(pe.id, -1)}
@@ -328,7 +330,10 @@ export function PlanEditor() {
           {/* Per-set prescription editor */}
           <div className="schemegrid schemegrid-head">
             <div className="center">SET</div>
-            <div className="center">REPS</div>
+            {/* A hold is prescribed in seconds, not reps. */}
+            <div className="center">
+              {schemeOf(pe).every((ps) => ps.isHold) ? 'SECS' : 'REPS'}
+            </div>
             <div className="center">RIR</div>
             <div className="center">REST</div>
             <div />
