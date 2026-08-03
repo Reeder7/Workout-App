@@ -363,6 +363,10 @@ export const TEMPLATES: Plan[] = [
         iso('cable-lateral-raise', 3, [12, 20], { role: 'Side delts' }),
         iso('overhead-triceps-ext', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
         iso('triceps-pushdown', 2, [12, 20], { role: 'Triceps lateral' }),
+        // Abs go on the push days: both leg days are already the longest
+        // sessions, and trunk work there would compete with the hinge.
+        // Seated, not the kneeling cable crunch — nothing on the knees.
+        iso('machine-crunch', 3, [10, 15], { role: 'Abs (loaded flexion)' }),
       ]),
       day('Pull A', [
         comp('barbell-row', 3, [6, 10], { rir: [3, 1], rest: 180, role: 'Horizontal pull' }),
@@ -405,6 +409,10 @@ export const TEMPLATES: Plan[] = [
         iso('lateral-raise', 3, [12, 20], { role: 'Side delts' }),
         comp('jm-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Triceps compound' }),
         iso('katana-extension', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
+        // The other half of the ab work, and a different job: curling the
+        // pelvis under a long lever rather than loaded spinal flexion. Hanging,
+        // so again no knee involvement.
+        iso('hanging-leg-raise', 3, [8, 15], { role: 'Abs (pelvis curl)' }),
       ]),
       day('Pull B', [
         comp('pullup', 3, [6, 10], { rir: [2, 1], rest: 150, role: 'Vertical pull' }),
