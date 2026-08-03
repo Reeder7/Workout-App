@@ -10,7 +10,7 @@ import type {
   Settings,
 } from '../types'
 import { EXERCISES } from '../data/exercises'
-import { TEMPLATES } from '../data/templates'
+import { TEMPLATES, sourceTemplateFor } from '../data/templates'
 import { blockState, deloadScheme } from '../lib/mesocycle'
 
 export function uid(prefix = 'id'): string {
@@ -23,6 +23,9 @@ function clonePlan(source: Plan, opts: { asCopy?: boolean } = {}): Plan {
     id: uid('plan'),
     builtIn: false,
     createdAt: Date.now(),
+    // Record which revision of the template this copy came from, so a later
+    // programming change to the template can be detected and offered.
+    sourceTemplateRevision: source.revision,
     name: opts.asCopy ? `${source.name} (copy)` : source.name,
     days: source.days.map((d) => ({
       ...d,
@@ -122,11 +125,7 @@ export const useStore = create<State>()(
       refreshPlanFromTemplate: (planId) => {
         const plan = get().plans.find((p) => p.id === planId)
         if (!plan) return false
-        // Match by recorded source, falling back to name for plans created
-        // before that link existed.
-        const t =
-          TEMPLATES.find((x) => x.id === plan.sourceTemplateId) ??
-          TEMPLATES.find((x) => x.name === plan.name)
+        const t = sourceTemplateFor(plan)
         if (!t) return false
         const fresh = clonePlan(t)
         set((s) => ({
@@ -139,6 +138,7 @@ export const useStore = create<State>()(
                   daysPerWeek: t.daysPerWeek,
                   days: fresh.days,
                   sourceTemplateId: t.id,
+                  sourceTemplateRevision: t.revision,
                 }
               : p,
           ),

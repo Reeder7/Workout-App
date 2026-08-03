@@ -981,6 +981,35 @@ button.lrow:active {
   gap: 6px;
   align-items: center;
 }
+/* ============================================================================
+   Inline notice — an actionable heads-up, not an error
+   ========================================================================= */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: var(--accent-subtle);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-3) 0 0;
+}
+.notice-title {
+  font-size: 13px;
+  font-weight: 640;
+  color: var(--accent-ink);
+  margin-bottom: 2px;
+}
+.notice-body {
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--ink-secondary);
+}
+.notice .btn {
+  flex-shrink: 0;
+  align-self: center;
+}
+
 /* Reorder / swap / delete for one exercise in the plan editor. Its own row so
    the four buttons keep full 44px tap targets without crushing the name. */
 .scheme-actions {

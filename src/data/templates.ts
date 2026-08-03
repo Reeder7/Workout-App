@@ -349,6 +349,10 @@ export const TEMPLATES: Plan[] = [
   // ------------------------------------------------- PPL + Knee-Resilient legs
   {
     id: 'tpl-ppl-knee',
+    // Bumped when the programming changes, so saved copies can offer an update:
+    // 2 — three-set cap, direct calf work, wrist curls, spider curl,
+    //     single-leg RDL in place of the barbell RDL, and ab work.
+    revision: 2,
     name: 'Push · Pull · Legs (Knee-Resilient) — 6 Day',
     description:
       'A full 6-day Push/Pull/Legs where the leg days are knee-conscious: an isometric primer, quad AND hamstring priority, hip/glute work for valgus control, knee-friendly tempo and single-leg work, and low-impact sled finishers — no jumping or impact. Every exercise is capped at three working sets, and every one has its own set-by-set prescription. Load the legs pain-guided: keep knee pain ≤3/10 and settling by the next morning. Not medical advice — clear your loading with your PT/surgeon.',
@@ -751,3 +755,25 @@ export const TEMPLATES: Plan[] = [
     ],
   },
 ]
+
+/**
+ * The built-in template a saved plan came from. Matches on the recorded source
+ * id, falling back to the name for plans saved before that link existed.
+ */
+export function sourceTemplateFor(plan: Plan): Plan | undefined {
+  return (
+    TEMPLATES.find((t) => t.id === plan.sourceTemplateId) ??
+    TEMPLATES.find((t) => t.name === plan.name)
+  )
+}
+
+/**
+ * True when the source template's programming has been revised since this plan
+ * was cloned or last refreshed. Compares recorded revisions rather than diffing
+ * the days, so the user's own edits are never mistaken for an upstream change.
+ */
+export function templateUpdateAvailable(plan: Plan): boolean {
+  const t = sourceTemplateFor(plan)
+  if (!t?.revision) return false
+  return (plan.sourceTemplateRevision ?? 0) < t.revision
+}
