@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import {
@@ -24,7 +24,12 @@ export function Progress() {
   const custom = useStore((s) => s.customExercises)
   const unit = useStore((s) => s.settings.unit)
   const deleteSession = useStore((s) => s.deleteSession)
-  const [openSession, setOpenSession] = useState<string | null>(null)
+  // Tapping a workout in Train's Recent list lands here with that session to
+  // open, so the breakdown is one tap away instead of a hunt through History.
+  const loc = useLocation()
+  const [openSession, setOpenSession] = useState<string | null>(
+    (loc.state as { openSession?: string } | null)?.openSession ?? null,
+  )
 
   const stats = summaryStats(sessions)
   const prs = useMemo(() => personalRecords(sessions), [sessions])

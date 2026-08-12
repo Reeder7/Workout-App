@@ -251,13 +251,34 @@ export function Train() {
             </button>
           </div>
           {sessions.slice(0, 5).map((s) => (
-            <div key={s.id} className="card" style={{ padding: '14px 16px' }}>
+            <button
+              key={s.id}
+              className="card card-tap"
+              style={{
+                padding: '14px 16px',
+                width: '100%',
+                textAlign: 'left',
+                display: 'block',
+              }}
+              onClick={() => nav('/progress', { state: { openSession: s.id } })}
+            >
               <div className="row-between">
                 <div className="grow">
                   <div style={{ fontWeight: 600 }} className="truncate">
                     {s.name}
                   </div>
-                  <div className="faint" style={{ fontSize: 12 }}>
+                  {/* Which lifts, not just how many — the day name alone doesn't
+                      say what was actually trained. */}
+                  {s.exercises.length > 0 && (
+                    <div className="truncate" style={{ fontSize: 12, marginTop: 2 }}>
+                      {s.exercises
+                        .slice(0, 3)
+                        .map((e) => EXERCISE_BY_ID[e.exerciseId]?.name ?? 'Exercise')
+                        .join(' · ')}
+                      {s.exercises.length > 3 ? ` +${s.exercises.length - 3} more` : ''}
+                    </div>
+                  )}
+                  <div className="faint" style={{ fontSize: 12, marginTop: 2 }}>
                     {relativeDate(s.date)} · {s.exercises.length} exercises ·{' '}
                     {fmtDuration(s.durationSec)}
                   </div>
@@ -267,7 +288,7 @@ export function Train() {
                   <div className="tag">{settings.unit} vol</div>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </>
       )}
