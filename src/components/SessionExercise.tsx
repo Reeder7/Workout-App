@@ -3,6 +3,7 @@ import { RirStepper } from './RirStepper'
 import { ExerciseNoteEditor } from './ExerciseNoteEditor'
 import { describeScheme, ghostFor, isHoldOnly, lastLoggedSets } from '../lib/prescription'
 import { progressionAdvice } from '../lib/progression'
+import { isExerciseDone, sinkDone } from '../lib/displayOrder'
 import type { Exercise, LoggedExercise, LoggedSet, Session } from '../types'
 
 interface Props {
@@ -65,7 +66,7 @@ export function SessionExercise({
   }
 
   return (
-    <div className="card">
+    <div className={`card${isExerciseDone(ex) ? ' card-done' : ''}`}>
       <div className="row-between" style={{ gap: 'var(--space-2)' }}>
         <div className="grow">
           <div className="ex-name">{meta?.name ?? 'Exercise'}</div>
@@ -127,7 +128,7 @@ export function SessionExercise({
         <div />
       </div>
 
-      {ex.sets.map((st, si) => {
+      {sinkDone(ex.sets, (st) => st.done).map(({ item: st, index: si }) => {
         const g = ghostFor(last, si, st.target)
         const hold = st.target?.isHold
         return (

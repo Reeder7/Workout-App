@@ -10,6 +10,7 @@ import { EmptyState } from '../components/EmptyState'
 import { PageHeader } from '../components/PageHeader'
 import { ExerciseGuide } from '../components/ExerciseGuide'
 import { SessionExercise } from '../components/SessionExercise'
+import { isExerciseDone, sinkDone } from '../lib/displayOrder'
 import { SwapSheet } from '../components/SwapSheet'
 import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
 import { toast } from '../lib/toast'
@@ -136,7 +137,7 @@ export function Session() {
         </div>
       )}
 
-      {active.exercises.map((ex, ei) => (
+      {sinkDone(active.exercises, isExerciseDone).map(({ item: ex, index: ei }) => (
         <SessionExercise
           key={`${ex.exerciseId}-${ei}`}
           ex={ex}
