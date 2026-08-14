@@ -1484,6 +1484,12 @@ button.lrow:active {
   background: transparent;
 }
 
+/* A finished exercise sinks below the unfinished ones. Dimming it says the card
+   moved because it's done, rather than looking like the list reshuffled. */
+.card-done {
+  opacity: 0.6;
+}
+
 /* ============================================================================
    Sheet
    ========================================================================= */
