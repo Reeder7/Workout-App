@@ -1490,6 +1490,22 @@ button.lrow:active {
   opacity: 0.6;
 }
 
+/* Monospaced preview of the training report. Scrolls in both directions rather
+   than wrapping — the report is column-aligned and wrapping destroys it. */
+.report-preview {
+  margin: 0;
+  max-height: 52vh;
+  overflow: auto;
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ============================================================================
    Sheet
    ========================================================================= */

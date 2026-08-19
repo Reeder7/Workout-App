@@ -6,6 +6,7 @@ import { Sheet } from '../components/Sheet'
 import { Segmented } from '../components/Segmented'
 import { PageHeader } from '../components/PageHeader'
 import { toast } from '../lib/toast'
+import { buildReviewReport } from '../lib/reviewExport'
 
 export function Settings() {
   const nav = useNavigate()
@@ -17,8 +18,67 @@ export function Settings() {
   const plans = useStore((s) => s.plans)
   const sessions = useStore((s) => s.sessions)
 
+  const customExercises = useStore((s) => s.customExercises)
+
   const fileRef = useRef<HTMLInputElement>(null)
   const [confirmReset, setConfirmReset] = useState(false)
+  const [preview, setPreview] = useState<string | null>(null)
+
+  const buildReport = () =>
+    buildReviewReport({ sessions, customExercises, unit: settings.unit })
+
+  /**
+   * Clipboard write, with a fallback for the non-secure contexts and older
+   * WebViews where navigator.clipboard is missing.
+   */
+  async function copyText(text: string) {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        const ta = document.createElement('textarea')
+        ta.value = text
+        ta.style.position = 'fixed'
+        ta.style.opacity = '0'
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      toast('Report copied — paste it wherever you want it reviewed', 'success')
+    } catch {
+      toast("Couldn't copy — use Share instead", 'danger')
+    }
+  }
+
+  function copyReport() {
+    const report = buildReport()
+    if (report.includes('nothing to review')) {
+      toast('No completed sets logged yet', 'danger')
+      return
+    }
+    void copyText(report)
+  }
+
+  async function shareReport() {
+    const text = buildReport()
+    // The share sheet is the only route to Messages/Mail/Notes from iOS Safari.
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'Spotter training report', text })
+        return
+      } catch {
+        // Cancelled, or the sheet refused text — fall through to a file.
+      }
+    }
+    const blob = new Blob([text], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `spotter-training-report-${new Date().toISOString().slice(0, 10)}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   function doExport() {
     const blob = new Blob([exportData()], { type: 'application/json' })
@@ -126,6 +186,48 @@ export function Settings() {
           <Icon name="chevron" size={18} className="faint" />
         </div>
       </button>
+
+      <div className="section-head">
+        <h2>Share for review</h2>
+      </div>
+      <div className="card">
+        <div style={{ fontWeight: 600, marginBottom: 2 }}>Training report</div>
+        <div className="faint" style={{ fontSize: 12, marginBottom: 12 }}>
+          A plain-text summary of what you've actually lifted — loads, reps and RIR per lift,
+          how each has moved, and weekly sets against the volume landmarks. Small enough to
+          paste into a chat, unlike the full backup. Nothing leaves the device until you send
+          it somewhere.
+        </div>
+        <div className="row" style={{ gap: 10 }}>
+          <button className="btn btn-primary grow" onClick={copyReport}>
+            <Icon name="copy" size={16} /> Copy report
+          </button>
+          <button className="btn grow" onClick={shareReport}>
+            <Icon name="share" size={16} /> Share
+          </button>
+        </div>
+        <button
+          className="btn btn-ghost btn-block btn-sm"
+          style={{ marginTop: 8 }}
+          onClick={() => setPreview(buildReport())}
+        >
+          Preview it first
+        </button>
+      </div>
+
+      <Sheet open={!!preview} onClose={() => setPreview(null)} title="Training report">
+        <pre className="report-preview">{preview}</pre>
+        <button
+          className="btn btn-primary btn-block"
+          style={{ marginTop: 12 }}
+          onClick={() => {
+            if (preview) void copyText(preview)
+            setPreview(null)
+          }}
+        >
+          <Icon name="copy" size={16} /> Copy to clipboard
+        </button>
+      </Sheet>
 
       <div className="section-head">
         <h2>Backup & data</h2>
