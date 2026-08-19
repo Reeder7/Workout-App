@@ -396,15 +396,23 @@ export const TEMPLATES: Plan[] = [
         iso('hammer-curl', 3, [10, 15], { role: 'Brachialis' }),
       ]),
       day('Legs A — Quad focus', [
-        hold('wall-sit', 3, [30, 45], { role: 'Isometric primer' }),
+        // A primer, not a challenge: it warms the knee and blunts tendon pain.
+        // Held far past this and it becomes pre-fatigue that costs the squat.
+        hold('wall-sit', 3, [45, 60], { role: 'Isometric primer' }),
+        // Eccentric stays slow — that is the knee-protective half. The three
+        // second concentric came off: it caps the load without protecting
+        // anything, and load is exactly what this lift has been missing.
         comp('heels-elevated-squat', 3, [8, 12], {
           rir: [3, 1],
           rest: 150,
-          tempo: '3-1-3-0',
+          tempo: STRETCH_TEMPO,
           role: 'Primary quad (tempo)',
         }),
-        iso('leg-extension', 3, [10, 15], { tempo: '3-0-1-0', role: 'Quad isolation' }),
+        // Ahead of the leg extension on purpose. Single-leg work needs balance
+        // and control, so it goes while there is still some left; an isolation
+        // machine is the right thing to do fatigued, and this is not that.
         iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' }),
+        iso('leg-extension', 3, [10, 15], { tempo: '3-0-1-0', role: 'Quad isolation' }),
         iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 60, role: 'Glute med / valgus' }),
         iso('standing-calf-raise', 3, [8, 15], {
           tempo: STRETCH_TEMPO,
