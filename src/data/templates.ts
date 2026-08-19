@@ -384,11 +384,16 @@ export const TEMPLATES: Plan[] = [
       day('Pull A', [
         comp('barbell-row', 3, [6, 10], { rir: [3, 1], rest: 180, role: 'Horizontal pull' }),
         comp('lat-pulldown', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Lats' }),
-        comp('seated-cable-row', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Mid-back' }),
-        iso('db-pullover', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Lats (stretch)' }),
+        // Widened from 10-12: the top set of the ramp lands around 8 reps, and a
+        // range the work never enters just reads as a permanent miss.
+        comp('seated-cable-row', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Mid-back' }),
         iso('reverse-pec-deck', 3, [12, 20], { role: 'Rear delts' }),
-        iso('incline-db-curl', 3, [8, 12], { tempo: STRETCH_TEMPO, role: 'Biceps (stretch)' }),
-        iso('hammer-curl', 2, [10, 15], { role: 'Brachialis' }),
+        // Preacher curl replaces the incline curl, matching what's actually
+        // trained. It shortens the long head rather than stretching it, so the
+        // week's long-head stretch work rests on the Bayesian curl in Pull B —
+        // that slot is load-bearing, not optional.
+        iso('preacher-curl', 3, [8, 12], { role: 'Biceps (short head)' }),
+        iso('hammer-curl', 3, [10, 15], { role: 'Brachialis' }),
       ]),
       day('Legs A — Quad focus', [
         hold('wall-sit', 3, [30, 45], { role: 'Isometric primer' }),
