@@ -361,12 +361,16 @@ export const TEMPLATES: Plan[] = [
     builtIn: true,
     days: [
       day('Push A', [
-        comp('smith-incline-press', 3, [6, 10], { rir: [3, 1], rest: 180, role: 'Upper chest' }),
-        comp('flat-db-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Mid chest' }),
-        comp('machine-shoulder-press', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Front delts' }),
+        // Rebuilt around what's actually being trained and progressing. The
+        // barbell bench and incline dumbbell press replaced the Smith incline
+        // and flat dumbbell press: a heavy free-weight press plus a genuine
+        // upper-chest press, rather than two machine presses.
+        comp('bench-press', 3, [5, 8], { rir: [2, 1], rest: 210, role: 'Heavy press' }),
+        comp('incline-db-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
+        comp('machine-shoulder-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Front delts' }),
         iso('cable-lateral-raise', 3, [12, 20], { role: 'Side delts' }),
         iso('overhead-triceps-ext', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
-        iso('triceps-pushdown', 2, [12, 20], { role: 'Triceps lateral' }),
+        iso('rope-pushdown', 3, [12, 20], { role: 'Triceps lateral' }),
         // Abs go on the push days: both leg days are already the longest
         // sessions, and trunk work there would compete with the hinge.
         // Seated, not the kneeling cable crunch — nothing on the knees.
