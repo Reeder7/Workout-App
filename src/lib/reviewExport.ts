@@ -1,4 +1,4 @@
-import type { Exercise, MuscleGroup, Session, Unit } from '../types'
+import type { Exercise, LoggedSet, MuscleGroup, Session, Unit } from '../types'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import { LANDMARKS } from '../data/landmarks'
 import { e1rm, sessionVolume, weeklySetsByMuscle } from './stats'
@@ -37,7 +37,7 @@ function setStr(st: { weight: number; reps: number; rir?: number }): string {
 interface Exposure {
   date: number
   deload?: boolean
-  sets: { weight: number; reps: number; rir?: number }[]
+  sets: LoggedSet[]
   /** Heaviest set, breaking ties on reps — so bodyweight work ranks by reps. */
   best: { weight: number; reps: number }
   bestE1rm: number
@@ -75,6 +75,31 @@ export interface ReviewOptions {
   /** How far back to report in detail. */
   days?: number
   now?: number
+}
+
+/**
+ * Entries that are almost certainly mis-typed rather than remarkable.
+ *
+ * The common one by far is weight and reps entered into each other's field —
+ * "10 × 135" for a 135 lb set of 10. That inflates the estimated 1RM enormously
+ * and, worse, makes the next session look like a huge jump when it's simply the
+ * first one typed correctly. Left unflagged, every trend built on top is wrong,
+ * so the report says so instead of quietly reporting nonsense.
+ */
+function suspectReason(
+  st: { weight: number; reps: number; rir?: number },
+  timed: boolean,
+): string | null {
+  // Most specific first: one explanation per set, or the list becomes noise.
+  if (!timed) {
+    if (st.weight > 0 && st.weight <= 30 && st.reps >= 35) {
+      return `looks like weight and reps are swapped — did you mean ${st.reps}×${st.weight}?`
+    }
+    if (st.reps > 50) return 'reps over 50'
+  }
+  if (st.reps === 0) return 'no reps recorded'
+  if (st.rir != null && st.rir > 6) return `RIR ${st.rir} is outside 0–6`
+  return null
 }
 
 /** True when the report has no training in it — nothing worth sending. */
@@ -171,6 +196,7 @@ export function buildReviewReport(opts: ReviewOptions): string {
   out.push(`## EXERCISES (${ids.length} trained in the last ${days} days)`)
   out.push('Per lift: sessions · first → latest top set · best e1RM · trend · engine verdict')
 
+  const flagged: string[] = []
   const rows = ids
     .map((id) => ({ id, exp: exposuresOf(recent, id) }))
     .filter((r) => r.exp.length > 0)
@@ -182,12 +208,34 @@ export function buildReviewReport(opts: ReviewOptions): string {
     // A lift loaded only by bodyweight has no meaningful e1RM — progress there
     // is reps, and reporting "0×0" would read as no data rather than no load.
     const bodyweight = exp.every((e) => e.best.weight === 0)
+    // Timed holds put seconds in the reps field, and sled work is logged in
+    // trips. An estimated 1RM from either is a meaningless number, and printing
+    // one invites decisions based on it.
+    const timed = exp.every((e) => e.sets.every((st) => st.target?.isHold))
+    const noE1rm = timed || metaOf(id)?.excludeFromVolume === true
     const advice = progressionAdvice(metaOf(id), recent, unit)
+
+    for (const e of exp) {
+      for (const st of e.sets) {
+        const why = suspectReason(st, timed)
+        if (why) flagged.push(`  ${ymd(e.date)}  ${nameOf(id)}: ${setStr(st)} — ${why}`)
+      }
+    }
 
     out.push('')
     out.push(`### ${nameOf(id)}`)
 
-    if (bodyweight) {
+    if (noE1rm) {
+      const label = timed ? 'timed hold' : 'not load-progressed'
+      out.push(
+        `  ${exp.length} session${exp.length === 1 ? '' : 's'} · last ${ymd(
+          l.date,
+        )} · ${label} · no e1RM (${timed ? 'reps field holds seconds' : 'logged in trips/time'})`,
+      )
+      out.push(
+        `  last: ${l.sets.map((st) => (timed ? `${st.reps}s` : setStr(st))).join(', ')}`,
+      )
+    } else if (bodyweight) {
       const d = l.best.reps - f.best.reps
       out.push(
         `  ${exp.length} session${exp.length === 1 ? '' : 's'} · last ${ymd(
@@ -228,6 +276,13 @@ export function buildReviewReport(opts: ReviewOptions): string {
       const label = advice.verdict === 'unknown' ? 'note' : advice.verdict
       out.push(`  engine: ${label} — ${advice.headline}`)
     }
+  }
+
+  if (flagged.length > 0) {
+    out.push('')
+    out.push(`## DATA CHECK — ${flagged.length} entr${flagged.length === 1 ? 'y' : 'ies'} look mis-typed`)
+    out.push('Trends that include these are unreliable until they are corrected.')
+    out.push(...flagged)
   }
 
   out.push('')
