@@ -369,8 +369,13 @@ export const TEMPLATES: Plan[] = [
         comp('incline-db-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
         comp('machine-shoulder-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Front delts' }),
         iso('cable-lateral-raise', 3, [12, 20], { role: 'Side delts' }),
+        // The only triceps isolation on this day, and deliberately the overhead
+        // one. Nine heavy pressing sets already cover the lateral and medial
+        // heads; the long head crosses the shoulder and is never stretched by
+        // pressing, so overhead work is the one stimulus this day can't get for
+        // free. Pushdown volume lives on Push B, where there's less pressing
+        // fatigue to do it under.
         iso('overhead-triceps-ext', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
-        iso('rope-pushdown', 3, [12, 20], { role: 'Triceps lateral' }),
         // Abs go on the push days: both leg days are already the longest
         // sessions, and trunk work there would compete with the hinge.
         // Seated, not the kneeling cable crunch — nothing on the knees.
