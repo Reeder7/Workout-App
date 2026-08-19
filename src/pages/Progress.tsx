@@ -16,6 +16,9 @@ import { VolumeBar } from '../components/VolumeBar'
 import { EmptyState } from '../components/EmptyState'
 import { PageHeader } from '../components/PageHeader'
 import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
+import { buildReviewReport, isEmptyReport } from '../lib/reviewExport'
+import { copyText } from '../lib/clipboard'
+import { toast } from '../lib/toast'
 import type { MuscleGroup } from '../types'
 
 export function Progress() {
@@ -27,6 +30,16 @@ export function Progress() {
   // Tapping a workout in Train's Recent list lands here with that session to
   // open, so the breakdown is one tap away instead of a hunt through History.
   const loc = useLocation()
+  /** One tap from the page that shows the data, not buried in Settings. */
+  function copyReport() {
+    const report = buildReviewReport({ sessions, customExercises: custom, unit })
+    if (isEmptyReport(report)) {
+      toast('No completed sets logged yet', 'danger')
+      return
+    }
+    void copyText(report, 'Training report copied — paste it to share your data')
+  }
+
   const [openSession, setOpenSession] = useState<string | null>(
     (loc.state as { openSession?: string } | null)?.openSession ?? null,
   )
@@ -69,7 +82,21 @@ export function Progress() {
 
   return (
     <div className="app">
-      <PageHeader eyebrow="Analytics" title="Progress" sub="Your lifts, tracked over time." />
+      <PageHeader
+        eyebrow="Analytics"
+        title="Progress"
+        sub="Your lifts, tracked over time."
+        actions={
+          <button
+            className="icon-btn"
+            onClick={copyReport}
+            aria-label="Copy training report"
+            title="Copy training report"
+          >
+            <Icon name="copy" size={18} />
+          </button>
+        }
+      />
 
       <div className="stat-grid">
         <div className="stat">

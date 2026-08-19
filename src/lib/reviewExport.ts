@@ -77,6 +77,11 @@ export interface ReviewOptions {
   now?: number
 }
 
+/** True when the report has no training in it — nothing worth sending. */
+export function isEmptyReport(report: string): boolean {
+  return report.includes('nothing to review')
+}
+
 export function buildReviewReport(opts: ReviewOptions): string {
   const { sessions, customExercises, unit, days = 90, now = Date.now() } = opts
   const nameOf = (id: string) =>
