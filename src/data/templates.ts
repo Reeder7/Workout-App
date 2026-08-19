@@ -396,9 +396,11 @@ export const TEMPLATES: Plan[] = [
         iso('hammer-curl', 3, [10, 15], { role: 'Brachialis' }),
       ]),
       day('Legs A — Quad focus', [
-        // A primer, not a challenge: it warms the knee and blunts tendon pain.
-        // Held far past this and it becomes pre-fatigue that costs the squat.
-        hold('wall-sit', 3, [45, 60], { role: 'Isometric primer' }),
+        // Isometrics have a real analgesic effect on patellar tendon pain, so a
+        // knee that feels better going into the squat is worth some fatigue.
+        // The range is wide on purpose: ~45s is the sustained pain-relief hold,
+        // ~75s is a genuine quad set. Both are useful; they aren't the same buy.
+        hold('wall-sit', 3, [45, 75], { role: 'Isometric primer' }),
         // Eccentric stays slow — that is the knee-protective half. The three
         // second concentric came off: it caps the load without protecting
         // anything, and load is exactly what this lift has been missing.
@@ -412,7 +414,10 @@ export const TEMPLATES: Plan[] = [
         // and control, so it goes while there is still some left; an isolation
         // machine is the right thing to do fatigued, and this is not that.
         iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' }),
-        iso('leg-extension', 3, [10, 15], { tempo: '3-0-1-0', role: 'Quad isolation' }),
+        // Run one leg at a time: reps are per leg, and each quad gets the full
+        // three sets. Unilateral loading is what exposes a side-to-side gap,
+        // which bilateral work hides — the deficit that persists after ACLR.
+        iso('leg-extension', 3, [10, 15], { tempo: '3-0-1-0', role: 'Quad isolation (per leg)' }),
         iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 60, role: 'Glute med / valgus' }),
         iso('standing-calf-raise', 3, [8, 15], {
           tempo: STRETCH_TEMPO,
