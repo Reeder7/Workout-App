@@ -6,7 +6,8 @@ import { Sheet } from '../components/Sheet'
 import { Segmented } from '../components/Segmented'
 import { PageHeader } from '../components/PageHeader'
 import { toast } from '../lib/toast'
-import { buildReviewReport } from '../lib/reviewExport'
+import { buildReviewReport, isEmptyReport } from '../lib/reviewExport'
+import { copyText } from '../lib/clipboard'
 
 export function Settings() {
   const nav = useNavigate()
@@ -27,37 +28,13 @@ export function Settings() {
   const buildReport = () =>
     buildReviewReport({ sessions, customExercises, unit: settings.unit })
 
-  /**
-   * Clipboard write, with a fallback for the non-secure contexts and older
-   * WebViews where navigator.clipboard is missing.
-   */
-  async function copyText(text: string) {
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(text)
-      } else {
-        const ta = document.createElement('textarea')
-        ta.value = text
-        ta.style.position = 'fixed'
-        ta.style.opacity = '0'
-        document.body.appendChild(ta)
-        ta.select()
-        document.execCommand('copy')
-        document.body.removeChild(ta)
-      }
-      toast('Report copied — paste it wherever you want it reviewed', 'success')
-    } catch {
-      toast("Couldn't copy — use Share instead", 'danger')
-    }
-  }
-
   function copyReport() {
     const report = buildReport()
-    if (report.includes('nothing to review')) {
+    if (isEmptyReport(report)) {
       toast('No completed sets logged yet', 'danger')
       return
     }
-    void copyText(report)
+    void copyText(report, 'Report copied — paste it wherever you want it reviewed')
   }
 
   async function shareReport() {
@@ -221,7 +198,7 @@ export function Settings() {
           className="btn btn-primary btn-block"
           style={{ marginTop: 12 }}
           onClick={() => {
-            if (preview) void copyText(preview)
+            if (preview) void copyText(preview, 'Report copied')
             setPreview(null)
           }}
         >
