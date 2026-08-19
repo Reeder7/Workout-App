@@ -368,7 +368,7 @@ export const TEMPLATES: Plan[] = [
         comp('bench-press', 3, [5, 8], { rir: [2, 1], rest: 210, role: 'Heavy press' }),
         comp('incline-db-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
         comp('machine-shoulder-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Front delts' }),
-        iso('cable-lateral-raise', 3, [12, 20], { role: 'Side delts' }),
+        iso('lateral-raise', 3, [12, 20], { role: 'Side delts' }),
         // The only triceps isolation on this day, and deliberately the overhead
         // one. Nine heavy pressing sets already cover the lateral and medial
         // heads; the long head crosses the shoulder and is never stretched by
@@ -435,11 +435,15 @@ export const TEMPLATES: Plan[] = [
       ]),
       day('Push B', [
         comp('ohp', 3, [5, 8], { rir: [3, 1], rest: 180, role: 'Vertical press' }),
-        comp('machine-chest-press', 3, [10, 12], { rir: [2, 1], rest: 120, role: 'Mid chest' }),
-        iso('high-low-cable-fly', 3, [12, 15], { tempo: STRETCH_TEMPO, role: 'Chest (stretch)' }),
-        iso('lateral-raise', 3, [12, 20], { role: 'Side delts' }),
+        comp('smith-incline-press', 3, [6, 10], { rir: [3, 1], rest: 180, role: 'Upper chest' }),
+        iso('pec-deck', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Chest (stretch)' }),
+        // Four sets, and the cable version gets them: constant tension holds the
+        // side delt loaded at the bottom, where a dumbbell gives it nothing.
+        // Shoulders are the one muscle sitting under its MAV band, and this is
+        // the cheapest place to buy the volume back.
+        iso('cable-lateral-raise', 4, [12, 20], { role: 'Side delts' }),
         comp('jm-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Triceps compound' }),
-        iso('katana-extension', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
+        iso('triceps-pushdown', 3, [12, 20], { role: 'Triceps lateral' }),
         // The other half of the ab work, and a different job: curling the
         // pelvis under a long lever rather than loaded spinal flexion. Hanging,
         // so again no knee involvement.
