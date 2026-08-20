@@ -489,6 +489,14 @@ export const TEMPLATES: Plan[] = [
         // stopped training the muscle it exists for. Unilateral work on this day
         // is carried by the leg curls and calf raises instead.
         comp('romanian-deadlift', 3, [8, 12], { rir: [3, 1], rest: 180, role: 'Hip hinge' }),
+        // A second weekly quad exposure, and second on the day so it gets done
+        // with control intact — everything after it is posterior work that
+        // step-downs don't compromise. Trimming this day had left quads at 10.5
+        // sets trained once a week, the thinnest point in a program built around
+        // knee resilience. Repeating the step-down rather than adding a machine
+        // is the better trade: unilateral weight-bearing work is what exposes
+        // and closes a side-to-side gap, and that gap is the deficit that lasts.
+        iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' }),
         // One leg at a time: extension ROM differs between the legs, so each
         // side works through the range it actually has. With the hinge bilateral
         // again, this is where the side-to-side gap gets exposed.
