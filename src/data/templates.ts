@@ -354,7 +354,10 @@ export const TEMPLATES: Plan[] = [
     //     single-leg RDL in place of the barbell RDL, and ab work.
     // 3 — Push A, Pull A, Legs A and Push B rebuilt around what is actually
     //     being trained, checked against logged loads and the volume landmarks.
-    revision: 3,
+    // 4 — all six days done. Pull B and Legs B trimmed, a third side-delt
+    //     exposure added, the barbell RDL restored, and step-downs on both leg
+    //     days for a second weekly quad exposure.
+    revision: 4,
     name: 'Push · Pull · Legs (Knee-Resilient) — 6 Day',
     description:
       'A full 6-day Push/Pull/Legs where the leg days are knee-conscious: an isometric primer, quad AND hamstring priority, hip/glute work for valgus control, knee-friendly tempo and single-leg work, and low-impact sled finishers — no jumping or impact. Every exercise is capped at three working sets, and every one has its own set-by-set prescription. Load the legs pain-guided: keep knee pain ≤3/10 and settling by the next morning. Not medical advice — clear your loading with your PT/surgeon.',
