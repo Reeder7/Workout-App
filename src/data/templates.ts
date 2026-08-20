@@ -390,6 +390,12 @@ export const TEMPLATES: Plan[] = [
         // range the work never enters just reads as a permanent miss.
         comp('seated-cable-row', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Mid-back' }),
         iso('reverse-pec-deck', 3, [12, 20], { role: 'Rear delts' }),
+        // A third weekly side-delt exposure, on a day that has none. Laterals
+        // don't compete with rowing, so this is stimulus a pull day gets for
+        // free — and side delts are the only delt head pressing barely touches.
+        // Behind the body rather than at the side: peak tension lands in the
+        // stretched position, which the dumbbell version on Push A doesn't give.
+        iso('behind-body-cable-lateral', 3, [12, 20], { role: 'Side delts (stretch)' }),
         // Preacher curl replaces the incline curl, matching what's actually
         // trained. It shortens the long head rather than stretching it, so the
         // week's long-head stretch work rests on the Bayesian curl in Pull B —
