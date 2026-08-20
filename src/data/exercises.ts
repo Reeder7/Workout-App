@@ -1914,6 +1914,34 @@ export const EXERCISES: Exercise[] = [
     mistakes: ['Moving the forearms', 'Too heavy, losing ROM', 'Bouncing'],
     science: 'Isolates wrist extension for the forearm extensors.',
   },
+  {
+    id: 'wrist-roller',
+    name: 'Wrist Roller',
+    primary: 'Forearms',
+    secondary: [],
+    equipment: 'Other',
+    category: 'Isolation',
+    repRange: [2, 5],
+    notes: 'A weight on a rope wound up and down a handle. Trains the flexors on the way up and the extensors on the way back, so one movement covers both directions — the wrist curl only does flexion. Grip endurance comes free. Log reps as full up-and-down cycles.',
+    howTo: [
+      'Hang the weight from the rope and hold the handle at chest height, arms extended in front of you.',
+      'Roll the handle away from you with alternating wrists to wind the weight all the way up.',
+      'Reverse the direction and unwind it under control — do not let it drop.',
+      'That is one cycle. Keep the elbows still and the arms up throughout.',
+    ],
+    cues: [
+      'Arms stay extended and level — no dropping the elbows to rest',
+      'Wind in both directions; the unwind is half the work',
+      'Small, fast wrist movements rather than whole-arm swinging',
+    ],
+    mistakes: [
+      'Letting the weight unwind under gravity instead of resisting it',
+      'Dropping the arms as the forearms burn',
+      'Loading it so heavy the wrists stop moving through full range',
+    ],
+    science:
+      'Alternating wrist flexion and extension under continuous load, training both sides of the forearm plus sustained grip in a single set.',
+  },
 
   // ============ ADDITIONAL TIER-LIST / STRETCH-BIASED MOVEMENTS ============
   {

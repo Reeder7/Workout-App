@@ -75,4 +75,20 @@ The honest read is that option 2 is at least partly correct, which means the
 resolving the data question first — otherwise a programming change gets made to
 chase a number that was wrong.
 
-**Not yet decided.**
+**Resolved 2026-08-20 — closed by choice, not by the numbers.**
+
+Shrugs were dropped from Pull B. They were the only trap movement in the plan
+and had never once been performed: they sat seventh of eight in a session
+already running 18-21 sets, and upper-trap size is not a priority here.
+
+So Traps now sits below MEV by decision. That is a legitimate place to be for a
+muscle nobody is trying to grow — but it should not be read as a gap to close
+later without asking first.
+
+The data question in option 2 above is still open and still real: the rows in
+this program credit no Traps at all, when loaded scapular retraction trains the
+mid and lower trapezius substantially. Fixing that would raise the reported
+figure by roughly 4.5 weekly sets on the current rowing volume, without changing
+a single set of training. Worth doing for accuracy — the reported number is
+currently lower than the truth — but it is a library-wide change affecting every
+template, so it was left out of the per-day rebuild.
