@@ -352,7 +352,9 @@ export const TEMPLATES: Plan[] = [
     // Bumped when the programming changes, so saved copies can offer an update:
     // 2 — three-set cap, direct calf work, wrist curls, spider curl,
     //     single-leg RDL in place of the barbell RDL, and ab work.
-    revision: 2,
+    // 3 — Push A, Pull A, Legs A and Push B rebuilt around what is actually
+    //     being trained, checked against logged loads and the volume landmarks.
+    revision: 3,
     name: 'Push · Pull · Legs (Knee-Resilient) — 6 Day',
     description:
       'A full 6-day Push/Pull/Legs where the leg days are knee-conscious: an isometric primer, quad AND hamstring priority, hip/glute work for valgus control, knee-friendly tempo and single-leg work, and low-impact sled finishers — no jumping or impact. Every exercise is capped at three working sets, and every one has its own set-by-set prescription. Load the legs pain-guided: keep knee pain ≤3/10 and settling by the next morning. Not medical advice — clear your loading with your PT/surgeon.',
@@ -442,7 +444,11 @@ export const TEMPLATES: Plan[] = [
         // Shoulders are the one muscle sitting under its MAV band, and this is
         // the cheapest place to buy the volume back.
         iso('cable-lateral-raise', 4, [12, 20], { role: 'Side delts' }),
-        comp('jm-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Triceps compound' }),
+        // Back to the skullcrusher after trying the JM press: the stretch was
+        // the thing, and it was felt. Arced behind the head rather than lowered
+        // to the forehead, this is the week's second long-head stretch exposure
+        // — the JM press keeps the shoulder neutral and never lengthens it.
+        iso('skullcrusher', 3, [8, 12], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
         iso('triceps-pushdown', 3, [12, 20], { role: 'Triceps lateral' }),
         // The other half of the ab work, and a different job: curling the
         // pelvis under a long lever rather than loaded spinal flexion. Hanging,
