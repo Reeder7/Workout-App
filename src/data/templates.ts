@@ -484,26 +484,32 @@ export const TEMPLATES: Plan[] = [
         iso('wrist-roller', 2, [2, 5], { rest: 60, role: 'Forearms (both directions)' }),
       ]),
       day('Legs B — Posterior / Hip', [
-        // Unilateral so the stronger leg can't carry the weaker one — reps are
-        // per leg, so lighter and higher-rep than the barbell version.
-        comp('single-leg-rdl', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Hip hinge (per leg)' }),
+        // Back to the barbell. On the single-leg version the heavier sets came in
+        // at RIR 4-5 — balance ran out before the hamstrings did, so the lift
+        // stopped training the muscle it exists for. Unilateral work on this day
+        // is carried by the leg curls and calf raises instead.
+        comp('romanian-deadlift', 3, [8, 12], { rir: [3, 1], rest: 180, role: 'Hip hinge' }),
         // One leg at a time: extension ROM differs between the legs, so each
-        // side works through the range it actually has.
+        // side works through the range it actually has. With the hinge bilateral
+        // again, this is where the side-to-side gap gets exposed.
         iso('seated-leg-curl', 3, [8, 15], {
           tempo: STRETCH_TEMPO,
           role: 'Hamstrings (stretch, per leg)',
         }),
-        // Deliberately kept bilateral — the eccentric overload is the point and
-        // a single-leg nordic is far past what one leg can control.
-        iso('nordic-curl', 3, [3, 6], { rir: [2, 1], rest: 120, role: 'Eccentric hamstring' }),
+        // Bilateral by choice — eccentric overload is the point, and a single-leg
+        // nordic is past what one leg can control. Range raised to match: seven
+        // reps were already being done against a 3-6 target. Progress by slowing
+        // the descent, not by adding reps.
+        iso('nordic-curl', 2, [5, 8], { rir: [2, 1], rest: 120, role: 'Eccentric hamstring' }),
         comp('hip-thrust', 3, [8, 15], { rir: [2, 1], rest: 120, role: 'Glutes' }),
-        iso('back-extension-45', 3, [10, 15], { role: 'Posterior chain' }),
-        iso('tke', 3, [12, 20], { rir: [1, 0], rest: 60, role: 'Quad activation' }),
-        iso('seated-calf-raise', 3, [10, 20], {
-          tempo: STRETCH_TEMPO,
-          role: 'Soleus (knee bent)',
-        }),
-        iso('tibialis-raise', 3, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
+        // Leg press rather than seated: there is no seated machine, and dumbbells
+        // cap the load well below what this allows. Knee angle picks the muscle —
+        // bend the knee for soleus, straighten it for gastroc. Legs A already runs
+        // a straight-knee raise, so bent-knee sets here are the only soleus work
+        // in the program, and the soleus resists anterior tibial translation the
+        // same way the graft does.
+        iso('leg-press-calf-raise', 3, [10, 20], { role: 'Calves (per leg, bent knee)' }),
+        iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
         mk(
           'sled-push',
           [

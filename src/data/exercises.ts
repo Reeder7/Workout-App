@@ -1708,7 +1708,7 @@ export const EXERCISES: Exercise[] = [
     equipment: 'Machine',
     category: 'Isolation',
     repRange: [10, 15],
-    notes: 'Near-straight legs bias the gastrocnemius while the leg press lets you load heavily through a large ankle ROM safely.',
+    notes: 'Near-straight legs bias the gastrocnemius while the leg press lets you load heavily through a large ankle ROM safely. Knee angle picks the muscle: straight legs load the gastroc, and a deliberately bent knee (seat set closer) loads the soleus instead — the same job a seated calf raise does, without needing the machine. Run it one leg at a time to double the load per calf and expose a side-to-side gap.',
     howTo: [
       'Sit in the leg press with the balls of the feet on the lower edge of the platform, legs nearly straight.',
       'Keep the safeties engaged; let the toes point up for a stretch.',
@@ -1716,7 +1716,11 @@ export const EXERCISES: Exercise[] = [
       'Lower under control to a deep stretch.',
     ],
     cues: ['Balls of the feet on the platform edge', 'Full ankle extension at the top', 'Keep the safety catches on'],
-    mistakes: ['Bending the knees to cheat', 'Short ROM', 'Feet slipping off the platform'],
+    mistakes: [
+      'Letting the knees bend and straighten mid-set — pick an angle and hold it',
+      'Short ROM',
+      'Feet slipping off the platform',
+    ],
     science: 'Near-straight legs bias the gastroc with heavy loading through a large ankle ROM.',
   },
   {

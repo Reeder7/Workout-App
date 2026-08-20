@@ -28,7 +28,13 @@ Consequences for programming decisions:
 - **Prefer unilateral hamstring work** where the loading position depends on
   knee extension. Each leg then works through the range it actually has instead
   of being averaged against the other. Currently unilateral: seated leg curl,
-  single-leg RDL.
+  leg-press calf raise, step-downs and leg extensions on Legs A.
+
+  The hinge is a deliberate exception. The single-leg RDL was tried and the
+  heavier sets landed at RIR 4-5 — balance ran out before the hamstrings did, so
+  it stopped training the muscle it was there for. The barbell RDL at RIR 2
+  trains the hamstrings; the asymmetry is addressed by the movements above
+  instead.
 - **Match the stretch, not the depth.** Reps and depth will not look the same
   side to side, and forcing them to match means one side is short and the other
   is at end range. The felt stretch is the target.
