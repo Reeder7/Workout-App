@@ -455,18 +455,27 @@ export const TEMPLATES: Plan[] = [
         // so again no knee involvement.
         iso('hanging-leg-raise', 3, [8, 15], { role: 'Abs (pelvis curl)' }),
       ]),
+      // Kept short deliberately — this was running 18-21 sets. Shrugs came out:
+      // upper-trap work is the least of the priorities here, and it sat last in
+      // a long session, which is why it was never once performed.
       day('Pull B', [
-        comp('pullup', 3, [6, 10], { rir: [2, 1], rest: 150, role: 'Vertical pull' }),
-        comp('chest-supported-row', 2, [10, 12], { rir: [2, 1], rest: 120, role: 'Mid-back' }),
+        comp('neutral-pulldown', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Vertical pull' }),
+        // Unilateral, unlike the chest-supported row it replaces — worth having
+        // given how persistent side-to-side deficits are after ACLR.
+        comp('meadows-row', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Mid-back (per side)' }),
         iso('straight-arm-pulldown', 2, [12, 20], { tempo: STRETCH_TEMPO, role: 'Lats (isolation)' }),
         iso('cable-rear-delt-fly', 3, [12, 20], { role: 'Rear delts' }),
+        // Load-bearing slot: the week's only long-head biceps stretch, since the
+        // preacher curl on Pull A shortens it instead. Don't drop this one.
         iso('bayesian-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Biceps long head' }),
         // Paired with the Bayesian curl: shoulder flexed instead of extended, so
         // the short head does the work the long head just did.
         iso('spider-curl', 2, [10, 15], { role: 'Biceps short head' }),
-        iso('barbell-shrug', 3, [10, 15], { role: 'Traps' }),
         // Last slot on purpose: grip fatigue here can't compromise the pulls.
-        iso('wrist-curl', 2, [12, 20], { rest: 60, role: 'Wrist flexors' }),
+        // The roller winds up and unwinds, so it trains flexors and extensors in
+        // one movement where a wrist curl only does flexion. Reps are full
+        // up-and-down cycles.
+        iso('wrist-roller', 2, [2, 5], { rest: 60, role: 'Forearms (both directions)' }),
       ]),
       day('Legs B — Posterior / Hip', [
         // Unilateral so the stronger leg can't carry the weaker one — reps are
