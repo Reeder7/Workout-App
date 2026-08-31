@@ -11,7 +11,7 @@ import type {
 } from '../types'
 import { EXERCISES } from '../data/exercises'
 import { TEMPLATES, sourceTemplateFor } from '../data/templates'
-import { blockState, deloadScheme } from '../lib/mesocycle'
+import { blockStartForWeek, blockState, deloadScheme } from '../lib/mesocycle'
 
 export function uid(prefix = 'id'): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -60,6 +60,12 @@ interface State {
   createEmptyPlan: () => Plan
   /** Begin (or restart) a plan's training block from today. */
   startBlock: (planId: string, weeks?: number) => void
+  /**
+   * Correct which week of the block a plan is on. The week is derived from
+   * blockStartedAt, so this moves that anchor rather than storing a counter
+   * alongside it that could drift out of agreement.
+   */
+  setBlockWeek: (planId: string, week: number) => void
 
   // active workout
   startSession: (plan?: Plan, day?: PlanDay) => void
@@ -164,6 +170,13 @@ export const useStore = create<State>()(
             p.id === planId
               ? { ...p, blockStartedAt: Date.now(), blockWeeks: weeks ?? p.blockWeeks }
               : p,
+          ),
+        })),
+
+      setBlockWeek: (planId, week) =>
+        set((s) => ({
+          plans: s.plans.map((p) =>
+            p.id === planId ? { ...p, blockStartedAt: blockStartForWeek(week) } : p,
           ),
         })),
 
