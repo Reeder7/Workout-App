@@ -1339,27 +1339,47 @@ button.lrow:active {
 .block-pips {
   display: flex;
   gap: 4px;
-  margin-top: var(--space-3);
+  /* Pulled up because each pip now carries a tap target taller than its bar. */
+  margin-top: var(--space-1);
 }
+/* The pip is a 4px bar but a 24px button: tapping one sets the block week, and
+   a 4px hit target is unusable on a phone. The bar is drawn by the pseudo so the
+   button can be tall without the strip looking any heavier. */
 .block-pip {
   flex: 1;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+.block-pip::before {
+  content: '';
+  display: block;
+  width: 100%;
   height: 4px;
   border-radius: var(--radius-full);
   background: var(--surface-3);
+  transition: background-color var(--dur-fast) var(--ease-standard);
 }
-.block-pip.done {
+.block-pip:active::before {
+  background: var(--ink-quaternary);
+}
+.block-pip.done::before {
   background: var(--accent);
   opacity: 0.45;
 }
-.block-pip.now {
+.block-pip.now::before {
   background: var(--accent);
+  height: 6px;
 }
 /* The deload week reads as a different kind of week, not a later one. */
-.block-pip.deload {
+.block-pip.deload::before {
   background: var(--surface-3);
   box-shadow: inset 0 0 0 1px var(--warning);
 }
-.block-pip.deload.now {
+.block-pip.deload.now::before {
   background: var(--warning);
   box-shadow: none;
 }

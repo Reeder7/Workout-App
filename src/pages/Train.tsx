@@ -23,12 +23,14 @@ export function Train() {
   const startEmpty = useStore((s) => s.startEmptySession)
   const deletePlan = useStore((s) => s.deletePlan)
   const startBlock = useStore((s) => s.startBlock)
+  const setBlockWeek = useStore((s) => s.setBlockWeek)
 
   const [pickDayFor, setPickDayFor] = useState<Plan | null>(null)
   const [pendingStart, setPendingStart] = useState<
     { plan: Plan; dayId: string } | 'empty' | null
   >(null)
   const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null)
+  const [editWeekFor, setEditWeekFor] = useState<Plan | null>(null)
   const stats = summaryStats(sessions)
 
   function doStart(target: { plan: Plan; dayId: string } | 'empty') {
@@ -156,25 +158,45 @@ export function Train() {
                         }. Add about ${DEFAULTS.weeklySetRamp} set per muscle from last week.`}
               </div>
             </div>
-            {(block.isDeload || block.isOverdue) && (
-              <button
-                className="btn btn-sm"
-                onClick={() => {
-                  startBlock(activePlan.id)
-                  toast('New block started', 'success')
-                }}
-              >
-                New block
+            <div className="row" style={{ gap: 8 }}>
+              <button className="btn btn-sm" onClick={() => setEditWeekFor(activePlan)}>
+                Change week
               </button>
-            )}
+              {(block.isDeload || block.isOverdue) && (
+                <button
+                  className="btn btn-sm"
+                  onClick={() => {
+                    startBlock(activePlan.id)
+                    toast('New block started', 'success')
+                  }}
+                >
+                  New block
+                </button>
+              )}
+            </div>
           </div>
-          <div className="block-pips" aria-hidden="true">
+          {/* Tapping a pip is the fastest way to correct the week — the strip is
+              where the wrong number is being read in the first place. */}
+          <div className="block-pips">
             {Array.from({ length: block.totalWeeks }, (_, i) => (
-              <span
+              <button
                 key={i}
                 className={`block-pip${i + 1 < block.week ? ' done' : ''}${
                   i + 1 === block.week ? ' now' : ''
                 }${i + 1 === block.totalWeeks ? ' deload' : ''}`}
+                aria-label={`Set to week ${i + 1}${
+                  i + 1 === block.totalWeeks ? ' (deload)' : ''
+                }`}
+                aria-current={i + 1 === block.week ? 'true' : undefined}
+                onClick={() => {
+                  setBlockWeek(activePlan.id, i + 1)
+                  toast(
+                    i + 1 === block.totalWeeks
+                      ? 'Now on the deload week'
+                      : `Now on week ${i + 1} of ${block.totalWeeks}`,
+                    'success',
+                  )
+                }}
               />
             ))}
           </div>
@@ -342,6 +364,57 @@ export function Train() {
             <Icon name="trash" size={16} /> Delete
           </button>
         </div>
+      </Sheet>
+
+      <Sheet
+        open={!!editWeekFor}
+        onClose={() => setEditWeekFor(null)}
+        title="Which week are you on?"
+      >
+        <p className="hint" style={{ marginTop: 0 }}>
+          The week advances by the calendar, not by sessions completed — so a light week or a
+          break moves the block on without you. Pick the week you're actually training. The one
+          you choose starts today and rolls over in seven days.
+        </p>
+        {editWeekFor &&
+          Array.from(
+            { length: blockState(editWeekFor)?.totalWeeks ?? DEFAULTS.mesocycleWeeks },
+            (_, i) => {
+              const wk = i + 1
+              const total = blockState(editWeekFor)?.totalWeeks ?? DEFAULTS.mesocycleWeeks
+              const isNow = blockState(editWeekFor)?.week === wk
+              return (
+                <button
+                  key={wk}
+                  className="lrow"
+                  style={{ width: '100%', textAlign: 'left', background: 'none' }}
+                  onClick={() => {
+                    setBlockWeek(editWeekFor.id, wk)
+                    setEditWeekFor(null)
+                    toast(
+                      wk === total ? 'Now on the deload week' : `Now on week ${wk} of ${total}`,
+                      'success',
+                    )
+                  }}
+                >
+                  <div className="grow">
+                    <div style={{ fontWeight: 600 }}>
+                      Week {wk}
+                      {wk === total ? ' — deload' : ''}
+                    </div>
+                    <div className="faint" style={{ fontSize: 12 }}>
+                      {wk === total
+                        ? DELOAD.summary
+                        : `Full sets and loads. Deload in ${total - wk} week${
+                            total - wk === 1 ? '' : 's'
+                          }.`}
+                    </div>
+                  </div>
+                  {isNow ? <span className="tag">current</span> : null}
+                </button>
+              )
+            },
+          )}
       </Sheet>
 
       <Sheet

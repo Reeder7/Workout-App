@@ -38,6 +38,19 @@ export function blockState(plan: Plan, now = Date.now()): BlockState | null {
   }
 }
 
+/**
+ * The `blockStartedAt` that puts a plan at the start of a given week.
+ *
+ * Weeks are derived from one timestamp rather than stored as a counter, so
+ * correcting the week means moving the anchor rather than introducing a second
+ * source of truth that could disagree with it. Anchoring to `now` means the
+ * chosen week starts today and rolls over in seven days — predictable, at the
+ * cost of shifting which weekday the block turns over on.
+ */
+export function blockStartForWeek(week: number, now = Date.now()): number {
+  return now - Math.max(0, week - 1) * WEEK_MS
+}
+
 export interface DeloadGuidance {
   setsFactor: number
   loadFactor: number
