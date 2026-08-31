@@ -78,6 +78,15 @@ export interface ReviewOptions {
 }
 
 /**
+ * Equipment where a swap is even possible. Bodyweight, band and sled work is
+ * logged with a token load and often very high reps or seconds — a wall sit at
+ * "1 x 65" is 65 seconds, not 65 lb for one, and a tibialis raise really does go
+ * to 50 reps. Applying the swap heuristic there produced more false alarms than
+ * findings and taught the reader to skim past the whole section.
+ */
+const LOADED: ReadonlySet<string> = new Set(['Barbell', 'Dumbbell', 'Machine', 'Cable', 'Smith'])
+
+/**
  * Entries that are almost certainly mis-typed rather than remarkable.
  *
  * The common one by far is weight and reps entered into each other's field —
@@ -88,14 +97,26 @@ export interface ReviewOptions {
  */
 function suspectReason(
   st: { weight: number; reps: number; rir?: number },
-  timed: boolean,
+  ctx: { loaded: boolean; otherWeights: number[] },
 ): string | null {
   // Most specific first: one explanation per set, or the list becomes noise.
-  if (!timed) {
+  if (ctx.loaded) {
     if (st.weight > 0 && st.weight <= 30 && st.reps >= 35) {
       return `looks like weight and reps are swapped — did you mean ${st.reps}×${st.weight}?`
     }
     if (st.reps > 50) return 'reps over 50'
+    // A load far outside the rest of the session is a fat-finger, not a jump:
+    // ramping sets stay within a comfortable ratio of each other, so 2.5x the
+    // median of the day's other sets is well clear of any real progression.
+    const others = ctx.otherWeights.filter((w) => w > 0).sort((a, b) => a - b)
+    if (st.weight > 0 && others.length >= 2) {
+      const median = others[Math.floor(others.length / 2)]
+      if (median > 0 && st.weight >= median * 2.5) {
+        return `${num(st.weight)} is far outside the rest of that session (${others
+          .map(num)
+          .join(', ')}) — likely a typo`
+      }
+    }
   }
   if (st.reps === 0) return 'no reps recorded'
   if (st.rir != null && st.rir > 6) return `RIR ${st.rir} is outside 0–6`
@@ -215,9 +236,11 @@ export function buildReviewReport(opts: ReviewOptions): string {
     const noE1rm = timed || metaOf(id)?.excludeFromVolume === true
     const advice = progressionAdvice(metaOf(id), recent, unit)
 
+    const loaded = !timed && !noE1rm && LOADED.has(metaOf(id)?.equipment ?? '')
     for (const e of exp) {
       for (const st of e.sets) {
-        const why = suspectReason(st, timed)
+        const others = e.sets.filter((x) => x !== st).map((x) => x.weight)
+        const why = suspectReason(st, { loaded, otherWeights: others })
         if (why) flagged.push(`  ${ymd(e.date)}  ${nameOf(id)}: ${setStr(st)} — ${why}`)
       }
     }
