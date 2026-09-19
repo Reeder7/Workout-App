@@ -1336,54 +1336,6 @@ button.lrow:active {
   color: var(--ink-secondary);
   margin-top: 2px;
 }
-.block-pips {
-  display: flex;
-  gap: 4px;
-  /* Pulled up because each pip now carries a tap target taller than its bar. */
-  margin-top: var(--space-1);
-}
-/* The pip is a 4px bar but a 24px button: tapping one sets the block week, and
-   a 4px hit target is unusable on a phone. The bar is drawn by the pseudo so the
-   button can be tall without the strip looking any heavier. */
-.block-pip {
-  flex: 1;
-  height: 24px;
-  padding: 0;
-  background: none;
-  border: none;
-  display: flex;
-  align-items: center;
-}
-.block-pip::before {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 4px;
-  border-radius: var(--radius-full);
-  background: var(--surface-3);
-  transition: background-color var(--dur-fast) var(--ease-standard);
-}
-.block-pip:active::before {
-  background: var(--ink-quaternary);
-}
-.block-pip.done::before {
-  background: var(--accent);
-  opacity: 0.45;
-}
-.block-pip.now::before {
-  background: var(--accent);
-  height: 6px;
-}
-/* The deload week reads as a different kind of week, not a later one. */
-.block-pip.deload::before {
-  background: var(--surface-3);
-  box-shadow: inset 0 0 0 1px var(--warning);
-}
-.block-pip.deload.now::before {
-  background: var(--warning);
-  box-shadow: none;
-}
-
 .note-strip {
   display: flex;
   align-items: center;
@@ -1524,6 +1476,141 @@ button.lrow:active {
   line-height: 16px;
   white-space: pre;
   -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================================================
+   Week calendar — Monday to Sunday, one row of real days
+
+   Replaces the block-week pips: five pips carried five numbers, where seven
+   days carry what was actually trained, when, and how much.
+   ========================================================================= */
+.wkcal {
+  background: var(--surface-1);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  margin-top: var(--space-3);
+}
+.wkcal-head {
+  margin-bottom: var(--space-2);
+}
+.wkcal-nav {
+  width: 36px;
+  height: 36px;
+  background: none;
+  color: var(--ink-tertiary);
+}
+.wkcal-nav:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.wkcal-title {
+  font-size: 13px;
+  font-weight: 640;
+  line-height: 16px;
+}
+.wkcal-range {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  line-height: 14px;
+}
+
+.wkcal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+.wkcal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 0 5px;
+  border-radius: var(--radius-md);
+  background: none;
+  min-height: 62px;
+}
+.wkcal-day:disabled {
+  cursor: default;
+}
+.wkcal-day.trained {
+  background: var(--accent-subtle);
+}
+/* Today is outlined rather than filled, so it reads independently of whether
+   the day has been trained yet. */
+.wkcal-day.today {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.wkcal-day.future .wkcal-date,
+.wkcal-day.future .wkcal-letter {
+  opacity: 0.4;
+}
+.wkcal-letter {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+}
+.wkcal-date {
+  font-size: 14px;
+  font-weight: 640;
+  line-height: 17px;
+  font-variant-numeric: tabular-nums;
+}
+/* A dot for one session; the count instead when a day holds more than one. */
+.wkcal-mark {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 14px;
+  color: var(--accent-on);
+  background: transparent;
+}
+.wkcal-day.trained .wkcal-mark {
+  background: var(--accent);
+}
+.wkcal-label {
+  font-size: 8px;
+  line-height: 10px;
+  font-weight: 600;
+  color: var(--accent-ink);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 1px;
+}
+.wkcal-foot {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle, var(--card-border));
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Block status, reduced to one line beneath the calendar. */
+.block-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  flex-wrap: wrap;
+}
+.block-line-text {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  flex: 1;
+  min-width: 140px;
+}
+.block-line-text b {
+  color: var(--ink-primary);
+  font-weight: 640;
 }
 
 /* ============================================================================

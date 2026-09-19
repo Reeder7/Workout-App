@@ -8,6 +8,7 @@ import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
 import { ProgressRing } from '../components/ProgressRing'
 import { EmptyState } from '../components/EmptyState'
+import { WeekCalendar } from '../components/WeekCalendar'
 import { toast } from '../lib/toast'
 import { blockState, DELOAD } from '../lib/mesocycle'
 import { DEFAULTS } from '../data/landmarks'
@@ -139,67 +140,56 @@ export function Train() {
         )}
       </div>
 
+      {/* A Monday-to-Sunday week of real days, in place of the block-week pips:
+          seven days carry what was trained and when, where five pips carried
+          five numbers. Block status survives as one line beneath it. */}
+      <WeekCalendar
+        sessions={sessions}
+        unit={settings.unit}
+        target={weekTarget}
+        onOpenSession={(id) => nav('/progress', { state: { openSession: id } })}
+      />
+
       {block && activePlan && (
-        <div className={`block-strip${block.isDeload ? ' is-deload' : ''}`}>
-          <div className="row-between" style={{ gap: 'var(--space-3)' }}>
-            <div className="grow">
-              <div className="block-week">
-                {block.isDeload ? 'Deload week' : `Block week ${block.week} of ${block.totalWeeks}`}
-              </div>
-              <div className="block-sub">
-                {block.isOverdue
-                  ? 'This block has run past its deload — start a new one.'
-                  : block.isDeload
-                    ? DELOAD.summary
-                    : block.weeksToDeload === 0
-                      ? 'Deload next week. Push this one.'
-                      : `Deload in ${block.weeksToDeload} week${
-                          block.weeksToDeload === 1 ? '' : 's'
-                        }. Add about ${DEFAULTS.weeklySetRamp} set per muscle from last week.`}
-              </div>
-            </div>
-            <div className="row" style={{ gap: 8 }}>
-              <button className="btn btn-sm" onClick={() => setEditWeekFor(activePlan)}>
-                Change week
-              </button>
-              {(block.isDeload || block.isOverdue) && (
-                <button
-                  className="btn btn-sm"
-                  onClick={() => {
-                    startBlock(activePlan.id)
-                    toast('New block started', 'success')
-                  }}
-                >
-                  New block
-                </button>
-              )}
-            </div>
+        <div className={`block-line${block.isDeload ? ' is-deload' : ''}`}>
+          <div className="block-line-text">
+            {block.isDeload ? (
+              <>
+                <b>Deload week</b> · {DELOAD.summary}
+              </>
+            ) : block.isOverdue ? (
+              <>
+                <b>Block overdue</b> · past its deload — start a new one.
+              </>
+            ) : (
+              <>
+                <b>
+                  Week {block.week} of {block.totalWeeks}
+                </b>{' '}
+                ·{' '}
+                {block.weeksToDeload === 0
+                  ? 'deload next week'
+                  : `deload in ${block.weeksToDeload} week${
+                      block.weeksToDeload === 1 ? '' : 's'
+                    }`}
+                , add ~{DEFAULTS.weeklySetRamp} set per muscle
+              </>
+            )}
           </div>
-          {/* Tapping a pip is the fastest way to correct the week — the strip is
-              where the wrong number is being read in the first place. */}
-          <div className="block-pips">
-            {Array.from({ length: block.totalWeeks }, (_, i) => (
-              <button
-                key={i}
-                className={`block-pip${i + 1 < block.week ? ' done' : ''}${
-                  i + 1 === block.week ? ' now' : ''
-                }${i + 1 === block.totalWeeks ? ' deload' : ''}`}
-                aria-label={`Set to week ${i + 1}${
-                  i + 1 === block.totalWeeks ? ' (deload)' : ''
-                }`}
-                aria-current={i + 1 === block.week ? 'true' : undefined}
-                onClick={() => {
-                  setBlockWeek(activePlan.id, i + 1)
-                  toast(
-                    i + 1 === block.totalWeeks
-                      ? 'Now on the deload week'
-                      : `Now on week ${i + 1} of ${block.totalWeeks}`,
-                    'success',
-                  )
-                }}
-              />
-            ))}
-          </div>
+          <button className="btn btn-sm" onClick={() => setEditWeekFor(activePlan)}>
+            Change week
+          </button>
+          {(block.isDeload || block.isOverdue) && (
+            <button
+              className="btn btn-sm"
+              onClick={() => {
+                startBlock(activePlan.id)
+                toast('New block started', 'success')
+              }}
+            >
+              New block
+            </button>
+          )}
         </div>
       )}
 
