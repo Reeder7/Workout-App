@@ -968,6 +968,35 @@ export const TEMPLATES: Plan[] = [
       ]),
     ],
   },
+  // ------------------------------------------------ Shoulder & Arm Blaster
+  // A single stand-alone session: heavy compounds first while fresh, then
+  // high-rep isolation for the pump. Heavy work sits at 5-8 reps with long
+  // rests; the isolation block runs 12-25 reps on 60 s rests, which is what
+  // fits the whole thing inside about 50 minutes.
+  {
+    id: 'tpl-shoulder-arm-blaster',
+    revision: 1,
+    name: 'Shoulder & Arm Blaster',
+    description:
+      'One 50-minute session for shoulders and arms, heavy then high-rep. No warm-up slot — ramp into the overhead press with a couple of lighter sets of your own.\n\nHEAVY (first ~25 min): an overhead-press top set and back-offs, then close-grip bench and barbell curls at 5–8 reps, 2 minutes-plus rest.\n\nHIGH REP (last ~25 min): cable laterals, overhead triceps extensions, Bayesian curls, rear delts and a hammer-curl finisher at 12–25 reps on 60-second rests. The last set of the laterals and each arm isolation runs higher (20–30) and is taken close to failure.\n\nNothing here loads the knee.',
+    daysPerWeek: 1,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Shoulder & Arm Blaster', [
+        // Heavy block
+        topSet('ohp', [5, 7], 2, [8, 10], { rir: [1, 2], rest: 150, role: 'Heavy press — top set + back-offs' }),
+        comp('close-grip-bench', 3, [6, 8], { rir: [2, 1], rest: 150, role: 'Heavy triceps' }),
+        comp('barbell-curl', 3, [6, 8], { rir: [2, 1], rest: 120, role: 'Heavy biceps' }),
+        // High-rep block
+        iso('cable-lateral-raise', 3, [15, 20], { rest: 60, lastReps: [20, 30], role: 'Side delts — high rep' }),
+        iso('overhead-triceps-ext', 3, [12, 15], { tempo: STRETCH_TEMPO, rest: 60, lastReps: [20, 25], role: 'Triceps long head — high rep' }),
+        iso('bayesian-curl', 3, [12, 15], { tempo: STRETCH_TEMPO, rest: 60, lastReps: [20, 25], role: 'Biceps long head — high rep' }),
+        iso('reverse-pec-deck', 2, [15, 25], { rest: 60, role: 'Rear delts — high rep' }),
+        iso('hammer-curl', 2, [15, 20], { rir: [1, 0], rest: 45, role: 'Finisher — brachialis & forearms' }),
+      ]),
+    ],
+  },
 ]
 
 /**
