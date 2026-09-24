@@ -37,6 +37,9 @@ export function similarExercises(
       // knee-friendly, isometric, …).
       const sharedTags = (e.tags ?? []).filter((t) => (target.tags ?? []).includes(t)).length
       score += sharedTags * 6
+      // Cardio swaps for cardio. A bike's closest stand-in is a treadmill, not a
+      // leg press that happens to share the primary muscle.
+      if (e.tags?.includes('Conditioning') && target.tags?.includes('Conditioning')) score += 80
 
       return { e, score }
     })

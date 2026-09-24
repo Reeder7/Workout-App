@@ -122,6 +122,15 @@ function hold(
   return mk(exerciseId, scheme, o.role ?? 'Isometric primer')
 }
 
+/**
+ * A logged warm-up: minutes until the knee feels ready, not a fixed dose. The
+ * log is the point — it shows how long the knee actually needs, and whether
+ * that shrinks as the tendon settles.
+ */
+function warmUp(exerciseId: string, minutes: [number, number]): PlanExercise {
+  return mk(exerciseId, [s(minutes[0], minutes[1], 0, 60, { label: 'Min' })], 'Warm-up — log minutes until the knee feels ready')
+}
+
 /** Mark a slot as logged one leg at a time, so the app can track symmetry. */
 function perLeg(pe: PlanExercise): PlanExercise {
   return { ...pe, perLeg: true }
@@ -843,15 +852,16 @@ export const TEMPLATES: Plan[] = [
   // are mixed, so the holds are here for load tolerance and angle coverage.
   {
     id: 'tpl-knee-priority',
-    revision: 4,
+    revision: 5,
     name: 'Knee Priority — Phase 1: Settle',
     description:
-      'Knee pain relief and even legs first, upper body held at maintenance. Built for patellar-tendon pain below the kneecap, on a knee that tolerates slow load better than impact.\n\nTHE WEEK: three knee days (Mon / Wed / Fri) with a day between each, because slow loaded tendon work needs about 48 hours to recover. The days in between carry a short, low-load rehab block — hamstring, hip, balance — instead of more quad work. Every day has an isometric, and no two days use the same one: 60° (leg-extension hold), 0–30° (TKE hold), 90° (Spanish squat) and long-length (split squat). Strength from a hold only carries about 20° either side of the angle you train, so one position every day was covering one slice of the range.\n\nWARM-UP: 5–10 minutes of whatever is free — walk, bike, elliptical — before the first hold. Not logged. Knee pain often eases after 10–15 minutes of activity, so the warm-up plus the first hold should clear most of that before anything loaded.\n\nPER LEG: surgical side first, and the good side matches the surgical side’s reps — it does not get to do more. If a lift’s symmetry sits under 80% for two weeks, add one extra set on the surgical side only.\n\nTHE PAIN RULE: ≤3/10 during, back to baseline by the next morning. Morning pain above baseline → drop the next knee day a step (less depth, a lower box, less load). Swelling → drop back a week. Swelling matters more than pain here; it is the warning sign for the cartilage.\n\nPROGRESSION: holds — add load, not time, once 45 s feels easy. Bodyweight lifts — lower box, deeper range, then dumbbells, in that order.\n\nPHASE 2 (heavier slow loading, deeper range) WHEN: 6+ weeks in, pain ≤3/10 and settled by morning, no swelling for two weeks, and 10 slow step-downs per leg at ≤2/10.\nPHASE 3 (hops, skipping, walk-jog) WHEN: single-leg press at 1.5× bodyweight for 4–8 reps per leg with pain under 3/10, and leg symmetry at 90%+ on the per-leg lifts.\n\nNot medical advice. Running volume is your surgeon’s call, not this program’s.',
+      'Knee pain relief and even legs first, upper body held at maintenance. Built for patellar-tendon pain below the kneecap, on a knee that tolerates slow load better than impact.\n\nTHE WEEK: three knee days (Mon / Wed / Fri) with a day between each, because slow loaded tendon work needs about 48 hours to recover. The days in between carry a short, low-load rehab block — hamstring, hip, balance — instead of more quad work. Every day has an isometric, and no two days use the same one: 60° (leg-extension hold), 0–30° (TKE hold), 90° (Spanish squat) and long-length (split squat). Strength from a hold only carries about 20° either side of the angle you train, so one position every day was covering one slice of the range.\n\nWARM-UP: every day but Saturday opens with a logged warm-up — backward incline walk on knee days, bike on upper days; swap either way. Go until the knee feels ready, then log the minutes it took. Over a few weeks that log tells you whether you need 5 minutes, 10 or more, and whether it is shrinking as the tendon settles.\n\nPER LEG: surgical side first, and the good side matches the surgical side’s reps — it does not get to do more. If a lift’s symmetry sits under 80% for two weeks, add one extra set on the surgical side only.\n\nTHE PAIN RULE: ≤3/10 during, back to baseline by the next morning. Morning pain above baseline → drop the next knee day a step (less depth, a lower box, less load). Swelling → drop back a week. Swelling matters more than pain here; it is the warning sign for the cartilage.\n\nPROGRESSION: holds — add load, not time, once 45 s feels easy. Bodyweight lifts — lower box, deeper range, then dumbbells, in that order.\n\nPHASE 2 (heavier slow loading, deeper range) WHEN: 6+ weeks in, pain ≤3/10 and settled by morning, no swelling for two weeks, and 10 slow step-downs per leg at ≤2/10.\nPHASE 3 (hops, skipping, walk-jog) WHEN: single-leg press at 1.5× bodyweight for 4–8 reps per leg with pain under 3/10, and leg symmetry at 90%+ on the per-leg lifts.\n\nNot medical advice. Running volume is your surgeon’s call, not this program’s.',
     daysPerWeek: 6,
     createdAt: 0,
     builtIn: true,
     days: [
       day('Knee A — Quad angles & stairs', [
+        warmUp('backward-incline-walk', [5, 15]),
         // The 60° hold: the angle that loads the patellar tendon most, done on the
         // machine so each leg's load can be logged and compared.
         perLeg(hold('iso-leg-extension', 4, [30, 45], { rest: 90, role: 'Quad isometric @ 60°, per leg' })),
@@ -871,6 +881,7 @@ export const TEMPLATES: Plan[] = [
         iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 60, role: 'Glute med — knee over foot' }),
       ]),
       day('Upper A + hamstring & hip', [
+        warmUp('stationary-bike', [5, 10]),
         // Rehab block first: end-of-session slots are the ones that get skipped.
         // Hamstring at both ends of its range — the graft side lags in each.
         perLeg(hold('banded-hamstring-iso', 3, [30, 45], { rest: 60, role: 'Hamstring isometric @ 60–90°, per leg' })),
@@ -886,6 +897,7 @@ export const TEMPLATES: Plan[] = [
         iso('machine-crunch', 2, [10, 15], { role: 'Abs' }),
       ]),
       day('Knee B — Hamstring & posterior', [
+        warmUp('backward-incline-walk', [5, 15]),
         // The 90° hold, once a week rather than every day.
         hold('spanish-squat', 4, [45, 45], { rest: 90, role: 'Quad isometric @ 90°' }),
         perLeg(iso('seated-leg-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, rir: [3, 1], rest: 90, role: 'Hamstrings, per leg (surgical first)' })),
@@ -898,6 +910,7 @@ export const TEMPLATES: Plan[] = [
         ], 'Low-impact capacity'),
       ]),
       day('Upper B + control & balance', [
+        warmUp('stationary-bike', [5, 10]),
         // The 0–30° hold: the shallow range none of the other holds reach, and
         // the lowest kneecap pressure of the four — the one to use on a bad day.
         perLeg(hold('banded-tke-hold', 3, [30, 45], { rest: 45, role: 'Quad isometric @ 0–30°, per leg' })),
@@ -914,6 +927,7 @@ export const TEMPLATES: Plan[] = [
         iso('hanging-leg-raise', 2, [8, 15], { role: 'Abs' }),
       ]),
       day('Knee C — Functional (bodyweight)', [
+        warmUp('backward-incline-walk', [5, 15]),
         // The long-length hold, single leg, so the good side can't take over.
         perLeg(hold('split-squat-iso', 3, [30, 45], { rest: 60, role: 'Quad isometric, long length, per leg' })),
         // The neuromuscular day: bodyweight patterns done for alignment and
