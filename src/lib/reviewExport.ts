@@ -38,13 +38,15 @@ function setStr(st: {
   reps: number
   rir?: number
   good?: { weight: number; reps: number }
+  target?: { warmup?: boolean }
 }): string {
   const one = (w: number, r: number) => (w > 0 ? `${num(w)}×${r}` : `BW×${r}`)
   const base =
     st.good && st.good.reps > 0
       ? `S ${one(st.weight, st.reps)} / G ${one(st.good.weight, st.good.reps)}`
       : one(st.weight, st.reps)
-  return st.rir != null ? `${base}@${st.rir}` : base
+  const out = st.rir != null ? `${base}@${st.rir}` : base
+  return st.target?.warmup ? `w:${out}` : out
 }
 
 interface Exposure {

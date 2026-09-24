@@ -116,7 +116,8 @@ export function weeklySetsByMuscle(
       const meta = exerciseOf(ex.exerciseId, custom)
       if (!meta || meta.excludeFromVolume) continue
       // Credit each set by proximity to failure rather than counting bodies.
-      const n = ex.sets.reduce((t, st) => t + setCredit(st.rir), 0)
+      // Warm-ups never count, whatever RIR was logged on them.
+      const n = ex.sets.reduce((t, st) => t + (st.target?.warmup ? 0 : setCredit(st.rir)), 0)
       if (n === 0) continue
       counts[meta.primary] = (counts[meta.primary] ?? 0) + n
       for (const sec of meta.secondary) {

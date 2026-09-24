@@ -176,11 +176,16 @@ export function SessionExercise({
       {sinkDone(ex.sets, (st) => st.done).map(({ item: st, index: si }) => {
         const g = ghostFor(last, si, st.target)
         const hold = st.target?.isHold
+        const warm = !!st.target?.warmup
+        // Working sets count from 1; warm-ups read "W" rather than taking a number.
+        const workNo = ex.sets.slice(0, si + 1).filter((x) => !x.target?.warmup).length
         const gg = goodGhostFor(last, si, g)
         return (
           <div key={si} className={ex.perLeg ? 'setpair' : undefined}>
           <div className={`setgrid setrow${st.done ? ' set-row-done' : ''}`}>
-            <div className="set-num">{si + 1}</div>
+            <div className={`set-num${warm ? ' set-num-warm' : ''}`} title={warm ? 'Warm-up set — not counted as a working set' : undefined}>
+              {warm ? 'W' : workNo}
+            </div>
             <input
               type="number"
               inputMode="decimal"

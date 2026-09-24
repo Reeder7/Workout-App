@@ -75,6 +75,11 @@ export interface PrescribedSet {
   tempo?: string
   /** Set is a timed hold (isometric); reps fields represent seconds. */
   isHold?: boolean
+  /**
+   * A lighter lead-in set before the working sets. Logged like any set, but it
+   * never counts toward weekly volume or drives progression.
+   */
+  warmup?: boolean
 }
 
 export interface PlanExercise {
@@ -161,6 +166,7 @@ export interface LoggedSet {
     label?: string
     tempo?: string
     isHold?: boolean
+    warmup?: boolean
   }
 }
 

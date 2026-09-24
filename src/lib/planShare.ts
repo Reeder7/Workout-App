@@ -19,7 +19,7 @@ interface SharedExercise {
   b: number // repMax
   r: number // rir
   t: number // restSec
-  k?: { a: number; b: number; r: number; t: number; l?: string; m?: string; h?: 1 }[] // per-set scheme
+  k?: { a: number; b: number; r: number; t: number; l?: string; m?: string; h?: 1; w?: 1 }[] // per-set scheme
   o?: string // role
   n?: string // note
   p?: 1 // perLeg
@@ -104,6 +104,7 @@ function toShared(plan: Plan): SharedPlan {
             ...(st.label ? { l: st.label } : {}),
             ...(st.tempo ? { m: st.tempo } : {}),
             ...(st.isHold ? { h: 1 as const } : {}),
+            ...(st.warmup ? { w: 1 as const } : {}),
           }))
         }
         if (pe.role) out.o = pe.role
@@ -162,6 +163,7 @@ function fromShared(sp: SharedPlan): Plan {
           ...(st.l ? { label: String(st.l) } : {}),
           ...(st.m ? { tempo: String(st.m) } : {}),
           ...(st.h ? { isHold: true } : {}),
+          ...(st.w ? { warmup: true } : {}),
         }))
       }
       if (x.o) pe.role = String(x.o)

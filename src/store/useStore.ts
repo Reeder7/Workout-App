@@ -238,6 +238,7 @@ export const useStore = create<State>()(
                   label: ps.label,
                   tempo: ps.tempo,
                   isHold: ps.isHold,
+                  warmup: ps.warmup,
                 },
               })),
             }

@@ -77,9 +77,14 @@ export const DELOAD: DeloadGuidance = {
  * reps and RIR but never weight — taking ~10% off the bar stays the lifter's
  * call, which is what DELOAD.summary tells them.
  */
-export function deloadScheme<T extends { rir: number }>(scheme: T[]): T[] {
-  const keep = Math.max(1, Math.round(scheme.length * DELOAD.setsFactor))
-  return scheme.slice(0, keep).map((ps) => ({
+export function deloadScheme<T extends { rir: number; warmup?: boolean }>(scheme: T[]): T[] {
+  // Warm-ups stay: a deload sheds working sets, and the joint still needs the
+  // lead-in. Halving the whole list would cut a working set to keep a warm-up.
+  const warmups = scheme.filter((ps) => ps.warmup)
+  const working = scheme.filter((ps) => !ps.warmup)
+  if (working.length === 0) return scheme
+  const keep = Math.max(1, Math.round(working.length * DELOAD.setsFactor))
+  return [...warmups, ...working.slice(0, keep)].map((ps) => ({
     ...ps,
     rir: Math.max(ps.rir, DELOAD.rirFloor),
   }))

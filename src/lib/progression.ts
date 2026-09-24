@@ -107,7 +107,10 @@ export function progressionAdvice(
   }
 
   const last = hist[hist.length - 1]
-  const sets = last.ex.sets
+  // Warm-up sets are lighter by design; judging progression on them would hold
+  // back a lift that is ready to move.
+  const nonWarmup = last.ex.sets.filter((st) => !st.target?.warmup)
+  const sets = nonWarmup.length > 0 ? nonWarmup : last.ex.sets
   const step = loadStep(exercise.equipment, unit)
   const weight = workingWeight(sets)
 
