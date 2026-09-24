@@ -122,6 +122,11 @@ function hold(
   return mk(exerciseId, scheme, o.role ?? 'Isometric primer')
 }
 
+/** Put a slot in a superset: consecutive slots with the same key alternate sets. */
+function ss(key: string, pe: PlanExercise): PlanExercise {
+  return { ...pe, superset: key }
+}
+
 /**
  * Lead a slot with one lighter warm-up set: about half the working load, well
  * short of failure. It is logged, so the ramp is visible, but it never counts
@@ -969,31 +974,33 @@ export const TEMPLATES: Plan[] = [
     ],
   },
   // ------------------------------------------------ Shoulder & Arm Blaster
-  // A single stand-alone session: heavy compounds first while fresh, then
-  // high-rep isolation for the pump. Heavy work sits at 5-8 reps with long
-  // rests; the isolation block runs 12-25 reps on 60 s rests, which is what
-  // fits the whole thing inside about 50 minutes.
+  // A single stand-alone session: the overhead press alone while fresh, then
+  // antagonist supersets — heavy pairs before high-rep pairs, because whatever
+  // comes first in a session gets the most reps and load. Pushing and pulling
+  // muscles alternate, so each rests while the other works: the same volume as
+  // straight sets in less time.
   {
     id: 'tpl-shoulder-arm-blaster',
-    revision: 1,
+    revision: 2,
     name: 'Shoulder & Arm Blaster',
     description:
-      'One 50-minute session for shoulders and arms, heavy then high-rep. No warm-up slot — ramp into the overhead press with a couple of lighter sets of your own.\n\nHEAVY (first ~25 min): an overhead-press top set and back-offs, then close-grip bench and barbell curls at 5–8 reps, 2 minutes-plus rest.\n\nHIGH REP (last ~25 min): cable laterals, overhead triceps extensions, Bayesian curls, rear delts and a hammer-curl finisher at 12–25 reps on 60-second rests. The last set of the laterals and each arm isolation runs higher (20–30) and is taken close to failure.\n\nNothing here loads the knee.',
+      'One session for shoulders and arms, about 50 minutes: heavy first, then high rep, in supersets. No warm-up slot — ramp into the overhead press with a couple of lighter sets of your own.\n\nA — overhead press on its own: a top set and two back-offs, full rest.\nB — heavy pair: close-grip bench ↔ barbell curl, 6–8 reps. 60 s between, 90 s after the round.\nC — high-rep pair: overhead triceps extension ↔ Bayesian curl, 12–15 then a 20–25 last round. 30 s between, 60 s after.\nD — high-rep pair: cable lateral raise ↔ reverse pec deck, straight through, 60 s after.\nE — finisher: hammer curl ↔ rope pushdown, 15–20, straight through.\n\nEach pair works opposite muscles, so one rests while the other works. Nothing here loads the knee.',
     daysPerWeek: 1,
     createdAt: 0,
     builtIn: true,
     days: [
       day('Shoulder & Arm Blaster', [
-        // Heavy block
         topSet('ohp', [5, 7], 2, [8, 10], { rir: [1, 2], rest: 150, role: 'Heavy press — top set + back-offs' }),
-        comp('close-grip-bench', 3, [6, 8], { rir: [2, 1], rest: 150, role: 'Heavy triceps' }),
-        comp('barbell-curl', 3, [6, 8], { rir: [2, 1], rest: 120, role: 'Heavy biceps' }),
-        // High-rep block
-        iso('cable-lateral-raise', 3, [15, 20], { rest: 60, lastReps: [20, 30], role: 'Side delts — high rep' }),
-        iso('overhead-triceps-ext', 3, [12, 15], { tempo: STRETCH_TEMPO, rest: 60, lastReps: [20, 25], role: 'Triceps long head — high rep' }),
-        iso('bayesian-curl', 3, [12, 15], { tempo: STRETCH_TEMPO, rest: 60, lastReps: [20, 25], role: 'Biceps long head — high rep' }),
-        iso('reverse-pec-deck', 2, [15, 25], { rest: 60, role: 'Rear delts — high rep' }),
-        iso('hammer-curl', 2, [15, 20], { rir: [1, 0], rest: 45, role: 'Finisher — brachialis & forearms' }),
+        // In a superset the first exercise's rest is the pause before the next
+        // one, and the last exercise's rest is the one after the round.
+        ss('B', comp('close-grip-bench', 3, [6, 8], { rir: [2, 1], rest: 60, role: 'Heavy triceps' })),
+        ss('B', comp('barbell-curl', 3, [6, 8], { rir: [2, 1], rest: 90, role: 'Heavy biceps' })),
+        ss('C', iso('overhead-triceps-ext', 3, [12, 15], { tempo: STRETCH_TEMPO, rest: 30, lastReps: [20, 25], role: 'Triceps long head — high rep' })),
+        ss('C', iso('bayesian-curl', 3, [12, 15], { tempo: STRETCH_TEMPO, rest: 60, lastReps: [20, 25], role: 'Biceps long head — high rep' })),
+        ss('D', iso('cable-lateral-raise', 3, [15, 20], { rest: 0, lastReps: [20, 30], role: 'Side delts — high rep' })),
+        ss('D', iso('reverse-pec-deck', 3, [15, 25], { rest: 60, role: 'Rear delts — high rep' })),
+        ss('E', iso('hammer-curl', 2, [15, 20], { rir: [1, 0], rest: 0, role: 'Finisher — brachialis & forearms' })),
+        ss('E', iso('rope-pushdown', 2, [15, 20], { rir: [1, 0], rest: 45, role: 'Finisher — triceps' })),
       ]),
     ],
   },

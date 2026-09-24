@@ -2235,3 +2235,82 @@ button.lrow:active {
   padding: 4px 0;
   border-top: 1px solid var(--border-default);
 }
+
+/* ============================================================================
+   Supersets
+   ========================================================================= */
+.ss-card {
+  box-shadow: var(--card-shadow), inset 3px 0 0 var(--accent);
+}
+.ss-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--space-3);
+  font-size: 12px;
+}
+.ss-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.ss-member + .ss-member {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+}
+.ss-member:last-of-type {
+  margin-bottom: var(--space-2);
+}
+.ss-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent-subtle);
+  color: var(--accent-ink);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ss-round {
+  margin-top: var(--space-2);
+}
+.ss-round-label {
+  font-size: 11px;
+  font-weight: 640;
+  color: var(--ink-secondary);
+  margin: 0 0 2px 2px;
+}
+.ss-round.is-done .ss-round-label {
+  color: var(--ink-tertiary);
+}
+.set-num-wide {
+  width: 28px;
+  font-size: 10px;
+  letter-spacing: -0.02em;
+}
+
+/* Plan editor: a superset's exercises read as one connected group. */
+.pe-ss {
+  box-shadow: var(--card-shadow), inset 3px 0 0 var(--accent);
+}
+.pe-ss-joined {
+  margin-top: -6px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.pe-ss-open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.pe-link {
+  display: flex;
+  justify-content: center;
+  margin: -4px 0 6px;
+}

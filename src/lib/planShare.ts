@@ -23,6 +23,7 @@ interface SharedExercise {
   o?: string // role
   n?: string // note
   p?: 1 // perLeg
+  g?: string // superset group key
 }
 
 interface SharedPlan {
@@ -110,6 +111,7 @@ function toShared(plan: Plan): SharedPlan {
         if (pe.role) out.o = pe.role
         if (pe.note) out.n = pe.note
         if (pe.perLeg) out.p = 1
+        if (pe.superset) out.g = pe.superset
         return out
       }),
     })),
@@ -169,6 +171,7 @@ function fromShared(sp: SharedPlan): Plan {
       if (x.o) pe.role = String(x.o)
       if (x.n) pe.note = String(x.n)
       if (x.p) pe.perLeg = true
+      if (typeof x.g === 'string' && x.g) pe.superset = x.g.slice(0, 40)
       return pe
     }),
   }))

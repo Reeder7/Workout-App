@@ -9,7 +9,9 @@ import { Sheet } from '../components/Sheet'
 import { EmptyState } from '../components/EmptyState'
 import { PageHeader } from '../components/PageHeader'
 import { ExerciseGuide } from '../components/ExerciseGuide'
-import { SessionExercise } from '../components/SessionExercise'
+import { SessionExercise, type ExerciseHandlers } from '../components/SessionExercise'
+import { SupersetCard } from '../components/SupersetCard'
+import { blocksOf } from '../lib/superset'
 import { isExerciseDone, sinkDone } from '../lib/displayOrder'
 import { SwapSheet } from '../components/SwapSheet'
 import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
@@ -119,8 +121,45 @@ export function Session() {
   })
 
   function startRest(seconds: number) {
+    if (seconds <= 0) return
     setRestEndsAt(Date.now() + seconds * 1000)
   }
+
+  // Handlers address the exercise's index in the stored array, never its
+  // position on screen, so re-ordering can't make a tap land on the wrong one.
+  const handlersFor = (ei: number): ExerciseHandlers => ({
+    onToggleNotes: () => setNotesOpen((o) => ({ ...o, [ei]: !o[ei] })),
+    onUpdateSet: (si, patch) => updateSet(ei, si, patch),
+    onUpdateGood: (si, patch) => updateGoodSide(ei, si, patch),
+    onTogglePerLeg: () => togglePerLeg(ei),
+    onAddSet: () => addSet(ei),
+    onRemoveSet: (si) => removeSet(ei, si),
+    onStepRir: (si, delta) => stepRir(ei, si, delta),
+    onRest: startRest,
+    onGuide: () => setGuideFor(active.exercises[ei].exerciseId),
+    onSwap: () => setSwapIndex(ei),
+    onRemove: () => {
+      removeExercise(ei)
+      setNotesOpen({})
+      toast('Exercise removed')
+    },
+  })
+  const viewFor = (ei: number) => {
+    const ex = active.exercises[ei]
+    return {
+      ex,
+      meta: exerciseById(ex.exerciseId),
+      unit,
+      sessions,
+      note: exerciseNotes[ex.exerciseId],
+      notesOpen: !!notesOpen[ei],
+      deload: active.deload,
+    }
+  }
+  // A superset sinks as a unit, once every exercise in it is done.
+  const blocks = sinkDone(blocksOf(active.exercises), (b) =>
+    b.indices.every((i) => isExerciseDone(active.exercises[i])),
+  )
 
   return (
     <div className="app">
@@ -158,33 +197,22 @@ export function Session() {
         </div>
       )}
 
-      {sinkDone(active.exercises, isExerciseDone).map(({ item: ex, index: ei }) => (
-        <SessionExercise
-          key={`${ex.exerciseId}-${ei}`}
-          ex={ex}
-          meta={exerciseById(ex.exerciseId)}
-          unit={unit}
-          sessions={sessions}
-          note={exerciseNotes[ex.exerciseId]}
-          notesOpen={!!notesOpen[ei]}
-          deload={active.deload}
-          onToggleNotes={() => setNotesOpen((o) => ({ ...o, [ei]: !o[ei] }))}
-          onUpdateSet={(si, patch) => updateSet(ei, si, patch)}
-          onUpdateGood={(si, patch) => updateGoodSide(ei, si, patch)}
-          onTogglePerLeg={() => togglePerLeg(ei)}
-          onAddSet={() => addSet(ei)}
-          onRemoveSet={(si) => removeSet(ei, si)}
-          onStepRir={(si, delta) => stepRir(ei, si, delta)}
-          onRest={startRest}
-          onGuide={() => setGuideFor(ex.exerciseId)}
-          onSwap={() => setSwapIndex(ei)}
-          onRemove={() => {
-            removeExercise(ei)
-            setNotesOpen({})
-            toast('Exercise removed')
-          }}
-        />
-      ))}
+      {blocks.map(({ item: b }) =>
+        b.isSuperset ? (
+          <SupersetCard
+            key={`ss-${b.indices.join('-')}-${active.exercises[b.indices[0]].exerciseId}`}
+            letter={b.letter}
+            unit={unit}
+            members={b.indices.map((ei) => ({ view: viewFor(ei), handlers: handlersFor(ei) }))}
+          />
+        ) : (
+          <SessionExercise
+            key={`${active.exercises[b.indices[0]].exerciseId}-${b.indices[0]}`}
+            {...viewFor(b.indices[0])}
+            {...handlersFor(b.indices[0])}
+          />
+        ),
+      )}
 
       <button
         className="btn btn-ghost btn-block"

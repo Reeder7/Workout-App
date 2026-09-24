@@ -259,6 +259,7 @@ export const useStore = create<State>()(
               note: pe.note,
               restSec: pe.restSec,
               perLeg: pe.perLeg || undefined,
+              superset: pe.superset || undefined,
               // rir is deliberately left unset: it is an observation, not a
               // prescription. The target below drives the ghost value, and
               // completing a set commits it only if nothing was entered.

@@ -106,6 +106,11 @@ export interface PlanExercise {
    * weight/reps fields and the other leg in `good`, so the two can be compared.
    */
   perLeg?: boolean
+  /**
+   * Superset group. Consecutive exercises sharing a key are done as one block,
+   * alternating a set of each. See lib/superset.
+   */
+  superset?: string
 }
 
 export interface PlanDay {
@@ -174,6 +179,8 @@ export interface LoggedExercise {
   exerciseId: string
   /** Carried from the plan: sets record both legs. See PlanExercise.perLeg. */
   perLeg?: boolean
+  /** Carried from the plan: superset group. See PlanExercise.superset. */
+  superset?: string
   sets: LoggedSet[]
   note?: string
   /** Rest target (seconds) carried from the plan, used by the rest timer. */

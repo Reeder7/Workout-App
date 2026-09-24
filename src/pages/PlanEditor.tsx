@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStore, uid } from '../store/useStore'
 import { EXERCISE_BY_ID } from '../data/exercises'
@@ -10,6 +10,7 @@ import { SharePlanButton } from '../components/SharePlanButton'
 import { DEFAULTS } from '../data/landmarks'
 import { templateUpdateAvailable } from '../data/templates'
 import { VolumeBar } from '../components/VolumeBar'
+import { blocksOf, linkWithNext, memberTag, normalizeSupersets, unlinkFromNext } from '../lib/superset'
 import type { MuscleGroup, Plan, PlanDay, PlanExercise, PrescribedSet } from '../types'
 
 export function PlanEditor() {
@@ -181,7 +182,20 @@ export function PlanEditor() {
   function removeExercise(peId: string) {
     save((d) => {
       const day = d.days.find((x) => x.id === currentDay.id)
-      if (day) day.exercises = day.exercises.filter((e) => e.id !== peId)
+      if (day) day.exercises = normalizeSupersets(day.exercises.filter((e) => e.id !== peId))
+    })
+  }
+
+  function toggleSupersetWithNext(index: number) {
+    save((d) => {
+      const day = d.days.find((x) => x.id === currentDay.id)
+      if (!day) return
+      const a = day.exercises[index]
+      const b = day.exercises[index + 1]
+      const linked = !!a?.superset && a.superset === b?.superset
+      day.exercises = linked
+        ? unlinkFromNext(day.exercises, index)
+        : linkWithNext(day.exercises, index)
     })
   }
 
@@ -193,6 +207,8 @@ export function PlanEditor() {
       const j = i + dir
       if (i < 0 || j < 0 || j >= day.exercises.length) return
       ;[day.exercises[i], day.exercises[j]] = [day.exercises[j], day.exercises[i]]
+      // Moving one member out of a superset shouldn't leave a stray one-member group.
+      day.exercises = normalizeSupersets(day.exercises)
     })
   }
 
@@ -291,8 +307,23 @@ export function PlanEditor() {
         </div>
       )}
 
-      {currentDay.exercises.map((pe, i) => (
-        <div className="card" key={pe.id}>
+      {(() => {
+        const blocks = blocksOf(currentDay.exercises)
+        return currentDay.exercises.map((pe, i) => {
+          const tag = memberTag(blocks, i)
+          const next = currentDay.exercises[i + 1]
+          const linkedNext = !!pe.superset && pe.superset === next?.superset
+          const linkedPrev = !!pe.superset && pe.superset === currentDay.exercises[i - 1]?.superset
+          return (
+        <Fragment key={pe.id}>
+        <div
+          className={`card${tag ? ' pe-ss' : ''}${linkedPrev ? ' pe-ss-joined' : ''}${linkedNext ? ' pe-ss-open' : ''}`}
+        >
+          {tag && tag.endsWith('1') && (
+            <div className="ss-title" style={{ marginBottom: 6 }}>
+              Superset {tag.slice(0, -1)} · alternate a set of each
+            </div>
+          )}
           {/* Name first, actions on their own row: four 44px targets beside the
               title left it barely 130px, which wrapped long names to 3 lines. */}
           <div style={{ marginBottom: 10 }}>
@@ -445,8 +476,28 @@ export function PlanEditor() {
               Tempo {schemeOf(pe)[0].tempo} (eccentric–pause–concentric–pause)
             </div>
           )}
+          {linkedNext && (
+            <div className="faint" style={{ fontSize: 11.5, marginTop: 8 }}>
+              In a superset, this exercise’s rest is the pause before the next one — set it to 0
+              to go straight on. The last exercise’s rest is the one after the round.
+            </div>
+          )}
         </div>
-      ))}
+        {next && (
+          <div className="pe-link">
+            <button
+              className={`btn btn-sm btn-ghost${linkedNext ? ' is-on' : ''}`}
+              onClick={() => toggleSupersetWithNext(i)}
+              aria-pressed={linkedNext}
+            >
+              {linkedNext ? 'Unlink superset' : 'Superset with next ↓'}
+            </button>
+          </div>
+        )}
+        </Fragment>
+          )
+        })
+      })()}
 
       <button
         className="btn btn-ghost btn-block"
