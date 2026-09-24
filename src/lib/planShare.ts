@@ -22,6 +22,7 @@ interface SharedExercise {
   k?: { a: number; b: number; r: number; t: number; l?: string; m?: string; h?: 1 }[] // per-set scheme
   o?: string // role
   n?: string // note
+  p?: 1 // perLeg
 }
 
 interface SharedPlan {
@@ -107,6 +108,7 @@ function toShared(plan: Plan): SharedPlan {
         }
         if (pe.role) out.o = pe.role
         if (pe.note) out.n = pe.note
+        if (pe.perLeg) out.p = 1
         return out
       }),
     })),
@@ -164,6 +166,7 @@ function fromShared(sp: SharedPlan): Plan {
       }
       if (x.o) pe.role = String(x.o)
       if (x.n) pe.note = String(x.n)
+      if (x.p) pe.perLeg = true
       return pe
     }),
   }))

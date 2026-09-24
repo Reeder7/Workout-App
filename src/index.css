@@ -1614,6 +1614,108 @@ button.lrow:active {
 }
 
 /* ============================================================================
+   Per-leg logging — surgical side on the top row, good side beneath
+   ========================================================================= */
+.setpair {
+  margin-bottom: 6px;
+}
+.setpair .setrow {
+  margin-bottom: 2px;
+}
+/* The good-leg row sits tucked under its set so the pair reads as one set. */
+.setrow-good {
+  padding-top: 0;
+}
+.setrow-good input {
+  min-height: 38px;
+  font-size: 17px;
+}
+.side-tag {
+  width: 24px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+}
+.side-caption {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.sym-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--space-2);
+  padding: 7px 10px;
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: 12px;
+  line-height: 16px;
+}
+.sym-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  flex-shrink: 0;
+}
+.sym-value {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.sym-strip.tone-good { background: var(--success-subtle); }
+.sym-strip.tone-good .sym-value { color: var(--success); }
+.sym-strip.tone-warn { background: var(--warning-subtle); }
+.sym-strip.tone-warn .sym-value { color: var(--warning); }
+.sym-strip.tone-danger { background: var(--danger-subtle); }
+.sym-strip.tone-danger .sym-value { color: var(--danger); }
+
+/* A toggle that reads as on without needing a different component. */
+.btn-ghost.is-on {
+  background: var(--accent-subtle);
+}
+
+/* Symmetry rows on Progress: a bar to 100% with the 90% target marked. */
+.sym-row-bar {
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  margin-top: 6px;
+  overflow: visible;
+}
+.sym-row-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--radius-full);
+}
+.sym-row-fill.tone-good { background: var(--success); }
+.sym-row-fill.tone-warn { background: var(--warning); }
+.sym-row-fill.tone-danger { background: var(--danger); }
+.sym-row-target {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--ink-secondary);
+  border-radius: 1px;
+}
+.sym-pct { font-weight: 700; font-variant-numeric: tabular-nums; }
+.sym-pct.tone-good { color: var(--success); }
+.sym-pct.tone-warn { color: var(--warning); }
+.sym-pct.tone-danger { color: var(--danger); }
+
+/* ============================================================================
    Sheet
    ========================================================================= */
 .sheet-backdrop {

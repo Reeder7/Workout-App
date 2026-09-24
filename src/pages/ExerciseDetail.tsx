@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import { exerciseHistory } from '../lib/stats'
+import { symmetryHistory, fmtLsi, lsiTone, LSI_TARGET } from '../lib/symmetry'
 import { progressionAdvice } from '../lib/progression'
 import { LineChart, type LinePoint } from '../components/LineChart'
 import { Icon } from '../components/Icon'
@@ -34,6 +35,7 @@ export function ExerciseDetail() {
   )
 
   const advice = useMemo(() => progressionAdvice(meta, sessions, unit), [meta, sessions, unit])
+  const sym = useMemo(() => symmetryHistory(sessions, exerciseId ?? ''), [sessions, exerciseId])
 
   const points: LinePoint[] = history.map((p) => ({
     x: p.date,
@@ -109,6 +111,30 @@ export function ExerciseDetail() {
               format={(y) => fmtWeight(y)}
             />
           </div>
+
+          {sym.length > 0 && (
+            <>
+              <div className="section-head">
+                <h2>Leg symmetry</h2>
+                <span className={`sym-pct tone-${lsiTone(sym[sym.length - 1].lsi)}`}>
+                  {fmtLsi(sym[sym.length - 1].lsi)}
+                </span>
+              </div>
+              <div className="card">
+                {/* Charts surgical as a % of the good leg; the target sits at 90. */}
+                <LineChart
+                  points={sym.map((p) => ({ x: p.date, y: Math.round(p.lsi), label: relativeDate(p.date) }))}
+                  unit="%"
+                  format={(y) => `${Math.round(y)}%`}
+                />
+                <p className="hint" style={{ marginBottom: 0 }}>
+                  Surgical leg as a percentage of the good leg,{' '}
+                  {sym[sym.length - 1].byReps ? 'by reps or seconds' : 'by estimated 1RM'}. Target{' '}
+                  {LSI_TARGET}% or better.
+                </p>
+              </div>
+            </>
+          )}
 
           <div className="stat-grid stat-grid-2" style={{ marginTop: 12 }}>
             <div className="stat">

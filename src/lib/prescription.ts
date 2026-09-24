@@ -121,3 +121,17 @@ export function ghostFor(last: LoggedSet[] | null, index: number, target?: Targe
     rir: target?.rir,
   }
 }
+
+/**
+ * The good leg's ghost on a per-leg set: last session's good-side numbers at the
+ * same position, else the surgical ghost. Starting from the surgical side is the
+ * right default — matching loads is the point, and a gap should be visible
+ * rather than assumed.
+ */
+export function goodGhostFor(last: LoggedSet[] | null, index: number, fallback: Ghost): Ghost {
+  const prior = last ? (last[index] ?? last[last.length - 1]) : undefined
+  return {
+    weight: prior?.good?.weight || fallback.weight,
+    reps: prior?.good?.reps || fallback.reps,
+  }
+}

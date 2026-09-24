@@ -3,6 +3,7 @@ import { EXERCISE_BY_ID } from '../data/exercises'
 import { LANDMARKS } from '../data/landmarks'
 import { e1rm, sessionVolume, weeklySetsByMuscle } from './stats'
 import { progressionAdvice } from './progression'
+import { symmetrySummary, LSI_TARGET } from './symmetry'
 
 /**
  * Build a compact, readable training report for review.
@@ -28,9 +29,21 @@ function num(n: number): string {
   return Number.isInteger(n) ? String(n) : n.toFixed(1)
 }
 
-/** A set as logged, e.g. "185×8@1" — weight × reps @ RIR. */
-function setStr(st: { weight: number; reps: number; rir?: number }): string {
-  const base = st.weight > 0 ? `${num(st.weight)}×${st.reps}` : `BW×${st.reps}`
+/**
+ * A set as logged, e.g. "185×8@1" — weight × reps @ RIR. Per-leg sets read
+ * "S 40×12 / G 55×12@1": surgical side first, then the good side.
+ */
+function setStr(st: {
+  weight: number
+  reps: number
+  rir?: number
+  good?: { weight: number; reps: number }
+}): string {
+  const one = (w: number, r: number) => (w > 0 ? `${num(w)}×${r}` : `BW×${r}`)
+  const base =
+    st.good && st.good.reps > 0
+      ? `S ${one(st.weight, st.reps)} / G ${one(st.good.weight, st.good.reps)}`
+      : one(st.weight, st.reps)
   return st.rir != null ? `${base}@${st.rir}` : base
 }
 
@@ -204,6 +217,23 @@ export function buildReviewReport(opts: ReviewOptions): string {
         l.mav[0]
       }-${l.mav[1]} · MRV ${l.mrv}  → ${zone}`,
     )
+  }
+
+  // ------------------------------------------------------------ leg symmetry
+  const sym = symmetrySummary(logged)
+  if (sym.length > 0) {
+    out.push('')
+    out.push(`## LEG SYMMETRY (surgical ÷ good, target ≥${LSI_TARGET}%)`)
+    for (const row of sym) {
+      const d = row.latest.lsi - row.first.lsi
+      out.push(
+        `  ${nameOf(row.exerciseId).padEnd(30)} ${String(Math.round(row.latest.lsi)).padStart(3)}%` +
+          (row.count > 1
+            ? `  · from ${Math.round(row.first.lsi)}% over ${row.count} sessions (${d >= 0 ? '+' : ''}${Math.round(d)})`
+            : '  · first measurement') +
+          (row.latest.byReps ? '  · by reps/seconds' : '  · by e1RM'),
+      )
+    }
   }
 
   // ---------------------------------------------------------------- exercises

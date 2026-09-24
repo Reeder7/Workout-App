@@ -19,6 +19,7 @@ import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
 import { buildReviewReport, isEmptyReport } from '../lib/reviewExport'
 import { copyText } from '../lib/clipboard'
 import { toast } from '../lib/toast'
+import { symmetrySummary, lsiTone, fmtLsi, LSI_TARGET } from '../lib/symmetry'
 import type { MuscleGroup } from '../types'
 
 export function Progress() {
@@ -47,6 +48,7 @@ export function Progress() {
   const stats = summaryStats(sessions)
   const prs = useMemo(() => personalRecords(sessions), [sessions])
   const weekly = useMemo(() => weeklySetsByMuscle(sessions, custom), [sessions, custom])
+  const symmetry = useMemo(() => symmetrySummary(sessions), [sessions])
 
   const name = (id: string) =>
     EXERCISE_BY_ID[id]?.name ?? custom.find((e) => e.id === id)?.name ?? 'Exercise'
@@ -127,6 +129,55 @@ export function Progress() {
             <p className="hint" style={{ marginBottom: 0, marginTop: 4 }}>
               Each bar is scaled to that muscle's own MRV, with ticks at MEV and MRV. Secondary
               involvement counts as half a set.
+            </p>
+          </div>
+        </>
+      )}
+
+      {/* Leg symmetry — the number that gates the return to impact */}
+      {symmetry.length > 0 && (
+        <>
+          <div className="section-head">
+            <h2>Leg symmetry</h2>
+            <span className="tag">surgical ÷ good · target {LSI_TARGET}%</span>
+          </div>
+          <div className="card">
+            {symmetry.map((row) => {
+              const tone = lsiTone(row.latest.lsi)
+              const delta = row.latest.lsi - row.first.lsi
+              return (
+                <button
+                  key={row.exerciseId}
+                  className="lrow"
+                  style={{ width: '100%', textAlign: 'left', background: 'none', display: 'block' }}
+                  onClick={() => nav(`/progress/${row.exerciseId}`)}
+                >
+                  <div className="row-between">
+                    <div className="grow" style={{ fontWeight: 600 }}>
+                      {name(row.exerciseId)}
+                    </div>
+                    <span className={`sym-pct tone-${tone}`}>{fmtLsi(row.latest.lsi)}</span>
+                  </div>
+                  <div className="sym-row-bar" aria-hidden="true">
+                    <div
+                      className={`sym-row-fill tone-${tone}`}
+                      style={{ width: `${Math.min(100, row.latest.lsi)}%` }}
+                    />
+                    <div className="sym-row-target" style={{ left: `${LSI_TARGET}%` }} />
+                  </div>
+                  <div className="faint" style={{ fontSize: 12, marginTop: 4 }}>
+                    {row.count} session{row.count === 1 ? '' : 's'}
+                    {row.count > 1
+                      ? ` · ${delta >= 0 ? '+' : ''}${Math.round(delta)} pts since ${relativeDate(row.first.date)}`
+                      : ''}
+                    {row.latest.byReps ? ' · by reps' : ''}
+                  </div>
+                </button>
+              )
+            })}
+            <p className="hint" style={{ marginBottom: 0, marginTop: 6 }}>
+              Loaded lifts compare estimated 1RM per leg; bodyweight work and holds compare reps
+              or seconds. {LSI_TARGET}% is the usual benchmark before returning to running.
             </p>
           </div>
         </>

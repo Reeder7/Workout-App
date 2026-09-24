@@ -122,6 +122,11 @@ function hold(
   return mk(exerciseId, scheme, o.role ?? 'Isometric primer')
 }
 
+/** Mark a slot as logged one leg at a time, so the app can track symmetry. */
+function perLeg(pe: PlanExercise): PlanExercise {
+  return { ...pe, perLeg: true }
+}
+
 function day(name: string, exercises: PlanExercise[]): PlanDay {
   return { id: `tpl-day-${seq++}`, name, exercises }
 }
@@ -357,7 +362,8 @@ export const TEMPLATES: Plan[] = [
     // 4 — all six days done. Pull B and Legs B trimmed, a third side-delt
     //     exposure added, the barbell RDL restored, and step-downs on both leg
     //     days for a second weekly quad exposure.
-    revision: 4,
+    // 5 — unilateral lifts log both legs, for symmetry tracking.
+    revision: 5,
     name: 'Push · Pull · Legs (Knee-Resilient) — 6 Day',
     description:
       'A full 6-day Push/Pull/Legs where the leg days are knee-conscious: an isometric primer, quad AND hamstring priority, hip/glute work for valgus control, knee-friendly tempo and single-leg work, and low-impact sled finishers — no jumping or impact. Every exercise is capped at three working sets, and every one has its own set-by-set prescription. Load the legs pain-guided: keep knee pain ≤3/10 and settling by the next morning. Not medical advice — clear your loading with your PT/surgeon.',
@@ -424,11 +430,11 @@ export const TEMPLATES: Plan[] = [
         // Ahead of the leg extension on purpose. Single-leg work needs balance
         // and control, so it goes while there is still some left; an isolation
         // machine is the right thing to do fatigued, and this is not that.
-        iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' }),
+        perLeg(iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' })),
         // Run one leg at a time: reps are per leg, and each quad gets the full
         // three sets. Unilateral loading is what exposes a side-to-side gap,
         // which bilateral work hides — the deficit that persists after ACLR.
-        iso('leg-extension', 3, [10, 15], { tempo: '3-0-1-0', role: 'Quad isolation (per leg)' }),
+        perLeg(iso('leg-extension', 3, [10, 15], { tempo: '3-0-1-0', role: 'Quad isolation (per leg)' })),
         iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 60, role: 'Glute med / valgus' }),
         iso('standing-calf-raise', 3, [8, 15], {
           tempo: STRETCH_TEMPO,
@@ -499,14 +505,14 @@ export const TEMPLATES: Plan[] = [
         // knee resilience. Repeating the step-down rather than adding a machine
         // is the better trade: unilateral weight-bearing work is what exposes
         // and closes a side-to-side gap, and that gap is the deficit that lasts.
-        iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' }),
+        perLeg(iso('step-down', 3, [8, 12], { rir: [2, 1], rest: 90, role: 'Single-leg eccentric' })),
         // One leg at a time: extension ROM differs between the legs, so each
         // side works through the range it actually has. With the hinge bilateral
         // again, this is where the side-to-side gap gets exposed.
-        iso('seated-leg-curl', 3, [8, 15], {
+        perLeg(iso('seated-leg-curl', 3, [8, 15], {
           tempo: STRETCH_TEMPO,
           role: 'Hamstrings (stretch, per leg)',
-        }),
+        })),
         // Bilateral by choice — eccentric overload is the point, and a single-leg
         // nordic is past what one leg can control. Range raised to match: seven
         // reps were already being done against a 3-6 target. Progress by slowing
@@ -519,7 +525,7 @@ export const TEMPLATES: Plan[] = [
         // a straight-knee raise, so bent-knee sets here are the only soleus work
         // in the program, and the soleus resists anterior tibial translation the
         // same way the graft does.
-        iso('leg-press-calf-raise', 3, [10, 20], { role: 'Calves (per leg, bent knee)' }),
+        perLeg(iso('leg-press-calf-raise', 3, [10, 20], { role: 'Calves (per leg, bent knee)' })),
         iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
         mk(
           'sled-push',
@@ -826,7 +832,7 @@ export const TEMPLATES: Plan[] = [
   // ------------------------------------------------ Knee Priority (patellar tendon)
   {
     id: 'tpl-knee-priority',
-    revision: 2,
+    revision: 3,
     name: 'Knee Priority — Phase 1: Settle',
     description:
       'For knee pain first, with upper body held at maintenance. Built for patellar-tendon pain below the kneecap, on a knee that tolerates slow load better than impact. Every knee day opens with an isometric dose and 10 easy minutes on the bike, so the warm-up penalty is paid off before any working sets. Quad and hamstring work is unilateral with the surgical side first, to stop the good leg carrying the load.\n\nTHE RULE THAT STEERS EVERYTHING: pain ≤3/10 during a session, and back to baseline by the next morning. Any swelling means drop back a step. Swelling matters more than pain here, because it is the warning sign for the cartilage.\n\nDAILY ISOMETRICS: every day in the program opens with Spanish squats (4–5 x 45s), and the rest day gets the same dose at home — a wall sit or band-anchored Spanish squat, 4 x 45s, plus the banded hamstring hold. About ten minutes, and it is the part of the program doing the pain relief.\n\nMOVE TO PHASE 2 (heavy slow resistance) WHEN: 4+ weeks in, with session pain at 3/10 or less, no swelling, and stairs down noticeably easier. Upper body runs at about a third of the Push/Pull/Legs volume at the same effort, which holds most muscle.\n\nNot medical advice. Running volume is your surgeon\'s call, not this program\'s.',
@@ -841,10 +847,10 @@ export const TEMPLATES: Plan[] = [
         mk('stationary-bike', [s(10, 10, 0, 60, { label: 'Min' })], 'Warm-up'),
         // Slow both ways: heavy slow resistance, the best-supported loading for
         // patellar tendinopathy, started light in this phase. Surgical leg first.
-        iso('leg-extension', 3, [10, 15], { tempo: '3-0-3-0', rir: [3, 2], rest: 90, role: 'Quad, per leg (surgical first)' }),
+        perLeg(iso('leg-extension', 3, [10, 15], { tempo: '3-0-3-0', rir: [3, 2], rest: 90, role: 'Quad, per leg (surgical first)' })),
         // Literally the stairs-down movement, trained deliberately. Progress box
         // height only while it stays at 3/10 or less.
-        iso('step-down', 3, [8, 12], { rir: [3, 2], rest: 90, role: 'Stairs-down control, per leg' }),
+        perLeg(iso('step-down', 3, [8, 12], { rir: [3, 2], rest: 90, role: 'Stairs-down control, per leg' })),
         comp('leg-press', 3, [12, 15], { tempo: '3-0-3-0', rir: [3, 2], rest: 120, role: 'Slow quad (pain-limited depth)' }),
         // Concentric-only quad work with no eccentric and no impact, which is why
         // an irritable patellar tendon tolerates it so well.
@@ -860,7 +866,7 @@ export const TEMPLATES: Plan[] = [
         // six. It goes first rather than last — end-of-session slots are the
         // ones that stop getting done.
         hold('spanish-squat', 4, [45, 45], { rest: 90, role: 'Daily tendon dose' }),
-        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        perLeg(hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' })),
         comp('bench-press', 3, [5, 8], { rir: [2, 1], rest: 210, role: 'Heavy press' }),
         comp('barbell-row', 3, [6, 10], { rir: [2, 1], rest: 180, role: 'Horizontal pull' }),
         comp('smith-incline-press', 2, [6, 10], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
@@ -874,13 +880,13 @@ export const TEMPLATES: Plan[] = [
         // The hamstring graft side lags in knee flexion. Holding against a band
         // trains it with no eccentric strain, so it opens the posterior day.
         hold('spanish-squat', 4, [45, 45], { rest: 90, role: 'Daily tendon dose' }),
-        hold('banded-hamstring-iso', 3, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        perLeg(hold('banded-hamstring-iso', 3, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' })),
         mk('stationary-bike', [s(10, 10, 0, 60, { label: 'Min' })], 'Warm-up'),
-        iso('seated-leg-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, rir: [3, 1], rest: 90, role: 'Hamstrings, per leg (surgical first)' }),
+        perLeg(iso('seated-leg-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, rir: [3, 1], rest: 90, role: 'Hamstrings, per leg (surgical first)' })),
         comp('romanian-deadlift', 3, [8, 12], { rir: [3, 2], rest: 180, role: 'Hip hinge' }),
-        comp('single-leg-hip-thrust', 3, [10, 15], { rir: [2, 1], rest: 90, role: 'Glute/hamstring, per leg' }),
+        perLeg(comp('single-leg-hip-thrust', 3, [10, 15], { rir: [2, 1], rest: 90, role: 'Glute/hamstring, per leg' })),
         iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 60, role: 'Glute med / valgus' }),
-        iso('leg-press-calf-raise', 3, [10, 20], { role: 'Soleus (bent knee), per leg' }),
+        perLeg(iso('leg-press-calf-raise', 3, [10, 20], { role: 'Soleus (bent knee), per leg' })),
         iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
         mk('sled-push', [
           s(3, 5, 1, 120, { label: 'Trip' }), s(3, 5, 1, 120, { label: 'Trip' }), s(3, 5, 0, 120, { label: 'Trip' }),
@@ -892,7 +898,7 @@ export const TEMPLATES: Plan[] = [
         // six. It goes first rather than last — end-of-session slots are the
         // ones that stop getting done.
         hold('spanish-squat', 4, [45, 45], { rest: 90, role: 'Daily tendon dose' }),
-        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        perLeg(hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' })),
         comp('ohp', 3, [5, 8], { rir: [2, 1], rest: 180, role: 'Vertical press' }),
         comp('neutral-pulldown', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Vertical pull' }),
         comp('incline-db-press', 2, [8, 12], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
@@ -909,12 +915,12 @@ export const TEMPLATES: Plan[] = [
         // Kept, but pain decides the depth: the tightness on squats is the reason
         // it sits after the analgesic dose and the warm-up rather than first.
         comp('heels-elevated-squat', 3, [8, 12], { tempo: '3-0-3-0', rir: [3, 2], rest: 150, role: 'Slow quad (pain-limited depth)' }),
-        iso('step-down', 3, [8, 12], { rir: [3, 2], rest: 90, role: 'Stairs-down control, per leg' }),
+        perLeg(iso('step-down', 3, [8, 12], { rir: [3, 2], rest: 90, role: 'Stairs-down control, per leg' })),
         // Two sets here, not three: quad volume across the week is capped to keep
         // total patellar-tendon load down. TKEs are done informally alongside
         // the squat warm-up rather than logged as a slot, for the same reason.
-        iso('leg-extension', 2, [10, 15], { tempo: '3-0-3-0', rir: [3, 1], rest: 90, role: 'Quad, per leg (surgical first)' }),
-        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        perLeg(iso('leg-extension', 2, [10, 15], { tempo: '3-0-3-0', rir: [3, 1], rest: 90, role: 'Quad, per leg (surgical first)' })),
+        perLeg(hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' })),
         mk('backward-sled-drag', [
           s(3, 5, 1, 90, { label: 'Trip' }), s(3, 5, 1, 90, { label: 'Trip' }), s(3, 5, 0, 90, { label: 'Trip' }),
         ], 'Knee-friendly quad capacity'),
@@ -924,7 +930,7 @@ export const TEMPLATES: Plan[] = [
         // and gives the tendon a daily dose of load without a hard session.
         mk('stationary-bike', [s(25, 30, 0, 60, { label: 'Min' })], 'Zone 2 aerobic base'),
         hold('spanish-squat', 4, [45, 45], { rest: 120, role: 'Tendon pain relief' }),
-        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        perLeg(hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' })),
         iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
       ]),
     ],

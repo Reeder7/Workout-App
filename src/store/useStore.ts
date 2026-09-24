@@ -8,6 +8,7 @@ import type {
   PrescribedSet,
   Session,
   Settings,
+  SideSet,
 } from '../types'
 import { EXERCISES } from '../data/exercises'
 import { TEMPLATES, sourceTemplateFor } from '../data/templates'
@@ -76,6 +77,10 @@ interface State {
   swapExerciseInActive: (index: number, newExerciseId: string) => void
   addSet: (exerciseIndex: number) => void
   updateSet: (exerciseIndex: number, setIndex: number, patch: Partial<LoggedSet>) => void
+  /** Edit the non-surgical leg's half of a per-leg set, merging into what's there. */
+  updateGoodSide: (exerciseIndex: number, setIndex: number, patch: Partial<SideSet>) => void
+  /** Switch an in-progress exercise between one entry per set and one per leg. */
+  togglePerLeg: (exerciseIndex: number) => void
   /**
    * Nudge a set's RIR, resolving the current value from live state so two fast
    * taps can't both read the same stale prop and collapse into one step.
@@ -217,6 +222,7 @@ export const useStore = create<State>()(
               exerciseId: pe.exerciseId,
               note: pe.note,
               restSec: pe.restSec,
+              perLeg: pe.perLeg || undefined,
               // rir is deliberately left unset: it is an observation, not a
               // prescription. The target below drives the ghost value, and
               // completing a set commits it only if nothing was entered.
@@ -303,7 +309,13 @@ export const useStore = create<State>()(
               ...ex,
               sets: [
                 ...ex.sets,
-                { reps: last?.reps ?? 0, weight: last?.weight ?? 0, rir: last?.rir, done: false },
+                {
+                  reps: last?.reps ?? 0,
+                  weight: last?.weight ?? 0,
+                  rir: last?.rir,
+                  done: false,
+                  ...(last?.good ? { good: { ...last.good } } : {}),
+                },
               ],
             }
           })
@@ -319,6 +331,30 @@ export const useStore = create<State>()(
               sets: ex.sets.map((st, j) => (j === setIndex ? { ...st, ...patch } : st)),
             }
           })
+          return { activeSession: { ...s.activeSession, exercises } }
+        }),
+      updateGoodSide: (exerciseIndex, setIndex, patch) =>
+        set((s) => {
+          if (!s.activeSession) return s
+          const exercises = s.activeSession.exercises.map((ex, i) => {
+            if (i !== exerciseIndex) return ex
+            return {
+              ...ex,
+              sets: ex.sets.map((st, j) =>
+                j === setIndex
+                  ? { ...st, good: { weight: 0, reps: 0, ...st.good, ...patch } }
+                  : st,
+              ),
+            }
+          })
+          return { activeSession: { ...s.activeSession, exercises } }
+        }),
+      togglePerLeg: (exerciseIndex) =>
+        set((s) => {
+          if (!s.activeSession) return s
+          const exercises = s.activeSession.exercises.map((ex, i) =>
+            i === exerciseIndex ? { ...ex, perLeg: !ex.perLeg || undefined } : ex,
+          )
           return { activeSession: { ...s.activeSession, exercises } }
         }),
       stepRir: (exerciseIndex, setIndex, delta) =>

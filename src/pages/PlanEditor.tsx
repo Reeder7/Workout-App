@@ -339,6 +339,15 @@ export function PlanEditor() {
             >
               <Icon name="trash" size={15} />
             </button>
+            {/* Logs each set once per leg, surgical side first, so the app can
+                track symmetry between them. */}
+            <button
+              className={`btn btn-sm btn-ghost${pe.perLeg ? ' is-on' : ''}`}
+              onClick={() => updateExercise(pe.id, { perLeg: !pe.perLeg || undefined })}
+              aria-pressed={!!pe.perLeg}
+            >
+              Per leg
+            </button>
           </div>
 
           {pe.role && (

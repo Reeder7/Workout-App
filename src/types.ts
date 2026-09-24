@@ -96,6 +96,11 @@ export interface PlanExercise {
   /** Coaching intent for this slot, e.g. 'Primary strength', 'Stretch-biased'. */
   role?: string
   note?: string
+  /**
+   * Logged one leg at a time: each set records the surgical side in its usual
+   * weight/reps fields and the other leg in `good`, so the two can be compared.
+   */
+  perLeg?: boolean
 }
 
 export interface PlanDay {
@@ -129,11 +134,24 @@ export interface Plan {
   blockWeeks?: number
 }
 
+/** One leg's half of a per-leg set. */
+export interface SideSet {
+  weight: number
+  reps: number
+}
+
 export interface LoggedSet {
+  /**
+   * On a per-leg exercise, weight and reps are the SURGICAL side — so volume,
+   * history and progression advice all track the weaker leg, which is the one
+   * being brought up. The other leg lives in `good`.
+   */
   reps: number
   weight: number
   rir?: number
   done: boolean
+  /** The non-surgical leg, on per-leg exercises only. */
+  good?: SideSet
   /** Prescription carried from the plan, shown as the target for this set. */
   target?: {
     repMin: number
@@ -148,6 +166,8 @@ export interface LoggedSet {
 
 export interface LoggedExercise {
   exerciseId: string
+  /** Carried from the plan: sets record both legs. See PlanExercise.perLeg. */
+  perLeg?: boolean
   sets: LoggedSet[]
   note?: string
   /** Rest target (seconds) carried from the plan, used by the rest timer. */

@@ -41,6 +41,8 @@ export function Session() {
   const swapExercise = useStore((s) => s.swapExerciseInActive)
   const addSet = useStore((s) => s.addSet)
   const updateSet = useStore((s) => s.updateSet)
+  const updateGoodSide = useStore((s) => s.updateGoodSide)
+  const togglePerLeg = useStore((s) => s.togglePerLeg)
   const removeSet = useStore((s) => s.removeSet)
   const stepRir = useStore((s) => s.stepRir)
   const finish = useStore((s) => s.finishSession)
@@ -149,6 +151,8 @@ export function Session() {
           deload={active.deload}
           onToggleNotes={() => setNotesOpen((o) => ({ ...o, [ei]: !o[ei] }))}
           onUpdateSet={(si, patch) => updateSet(ei, si, patch)}
+          onUpdateGood={(si, patch) => updateGoodSide(ei, si, patch)}
+          onTogglePerLeg={() => togglePerLeg(ei)}
           onAddSet={() => addSet(ei)}
           onRemoveSet={(si) => removeSet(ei, si)}
           onStepRir={(si, delta) => stepRir(ei, si, delta)}
