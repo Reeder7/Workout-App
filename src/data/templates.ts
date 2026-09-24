@@ -823,6 +823,99 @@ export const TEMPLATES: Plan[] = [
       ]),
     ],
   },
+  // ------------------------------------------------ Knee Priority (patellar tendon)
+  {
+    id: 'tpl-knee-priority',
+    revision: 1,
+    name: 'Knee Priority — Phase 1: Settle',
+    description:
+      'For knee pain first, with upper body held at maintenance. Built for patellar-tendon pain below the kneecap, on a knee that tolerates slow load better than impact. Every knee day opens with an isometric dose and 10 easy minutes on the bike, so the warm-up penalty is paid off before any working sets. Quad and hamstring work is unilateral with the surgical side first, to stop the good leg carrying the load.\n\nTHE RULE THAT STEERS EVERYTHING: pain ≤3/10 during a session, and back to baseline by the next morning. Any swelling means drop back a step. Swelling matters more than pain here, because it is the warning sign for the cartilage.\n\nMOVE TO PHASE 2 (heavy slow resistance) WHEN: 4+ weeks in, with session pain at 3/10 or less, no swelling, and stairs down noticeably easier. Upper body runs at about a third of the Push/Pull/Legs volume at the same effort, which holds most muscle.\n\nNot medical advice. Running volume is your surgeon\'s call, not this program\'s.',
+    daysPerWeek: 6,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Knee A — Tendon & quad', [
+        // The analgesic dose: sustained heavy isometrics reduce patellar tendon
+        // pain for up to ~45 minutes, which covers the working sets after it.
+        hold('spanish-squat', 5, [45, 45], { rest: 120, role: 'Tendon pain relief' }),
+        mk('stationary-bike', [s(10, 10, 0, 60, { label: 'Min' })], 'Warm-up'),
+        // Slow both ways: heavy slow resistance, the best-supported loading for
+        // patellar tendinopathy, started light in this phase. Surgical leg first.
+        iso('leg-extension', 3, [10, 15], { tempo: '3-0-3-0', rir: [3, 2], rest: 90, role: 'Quad, per leg (surgical first)' }),
+        // Literally the stairs-down movement, trained deliberately. Progress box
+        // height only while it stays at 3/10 or less.
+        iso('step-down', 3, [8, 12], { rir: [3, 2], rest: 90, role: 'Stairs-down control, per leg' }),
+        comp('leg-press', 3, [12, 15], { tempo: '3-0-3-0', rir: [3, 2], rest: 120, role: 'Slow quad (pain-limited depth)' }),
+        // Concentric-only quad work with no eccentric and no impact, which is why
+        // an irritable patellar tendon tolerates it so well.
+        mk('backward-sled-drag', [
+          s(3, 5, 1, 90, { label: 'Trip' }), s(3, 5, 1, 90, { label: 'Trip' }),
+          s(3, 5, 1, 90, { label: 'Trip' }), s(3, 5, 0, 90, { label: 'Trip' }),
+        ], 'Knee-friendly quad capacity'),
+        iso('standing-calf-raise', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Gastrocnemius' }),
+      ]),
+      day('Upper A — Maintenance', [
+        comp('bench-press', 3, [5, 8], { rir: [2, 1], rest: 210, role: 'Heavy press' }),
+        comp('barbell-row', 3, [6, 10], { rir: [2, 1], rest: 180, role: 'Horizontal pull' }),
+        comp('smith-incline-press', 2, [6, 10], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
+        comp('lat-pulldown', 2, [8, 12], { rir: [2, 1], rest: 120, role: 'Lats' }),
+        iso('cable-lateral-raise', 3, [12, 20], { role: 'Side delts' }),
+        iso('overhead-triceps-ext', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
+        iso('bayesian-curl', 2, [10, 15], { tempo: STRETCH_TEMPO, role: 'Biceps long head' }),
+        iso('machine-crunch', 2, [10, 15], { role: 'Abs' }),
+      ]),
+      day('Knee B — Hamstring & posterior', [
+        // The hamstring graft side lags in knee flexion. Holding against a band
+        // trains it with no eccentric strain, so it opens the posterior day.
+        hold('banded-hamstring-iso', 3, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        mk('stationary-bike', [s(10, 10, 0, 60, { label: 'Min' })], 'Warm-up'),
+        iso('seated-leg-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, rir: [3, 1], rest: 90, role: 'Hamstrings, per leg (surgical first)' }),
+        comp('romanian-deadlift', 3, [8, 12], { rir: [3, 2], rest: 180, role: 'Hip hinge' }),
+        comp('single-leg-hip-thrust', 3, [10, 15], { rir: [2, 1], rest: 90, role: 'Glute/hamstring, per leg' }),
+        iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 60, role: 'Glute med / valgus' }),
+        iso('leg-press-calf-raise', 3, [10, 20], { role: 'Soleus (bent knee), per leg' }),
+        iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
+        mk('sled-push', [
+          s(3, 5, 1, 120, { label: 'Trip' }), s(3, 5, 1, 120, { label: 'Trip' }), s(3, 5, 0, 120, { label: 'Trip' }),
+        ], 'Low-impact capacity'),
+      ]),
+      day('Upper B — Maintenance', [
+        comp('ohp', 3, [5, 8], { rir: [2, 1], rest: 180, role: 'Vertical press' }),
+        comp('neutral-pulldown', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Vertical pull' }),
+        comp('incline-db-press', 2, [8, 12], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
+        comp('meadows-row', 2, [8, 12], { rir: [2, 1], rest: 120, role: 'Mid-back, per side' }),
+        iso('behind-body-cable-lateral', 3, [12, 20], { role: 'Side delts' }),
+        iso('cable-rear-delt-fly', 2, [12, 20], { role: 'Rear delts' }),
+        iso('skullcrusher', 2, [8, 12], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
+        iso('preacher-curl', 2, [8, 12], { role: 'Biceps' }),
+        iso('hanging-leg-raise', 2, [8, 15], { role: 'Abs' }),
+      ]),
+      day('Knee C — Tendon & single leg', [
+        hold('spanish-squat', 5, [45, 45], { rest: 120, role: 'Tendon pain relief' }),
+        mk('stationary-bike', [s(10, 10, 0, 60, { label: 'Min' })], 'Warm-up'),
+        // Kept, but pain decides the depth: the tightness on squats is the reason
+        // it sits after the analgesic dose and the warm-up rather than first.
+        comp('heels-elevated-squat', 3, [8, 12], { tempo: '3-0-3-0', rir: [3, 2], rest: 150, role: 'Slow quad (pain-limited depth)' }),
+        iso('step-down', 3, [8, 12], { rir: [3, 2], rest: 90, role: 'Stairs-down control, per leg' }),
+        // Two sets here, not three: quad volume across the week is capped to keep
+        // total patellar-tendon load down. TKEs are done informally alongside
+        // the squat warm-up rather than logged as a slot, for the same reason.
+        iso('leg-extension', 2, [10, 15], { tempo: '3-0-3-0', rir: [3, 1], rest: 90, role: 'Quad, per leg (surgical first)' }),
+        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        mk('backward-sled-drag', [
+          s(3, 5, 1, 90, { label: 'Trip' }), s(3, 5, 1, 90, { label: 'Trip' }), s(3, 5, 0, 90, { label: 'Trip' }),
+        ], 'Knee-friendly quad capacity'),
+      ]),
+      day('Conditioning & isometrics', [
+        // Short and easy: this builds the aerobic base for a return to running,
+        // and gives the tendon a daily dose of load without a hard session.
+        mk('stationary-bike', [s(25, 30, 0, 60, { label: 'Min' })], 'Zone 2 aerobic base'),
+        hold('spanish-squat', 4, [45, 45], { rest: 120, role: 'Tendon pain relief' }),
+        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
+        iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' }),
+      ]),
+    ],
+  },
 ]
 
 /**
