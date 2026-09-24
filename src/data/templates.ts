@@ -826,10 +826,10 @@ export const TEMPLATES: Plan[] = [
   // ------------------------------------------------ Knee Priority (patellar tendon)
   {
     id: 'tpl-knee-priority',
-    revision: 1,
+    revision: 2,
     name: 'Knee Priority — Phase 1: Settle',
     description:
-      'For knee pain first, with upper body held at maintenance. Built for patellar-tendon pain below the kneecap, on a knee that tolerates slow load better than impact. Every knee day opens with an isometric dose and 10 easy minutes on the bike, so the warm-up penalty is paid off before any working sets. Quad and hamstring work is unilateral with the surgical side first, to stop the good leg carrying the load.\n\nTHE RULE THAT STEERS EVERYTHING: pain ≤3/10 during a session, and back to baseline by the next morning. Any swelling means drop back a step. Swelling matters more than pain here, because it is the warning sign for the cartilage.\n\nMOVE TO PHASE 2 (heavy slow resistance) WHEN: 4+ weeks in, with session pain at 3/10 or less, no swelling, and stairs down noticeably easier. Upper body runs at about a third of the Push/Pull/Legs volume at the same effort, which holds most muscle.\n\nNot medical advice. Running volume is your surgeon\'s call, not this program\'s.',
+      'For knee pain first, with upper body held at maintenance. Built for patellar-tendon pain below the kneecap, on a knee that tolerates slow load better than impact. Every knee day opens with an isometric dose and 10 easy minutes on the bike, so the warm-up penalty is paid off before any working sets. Quad and hamstring work is unilateral with the surgical side first, to stop the good leg carrying the load.\n\nTHE RULE THAT STEERS EVERYTHING: pain ≤3/10 during a session, and back to baseline by the next morning. Any swelling means drop back a step. Swelling matters more than pain here, because it is the warning sign for the cartilage.\n\nDAILY ISOMETRICS: every day in the program opens with Spanish squats (4–5 x 45s), and the rest day gets the same dose at home — a wall sit or band-anchored Spanish squat, 4 x 45s, plus the banded hamstring hold. About ten minutes, and it is the part of the program doing the pain relief.\n\nMOVE TO PHASE 2 (heavy slow resistance) WHEN: 4+ weeks in, with session pain at 3/10 or less, no swelling, and stairs down noticeably easier. Upper body runs at about a third of the Push/Pull/Legs volume at the same effort, which holds most muscle.\n\nNot medical advice. Running volume is your surgeon\'s call, not this program\'s.',
     daysPerWeek: 6,
     createdAt: 0,
     builtIn: true,
@@ -855,6 +855,12 @@ export const TEMPLATES: Plan[] = [
         iso('standing-calf-raise', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Gastrocnemius' }),
       ]),
       day('Upper A — Maintenance', [
+        // The daily dose. Upper days carry it too: the analgesic effect is short
+        // lived, so the tendon gets loaded every day rather than four days in
+        // six. It goes first rather than last — end-of-session slots are the
+        // ones that stop getting done.
+        hold('spanish-squat', 4, [45, 45], { rest: 90, role: 'Daily tendon dose' }),
+        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
         comp('bench-press', 3, [5, 8], { rir: [2, 1], rest: 210, role: 'Heavy press' }),
         comp('barbell-row', 3, [6, 10], { rir: [2, 1], rest: 180, role: 'Horizontal pull' }),
         comp('smith-incline-press', 2, [6, 10], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
@@ -867,6 +873,7 @@ export const TEMPLATES: Plan[] = [
       day('Knee B — Hamstring & posterior', [
         // The hamstring graft side lags in knee flexion. Holding against a band
         // trains it with no eccentric strain, so it opens the posterior day.
+        hold('spanish-squat', 4, [45, 45], { rest: 90, role: 'Daily tendon dose' }),
         hold('banded-hamstring-iso', 3, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
         mk('stationary-bike', [s(10, 10, 0, 60, { label: 'Min' })], 'Warm-up'),
         iso('seated-leg-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, rir: [3, 1], rest: 90, role: 'Hamstrings, per leg (surgical first)' }),
@@ -880,6 +887,12 @@ export const TEMPLATES: Plan[] = [
         ], 'Low-impact capacity'),
       ]),
       day('Upper B — Maintenance', [
+        // The daily dose. Upper days carry it too: the analgesic effect is short
+        // lived, so the tendon gets loaded every day rather than four days in
+        // six. It goes first rather than last — end-of-session slots are the
+        // ones that stop getting done.
+        hold('spanish-squat', 4, [45, 45], { rest: 90, role: 'Daily tendon dose' }),
+        hold('banded-hamstring-iso', 2, [30, 45], { rest: 60, role: 'Graft-side hamstring, per leg' }),
         comp('ohp', 3, [5, 8], { rir: [2, 1], rest: 180, role: 'Vertical press' }),
         comp('neutral-pulldown', 3, [8, 12], { rir: [2, 1], rest: 120, role: 'Vertical pull' }),
         comp('incline-db-press', 2, [8, 12], { rir: [2, 1], rest: 150, role: 'Upper chest' }),
