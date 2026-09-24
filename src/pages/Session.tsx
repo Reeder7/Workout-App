@@ -15,6 +15,8 @@ import { SwapSheet } from '../components/SwapSheet'
 import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
 import { toast } from '../lib/toast'
 import { DELOAD } from '../lib/mesocycle'
+import { KNEE_MUSCLES } from '../lib/knee'
+import { PainScale } from '../components/PainScale'
 import type { Session as SessionType } from '../types'
 
 function useElapsed(startedAt?: number) {
@@ -57,6 +59,7 @@ export function Session() {
   const [notesOpen, setNotesOpen] = useState<Record<number, boolean>>({})
   const [swapIndex, setSwapIndex] = useState<number | null>(null)
   const [finished, setFinished] = useState<SessionType | null>(null)
+  const [kneePain, setKneePain] = useState<number | undefined>(undefined)
 
   const elapsed = useElapsed(active?.date)
 
@@ -109,6 +112,12 @@ export function Session() {
     )
   }
 
+  // Ask about the knee only when the session touched it.
+  const kneeSession = active.exercises.some((ex) => {
+    const m = exerciseById(ex.exerciseId)
+    return !!m && KNEE_MUSCLES.has(m.primary)
+  })
+
   function startRest(seconds: number) {
     setRestEndsAt(Date.now() + seconds * 1000)
   }
@@ -135,6 +144,16 @@ export function Session() {
           <div className="block-week">Deload session</div>
           <div className="block-sub">
             Sets are already cut and RIR raised. {DELOAD.summary}
+          </div>
+        </div>
+      )}
+
+      {active.stepBack && (
+        <div className="block-strip is-deload" style={{ marginTop: 0 }}>
+          <div className="block-week">Stepped back today</div>
+          <div className="block-sub">
+            From this morning’s knee check-in: one set fewer on leg exercises, and each set a rep
+            further from failure. Keep depth and box height where they were last week.
           </div>
         </div>
       )}
@@ -223,11 +242,23 @@ export function Session() {
           Only sets marked complete (✓) are saved. {totals.done} set
           {totals.done === 1 ? '' : 's'} logged.
         </p>
+        {kneeSession && (
+          <div style={{ marginBottom: 'var(--space-3)' }}>
+            <div className="knee-q" style={{ marginTop: 'var(--space-2)' }}>
+              Worst knee pain during this session
+            </div>
+            <PainScale value={kneePain} onChange={setKneePain} label="Worst knee pain this session" />
+            <div className="faint" style={{ fontSize: 12, marginTop: 6 }}>
+              Optional. Tomorrow’s check-in is compared with it, so you can see which sessions the knee
+              answers to.
+            </div>
+          </div>
+        )}
         <button
           className="btn btn-primary btn-block"
           style={{ marginTop: 8 }}
           onClick={() => {
-            finish()
+            finish({ kneePain })
             setConfirmFinish(false)
             // finishSession prunes incomplete sets, so read back what was
             // actually stored rather than reusing the in-progress copy.

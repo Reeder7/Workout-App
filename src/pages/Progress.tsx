@@ -20,6 +20,8 @@ import { buildReviewReport, isEmptyReport } from '../lib/reviewExport'
 import { copyText } from '../lib/clipboard'
 import { toast } from '../lib/toast'
 import { symmetrySummary, lsiTone, fmtLsi, LSI_TARGET } from '../lib/symmetry'
+import { KneeTrend, isKneeSession } from '../components/KneeTrend'
+import { SWELLING_LABEL, baselineFor, dayKey, daysWithoutSwelling } from '../lib/knee'
 import type { MuscleGroup } from '../types'
 
 export function Progress() {
@@ -28,12 +30,13 @@ export function Progress() {
   const custom = useStore((s) => s.customExercises)
   const unit = useStore((s) => s.settings.unit)
   const deleteSession = useStore((s) => s.deleteSession)
+  const kneeCheckins = useStore((s) => s.kneeCheckins)
   // Tapping a workout in Train's Recent list lands here with that session to
   // open, so the breakdown is one tap away instead of a hunt through History.
   const loc = useLocation()
   /** One tap from the page that shows the data, not buried in Settings. */
   function copyReport() {
-    const report = buildReviewReport({ sessions, customExercises: custom, unit })
+    const report = buildReviewReport({ sessions, customExercises: custom, unit, kneeCheckins })
     if (isEmptyReport(report)) {
       toast('No completed sets logged yet', 'danger')
       return
@@ -133,6 +136,65 @@ export function Progress() {
           </div>
         </>
       )}
+
+      {/* Knee — the morning response every session is judged against */}
+      {kneeCheckins.length > 0 && (() => {
+        // As of tomorrow, so today's check-in counts toward the normal shown.
+        const base = baselineFor(kneeCheckins, dayKey(Date.now() + 24 * 60 * 60 * 1000))
+        const dry = daysWithoutSwelling(kneeCheckins)
+        const exerciseOf = (id: string) =>
+          EXERCISE_BY_ID[id] ?? custom.find((e) => e.id === id)
+        // Session pain is logged on the day of the session; the check-in that
+        // answers it is the next morning's.
+        const sessionPainOn = (day: string) =>
+          sessions
+            .filter((s) => dayKey(s.date) === day && s.kneePain != null && isKneeSession(s, exerciseOf))
+            .map((s) => s.kneePain as number)
+        return (
+          <>
+            <div className="section-head">
+              <h2>Knee</h2>
+              <span className="tag">
+                {base ? `normal: pain ${fmtHalf(base.pain)}` : 'normal after 3 check-ins'} · no
+                swelling {dry}d
+              </span>
+            </div>
+            <div className="card">
+              <KneeTrend checkins={kneeCheckins} sessions={sessions} exerciseOf={exerciseOf} />
+              <table className="knee-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Pain</th>
+                    <th>Stairs</th>
+                    <th>Swelling</th>
+                    <th>Session</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {kneeCheckins.slice(0, 7).map((c) => {
+                    const sp = sessionPainOn(c.day)
+                    return (
+                      <tr key={c.day}>
+                        <td>{relativeDate(new Date(c.day + 'T12:00').getTime())}</td>
+                        <td>{c.pain}</td>
+                        <td>{c.stairs ?? '—'}</td>
+                        <td>{SWELLING_LABEL[c.swelling]}</td>
+                        <td>{sp.length ? `${Math.max(...sp)}/10` : '—'}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+              <p className="hint" style={{ marginBottom: 0, marginTop: 8 }}>
+                Morning pain and stairs are from the check-in; Session is the worst pain you logged when
+                finishing a leg workout that day. A morning above your normal the day after a session
+                is the knee answering that session.
+              </p>
+            </div>
+          </>
+        )
+      })()}
 
       {/* Leg symmetry — the number that gates the return to impact */}
       {symmetry.length > 0 && (
@@ -319,4 +381,8 @@ export function Progress() {
       </Sheet>
     </div>
   )
+}
+
+function fmtHalf(n: number): string {
+  return Number.isInteger(n) ? String(n) : n.toFixed(1)
 }

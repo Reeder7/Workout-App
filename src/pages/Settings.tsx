@@ -20,13 +20,14 @@ export function Settings() {
   const sessions = useStore((s) => s.sessions)
 
   const customExercises = useStore((s) => s.customExercises)
+  const kneeCheckins = useStore((s) => s.kneeCheckins)
 
   const fileRef = useRef<HTMLInputElement>(null)
   const [confirmReset, setConfirmReset] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
 
   const buildReport = () =>
-    buildReviewReport({ sessions, customExercises, unit: settings.unit })
+    buildReviewReport({ sessions, customExercises, unit: settings.unit, kneeCheckins })
 
   function copyReport() {
     const report = buildReport()

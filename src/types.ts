@@ -191,6 +191,29 @@ export interface Session {
   exercises: LoggedExercise[]
   durationSec?: number
   finishedAt?: number
+  /** Worst knee pain during the session, 0–10, asked when it is finished. */
+  kneePain?: number
+  /** Started stepped back after a yellow or red knee check-in. */
+  stepBack?: boolean
+}
+
+export type Swelling = 'none' | 'slight' | 'obvious'
+
+/**
+ * One morning knee check-in. The program's governing rule is how the knee
+ * responds by the next morning, so this is the signal every session is judged
+ * against. Numbers only, by design — no free text.
+ */
+export interface KneeCheckin {
+  /** Local calendar day, YYYY-MM-DD. One check-in per day; saving again replaces it. */
+  day: string
+  /** When it was saved. */
+  at: number
+  /** Knee pain on waking, 0–10. */
+  pain: number
+  /** Pain walking down one flight of stairs, 0–10. Optional: not everyone has done stairs yet. */
+  stairs?: number
+  swelling: Swelling
 }
 
 export type Unit = 'lb' | 'kg'

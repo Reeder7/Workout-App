@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type {
   Exercise,
+  KneeCheckin,
   LoggedSet,
   Plan,
   PlanDay,
@@ -13,6 +14,7 @@ import type {
 import { EXERCISES } from '../data/exercises'
 import { TEMPLATES, sourceTemplateFor } from '../data/templates'
 import { blockStartForWeek, blockState, deloadScheme } from '../lib/mesocycle'
+import { KNEE_MUSCLES, dayKey, stepBackScheme } from '../lib/knee'
 
 export function uid(prefix = 'id'): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -44,6 +46,17 @@ interface State {
   activeSession: Session | null
   /** Persistent per-exercise notes, keyed by exerciseId, saved across workouts. */
   exerciseNotes: Record<string, string>
+  /** Morning knee check-ins, one per day, newest first. Stays on this device. */
+  kneeCheckins: KneeCheckin[]
+  /** The day (YYYY-MM-DD) step-back is switched on for; sessions started that day start lighter. */
+  stepBackDay: string | null
+
+  // knee
+  /** Save today's check-in (or the given day's), replacing any already saved for that day. */
+  saveKneeCheckin: (c: Omit<KneeCheckin, 'at'>) => void
+  deleteKneeCheckin: (day: string) => void
+  /** Switch step-back on or off for today. */
+  setStepBack: (on: boolean) => void
 
   // exercises
   allExercises: () => Exercise[]
@@ -87,7 +100,8 @@ interface State {
    */
   stepRir: (exerciseIndex: number, setIndex: number, delta: number) => void
   removeSet: (exerciseIndex: number, setIndex: number) => void
-  finishSession: () => void
+  /** Save the active workout. `kneePain` is the worst knee pain during it, 0–10. */
+  finishSession: (opts?: { kneePain?: number }) => void
   discardActiveSession: () => void
   deleteSession: (id: string) => void
 
@@ -107,6 +121,19 @@ export const useStore = create<State>()(
       settings: { unit: 'lb', theme: 'light' },
       activeSession: null,
       exerciseNotes: {},
+      kneeCheckins: [],
+      stepBackDay: null,
+
+      saveKneeCheckin: (c) =>
+        set((s) => ({
+          kneeCheckins: [
+            { ...c, at: Date.now() },
+            ...s.kneeCheckins.filter((x) => x.day !== c.day),
+          ].sort((a, b) => (a.day < b.day ? 1 : -1)),
+        })),
+      deleteKneeCheckin: (day) =>
+        set((s) => ({ kneeCheckins: s.kneeCheckins.filter((x) => x.day !== day) })),
+      setStepBack: (on) => set({ stepBackDay: on ? dayKey() : null }),
 
       allExercises: () => [...EXERCISES, ...get().customExercises],
 
@@ -196,6 +223,11 @@ export const useStore = create<State>()(
           }))
         }
         const deloading = !!plan && blockState(plan)?.isDeload === true
+        // Step-back is a per-day switch from the knee check-in. It touches only
+        // exercises that load the knee, so upper work on the same day is untouched.
+        const steppingBack = get().stepBackDay === dayKey()
+        const meta = (id: string) => get().allExercises().find((e) => e.id === id)
+        let steppedBack = false
         const session: Session = {
           id: uid('sess'),
           date: Date.now(),
@@ -217,7 +249,11 @@ export const useStore = create<State>()(
                   }))
             // In the deload week the session is generated lighter rather than
             // relying on the lifter to remember to hold back.
-            const scheme = deloading ? deloadScheme(prescribed) : prescribed
+            const base = deloading ? deloadScheme(prescribed) : prescribed
+            const m = meta(pe.exerciseId)
+            const knee = !!m && KNEE_MUSCLES.has(m.primary)
+            const scheme = steppingBack && knee ? stepBackScheme(base) : base
+            if (scheme !== base) steppedBack = true
             return {
               exerciseId: pe.exerciseId,
               note: pe.note,
@@ -244,6 +280,7 @@ export const useStore = create<State>()(
             }
           }),
         }
+        if (steppedBack) session.stepBack = true
         set({ activeSession: session })
       },
       startEmptySession: () => {
@@ -384,12 +421,13 @@ export const useStore = create<State>()(
           })
           return { activeSession: { ...s.activeSession, exercises } }
         }),
-      finishSession: () =>
+      finishSession: (opts = {}) =>
         set((s) => {
           if (!s.activeSession) return s
           // Keep only exercises with at least one completed set.
           const cleaned: Session = {
             ...s.activeSession,
+            ...(opts.kneePain != null ? { kneePain: opts.kneePain } : {}),
             finishedAt: Date.now(),
             durationSec: Math.round((Date.now() - s.activeSession.date) / 1000),
             exercises: s.activeSession.exercises
@@ -406,7 +444,7 @@ export const useStore = create<State>()(
       setSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
 
       exportData: () => {
-        const { plans, sessions, customExercises, settings, exerciseNotes } = get()
+        const { plans, sessions, customExercises, settings, exerciseNotes, kneeCheckins } = get()
         return JSON.stringify(
           {
             version: 1,
@@ -416,6 +454,7 @@ export const useStore = create<State>()(
             customExercises,
             settings,
             exerciseNotes,
+            kneeCheckins,
           },
           null,
           2,
@@ -464,6 +503,17 @@ export const useStore = create<State>()(
               return false
           }
           if (data.exerciseNotes !== undefined && !isObj(data.exerciseNotes)) return false
+          const validCheckin = (c: unknown) =>
+            isObj(c) &&
+            typeof c.day === 'string' &&
+            /^\d{4}-\d{2}-\d{2}$/.test(c.day) &&
+            typeof c.pain === 'number' &&
+            (c.swelling === 'none' || c.swelling === 'slight' || c.swelling === 'obvious')
+          if (
+            data.kneeCheckins !== undefined &&
+            (!Array.isArray(data.kneeCheckins) || !data.kneeCheckins.every(validCheckin))
+          )
+            return false
 
           set((s) => ({
             plans: Array.isArray(data.plans) ? data.plans : s.plans,
@@ -475,6 +525,9 @@ export const useStore = create<State>()(
             exerciseNotes: isObj(data.exerciseNotes)
               ? (data.exerciseNotes as Record<string, string>)
               : s.exerciseNotes,
+            kneeCheckins: Array.isArray(data.kneeCheckins)
+              ? (data.kneeCheckins as KneeCheckin[])
+              : s.kneeCheckins,
           }))
           return true
         } catch {
@@ -489,6 +542,8 @@ export const useStore = create<State>()(
           settings: { unit: 'lb', theme: 'light' },
           activeSession: null,
           exerciseNotes: {},
+          kneeCheckins: [],
+          stepBackDay: null,
         }),
     }),
     // Do not rename this key. It is where every plan, workout and note lives;

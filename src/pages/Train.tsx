@@ -9,6 +9,7 @@ import { Sheet } from '../components/Sheet'
 import { ProgressRing } from '../components/ProgressRing'
 import { EmptyState } from '../components/EmptyState'
 import { WeekCalendar } from '../components/WeekCalendar'
+import { KneeCheckinCard } from '../components/KneeCheckinCard'
 import { toast } from '../lib/toast'
 import { blockState, DELOAD } from '../lib/mesocycle'
 import { DEFAULTS } from '../data/landmarks'
@@ -25,6 +26,12 @@ export function Train() {
   const deletePlan = useStore((s) => s.deletePlan)
   const startBlock = useStore((s) => s.startBlock)
   const setBlockWeek = useStore((s) => s.setBlockWeek)
+  const kneeCheckins = useStore((s) => s.kneeCheckins)
+  // The check-in is for knee programs; anyone else never sees it unless they
+  // have started using it.
+  const showKnee =
+    kneeCheckins.length > 0 ||
+    plans.some((p) => /knee/i.test(p.name) || /knee/.test(p.sourceTemplateId ?? ''))
 
   const [pickDayFor, setPickDayFor] = useState<Plan | null>(null)
   const [pendingStart, setPendingStart] = useState<
@@ -139,6 +146,8 @@ export function Train() {
           </div>
         )}
       </div>
+
+      {showKnee && <KneeCheckinCard />}
 
       {/* A Monday-to-Sunday week of real days, in place of the block-week pips:
           seven days carry what was trained and when, where five pips carried

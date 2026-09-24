@@ -1,4 +1,5 @@
-import type { Exercise, LoggedSet, MuscleGroup, Session, Unit } from '../types'
+import { baselineFor, dayTime, daysWithoutSwelling } from './knee'
+import type { Exercise, KneeCheckin, LoggedSet, MuscleGroup, Session, Unit } from '../types'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import { LANDMARKS } from '../data/landmarks'
 import { e1rm, sessionVolume, weeklySetsByMuscle } from './stats'
@@ -87,6 +88,8 @@ export interface ReviewOptions {
   sessions: Session[]
   customExercises: Exercise[]
   unit: Unit
+  /** Morning knee check-ins, reported alongside the session knee-pain scores. */
+  kneeCheckins?: KneeCheckin[]
   /** How far back to report in detail. */
   days?: number
   now?: number
@@ -144,7 +147,7 @@ export function isEmptyReport(report: string): boolean {
 }
 
 export function buildReviewReport(opts: ReviewOptions): string {
-  const { sessions, customExercises, unit, days = 90, now = Date.now() } = opts
+  const { sessions, customExercises, unit, kneeCheckins = [], days = 90, now = Date.now() } = opts
   const nameOf = (id: string) =>
     EXERCISE_BY_ID[id]?.name ?? customExercises.find((e) => e.id === id)?.name ?? id
   const metaOf = (id: string) =>
@@ -234,6 +237,34 @@ export function buildReviewReport(opts: ReviewOptions): string {
             ? `  · from ${Math.round(row.first.lsi)}% over ${row.count} sessions (${d >= 0 ? '+' : ''}${Math.round(d)})`
             : '  · first measurement') +
           (row.latest.byReps ? '  · by reps/seconds' : '  · by e1RM'),
+      )
+    }
+  }
+
+  // --------------------------------------------------------------------- knee
+  // Last 28 days of check-ins, each with the worst session pain logged the day
+  // before — the pairing the program's next-morning rule is about.
+  const kneeFrom = ymd(now - 27 * DAY_MS)
+  const kneeRows = kneeCheckins
+    .filter((c) => c.day >= kneeFrom)
+    .sort((a, b) => (a.day < b.day ? -1 : 1))
+  if (kneeRows.length > 0) {
+    const base = baselineFor(kneeCheckins, ymd(now + DAY_MS))
+    out.push('')
+    out.push('## KNEE (morning check-ins, last 28 days)')
+    out.push(
+      `  normal: ${base ? `pain ${base.pain}${base.stairs != null ? ` · stairs ${base.stairs}` : ''} (median of ${base.n})` : 'not enough check-ins yet'}` +
+        ` · no swelling for ${daysWithoutSwelling(kneeCheckins)} days`,
+    )
+    out.push('  day         pain stairs swelling  | day before: worst session pain')
+    for (const c of kneeRows) {
+      const prev = ymd(dayTime(c.day) - DAY_MS)
+      const before = logged.filter((s) => ymd(s.date) === prev && s.kneePain != null)
+      out.push(
+        `  ${c.day}  ${String(c.pain).padStart(4)} ${String(c.stairs ?? '—').padStart(6)} ${c.swelling.padEnd(9)} |` +
+          (before.length
+            ? ' ' + before.map((s) => `${shortName(s.name)} ${s.kneePain}/10`).join(', ')
+            : ''),
       )
     }
   }
@@ -343,4 +374,10 @@ export function buildReviewReport(opts: ReviewOptions): string {
   out.push('')
   out.push('(Sets read weight×reps@RIR. BW = bodyweight. e1RM is an estimate, not a tested max.)')
   return out.join('\n')
+}
+
+/** The day's name without the plan prefix: "Knee A" from "Plan · Knee A — Quad angles". */
+function shortName(name: string): string {
+  const part = name.split(' · ').pop() ?? name
+  return part.split(' — ')[0]
 }
