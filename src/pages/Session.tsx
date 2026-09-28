@@ -17,7 +17,7 @@ import { SwapSheet } from '../components/SwapSheet'
 import { ShareWorkoutButton } from '../components/ShareWorkoutButton'
 import { toast } from '../lib/toast'
 import { DELOAD } from '../lib/mesocycle'
-import { KNEE_MUSCLES } from '../lib/knee'
+import { KNEE_MUSCLES, baselineFor, dayKey, kneeStatus } from '../lib/knee'
 import { PainScale } from '../components/PainScale'
 import type { Session as SessionType } from '../types'
 
@@ -36,6 +36,7 @@ function useElapsed(startedAt?: number) {
 export function Session() {
   const nav = useNavigate()
   const active = useStore((s) => s.activeSession)
+  const kneeCheckins = useStore((s) => s.kneeCheckins)
   const sessions = useStore((s) => s.sessions)
   const unit = useStore((s) => s.settings.unit)
   const allExercises = useStore((s) => s.allExercises())
@@ -120,6 +121,14 @@ export function Session() {
     return !!m && KNEE_MUSCLES.has(m.primary)
   })
 
+  // Today's traffic light, so progression advice on a leg exercise never tells
+  // you to push past what this morning's check-in said. No check-in today
+  // means nothing to override with — the numbers stand on their own.
+  const todayCheckin = kneeCheckins.find((c) => c.day === dayKey())
+  const kneeToneToday = todayCheckin
+    ? kneeStatus(todayCheckin, baselineFor(kneeCheckins, dayKey())).tone
+    : undefined
+
   function startRest(seconds: number) {
     if (seconds <= 0) return
     setRestEndsAt(Date.now() + seconds * 1000)
@@ -154,6 +163,7 @@ export function Session() {
       note: exerciseNotes[ex.exerciseId],
       notesOpen: !!notesOpen[ei],
       deload: active.deload,
+      kneeTone: kneeToneToday,
     }
   }
   // A superset sinks as a unit, once every exercise in it is done.

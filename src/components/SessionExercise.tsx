@@ -5,6 +5,7 @@ import { describeScheme, ghostFor, goodGhostFor, isHoldOnly, lastLoggedSets } fr
 import { exposureSymmetry, fmtLsi, lsiTone, LSI_TARGET, symmetryHistory } from '../lib/symmetry'
 import { progressionAdvice } from '../lib/progression'
 import { isExerciseDone, sinkDone } from '../lib/displayOrder'
+import type { KneeTone } from '../lib/knee'
 import type { Exercise, LoggedExercise, LoggedSet, Session, SideSet } from '../types'
 
 /** Everything a card needs to log one exercise. Shared by plain and superset cards. */
@@ -30,6 +31,8 @@ export interface ExerciseView {
   note?: string
   notesOpen: boolean
   deload?: boolean
+  /** Today's knee check-in status, so progression advice never pushes past it. */
+  kneeTone?: KneeTone
 }
 
 type Props = ExerciseView & ExerciseHandlers
@@ -69,6 +72,7 @@ export function ExerciseHead({
   note,
   notesOpen,
   deload,
+  kneeTone,
   tag,
   onToggleNotes,
   onTogglePerLeg,
@@ -83,7 +87,7 @@ export function ExerciseHead({
   const scheme = describeScheme(ex.sets)
   const hasNote = !!(note ?? '').trim()
   // Prior sessions only — advice about today shouldn't read today's own sets.
-  const advice = progressionAdvice(meta, sessions, unit, { deload })
+  const advice = progressionAdvice(meta, sessions, unit, { deload, kneeTone })
 
   return (
     <>

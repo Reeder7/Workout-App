@@ -1,6 +1,7 @@
 import type { Equipment, Exercise, LoggedExercise, LoggedSet, Session } from '../types'
 import { e1rm } from './stats'
 import { DEFAULTS } from '../data/landmarks'
+import { KNEE_MUSCLES, type KneeTone } from './knee'
 
 export type Verdict =
   | 'deload'
@@ -11,6 +12,9 @@ export type Verdict =
   | 'back-off'
   | 'first-time'
   | 'unknown'
+  // Advice would normally push forward (add-load / add-reps), but today's
+  // knee check-in says otherwise. See progressionAdvice's knee override.
+  | 'knee-hold'
 
 export interface Advice {
   verdict: Verdict
@@ -88,7 +92,7 @@ function workingWeight(sets: LoggedSet[]): number {
  * rather than a cue to push, since adding load into a downward trend is how
  * people dig holes.
  */
-export function progressionAdvice(
+function computeAdvice(
   exercise: Exercise | undefined,
   sessions: Session[],
   unit: 'lb' | 'kg',
@@ -239,4 +243,44 @@ export function progressionAdvice(
     suggestedReps: Math.min(target.repMax, bestReps + 1),
     tone: 'neutral',
   }
+}
+
+/**
+ * The numbers alone don't know about this morning's knee. When the check-in is
+ * yellow or red, holding a leg exercise at "push forward" advice is how a
+ * flare gets ignored — the app would say "add load" the same day the knee is
+ * saying otherwise. This replaces only that push-forward advice; everything
+ * else (deload, stalled, back-off, first-time…) already means "don't push" and
+ * is left alone.
+ */
+function kneeOverride(advice: Advice, tone: 'warn' | 'danger'): Advice {
+  const wasReps = advice.verdict === 'add-reps'
+  return {
+    verdict: 'knee-hold',
+    headline:
+      tone === 'danger'
+        ? 'Hold — knee check-in is red today'
+        : 'Hold — knee check-in is yellow today',
+    reason:
+      (tone === 'danger'
+        ? `The numbers say push (${wasReps ? 'more reps' : 'more load'}), but today's check-in says skip or ease off leg work instead.`
+        : `The numbers say push (${wasReps ? 'more reps' : 'more load'}), but ease off a notch today — same load or less, and a rep further from failure. `) +
+      'See the check-in on Train.',
+    tone: 'warn',
+  }
+}
+
+export function progressionAdvice(
+  exercise: Exercise | undefined,
+  sessions: Session[],
+  unit: 'lb' | 'kg',
+  opts: { deload?: boolean; kneeTone?: KneeTone } = {},
+): Advice {
+  const advice = computeAdvice(exercise, sessions, unit, opts)
+  const pushingForward = advice.verdict === 'add-load' || advice.verdict === 'add-reps'
+  const kneeConcerned =
+    (opts.kneeTone === 'warn' || opts.kneeTone === 'danger') &&
+    !!exercise &&
+    KNEE_MUSCLES.has(exercise.primary)
+  return pushingForward && kneeConcerned ? kneeOverride(advice, opts.kneeTone as 'warn' | 'danger') : advice
 }
