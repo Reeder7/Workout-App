@@ -986,6 +986,92 @@ export const TEMPLATES: Plan[] = [
       ]),
     ],
   },
+  // ------------------------------------------------ Knee-Resilient PPL — Phase 1
+  // The six-day Push/Pull/Legs, with the rehab principles of Knee Priority
+  // folded into just two lower-body days. Both leg days blend quad and
+  // posterior work, so each one loads the patellar tendon and the graft-side
+  // hamstring (slow loaded work twice a week, with 2-3 days between). Heavy
+  // compounds get a warm-up set plus two working sets; everything lighter keeps
+  // three. Isometrics land three times a week on three different angles: Push A
+  // (0-30 degrees), Legs A (60) and Legs B (90).
+  {
+    id: 'tpl-ppl-knee-p1',
+    revision: 1,
+    name: 'Knee-Resilient PPL — Phase 1',
+    description:
+      'Push / Pull / Legs six days a week, with two lower-body days that blend quad and posterior work, built around knee pain relief and rehabilitating toward running again.\n\nLEG DAYS (Wed / Sat): each opens with a logged backward-incline-walk warm-up — go until the knee feels ready and log the minutes. Surgical side first on every per-leg lift, and the good side matches its reps. The first set of the main knee lifts is a warm-up set (W): about half your working weight, never counted as a working set. Calves are trained both ways, bent-knee and straight-knee, and tibialis is paired with them.\n\nISOMETRICS, THREE TIMES A WEEK on three different angles, since strength from a hold only carries about 20° either side of the angle you train: Push A at 0–30° (TKE hold) plus a long-length hamstring hold, Legs A at 60° (leg-extension hold), Legs B at 90° (Spanish squat).\n\nSETS: heavy compounds are a warm-up plus two working sets taken close to failure; everything lighter is three. Pairs marked with a superset letter alternate a set of each, so the rest is shared.\n\nTHE PAIN RULE: ≤3/10 during, back to baseline by the next morning. A yellow or red knee check-in holds back load advice on leg lifts, and Step back trims a set from each knee lift for the day. Swelling means drop back.\n\nMOVE TO PHASE 2 WHEN: 6+ weeks in, pain ≤3/10 and settled by morning, no swelling for two weeks, and 10 slow step-downs per leg at ≤2/10. PHASE 3 (hops, skipping, walk-jog) WHEN: single-leg press at 1.5× bodyweight for 4–8 reps per leg with pain under 3/10, and leg symmetry at 90%+.\n\nNot medical advice. Running volume is your surgeon’s call, not this program’s.',
+    daysPerWeek: 6,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Push A', [
+        // The 0-30 degree hold and a long-length hamstring hold, first so they
+        // get done: end-of-session slots are the ones that stop happening.
+        perLeg(hold('banded-tke-hold', 2, [30, 45], { rest: 30, role: 'Quad isometric @ 0–30°, per leg' })),
+        perLeg(hold('single-leg-bridge-hold', 2, [20, 45], { rest: 30, role: 'Hamstring isometric, long length, per leg' })),
+        withWarmup(comp('bench-press', 2, [5, 8], { rir: [2, 1], rest: 210, role: 'Heavy press' }), [8, 10]),
+        withWarmup(comp('incline-db-press', 2, [8, 12], { rir: [2, 1], rest: 150, role: 'Upper chest' }), [10, 12]),
+        comp('machine-shoulder-press', 3, [8, 12], { rir: [2, 1], rest: 150, role: 'Front delts' }),
+        iso('lateral-raise', 3, [12, 20], { role: 'Side delts' }),
+        iso('overhead-triceps-ext', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
+        iso('machine-crunch', 3, [10, 15], { role: 'Abs (loaded flexion)' }),
+      ]),
+      day('Pull A', [
+        withWarmup(comp('barbell-row', 2, [6, 10], { rir: [2, 1], rest: 180, role: 'Horizontal pull' }), [8, 10]),
+        withWarmup(comp('lat-pulldown', 2, [8, 12], { rir: [2, 1], rest: 120, role: 'Lats' }), [10, 12]),
+        withWarmup(comp('seated-cable-row', 2, [8, 12], { rir: [2, 1], rest: 120, role: 'Mid-back' }), [10, 12]),
+        iso('reverse-pec-deck', 3, [12, 20], { role: 'Rear delts' }),
+        iso('behind-body-cable-lateral', 3, [12, 20], { role: 'Side delts (stretch)' }),
+        iso('preacher-curl', 3, [8, 12], { role: 'Biceps (short head)' }),
+        iso('hammer-curl', 3, [10, 15], { role: 'Brachialis' }),
+      ]),
+      day('Legs A — Quad & hinge', [
+        warmUp('backward-incline-walk', [5, 10]),
+        // 60 degrees: the angle that loads the patellar tendon most.
+        perLeg(hold('iso-leg-extension', 2, [30, 45], { rest: 30, role: 'Quad isometric @ 60°, per leg' })),
+        // Literally the stairs-down movement, slow on the way down.
+        withWarmup(perLeg(iso('step-down', 3, [8, 12], { tempo: '3-1-1-0', rir: [3, 2], rest: 45, role: 'Stairs-down control, per leg' })), [8, 10]),
+        // The Phase 3 gate lift: single-leg press at 1.5x bodyweight.
+        withWarmup(perLeg(comp('leg-press', 3, [10, 15], { tempo: '3-0-3-0', rir: [3, 2], rest: 60, role: 'Slow single-leg press — the Phase 3 gate lift' })), [10, 12]),
+        withWarmup(comp('romanian-deadlift', 2, [8, 12], { rir: [3, 2], rest: 120, role: 'Hip hinge' }), [8, 10]),
+        // Calf and shin are antagonists, so they share the rest.
+        ss('legs-a-calf', perLeg(iso('single-leg-calf-raise', 3, [12, 20], { rir: [2, 0], rest: 0, role: 'Gastrocnemius (straight knee), per leg' }))),
+        ss('legs-a-calf', iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' })),
+      ]),
+      day('Push B', [
+        withWarmup(comp('ohp', 2, [5, 8], { rir: [2, 1], rest: 180, role: 'Vertical press' }), [8, 10]),
+        withWarmup(comp('smith-incline-press', 2, [6, 10], { rir: [2, 1], rest: 180, role: 'Upper chest' }), [8, 10]),
+        iso('pec-deck', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Chest (stretch)' }),
+        iso('cable-lateral-raise', 4, [12, 20], { role: 'Side delts' }),
+        iso('skullcrusher', 3, [8, 12], { tempo: STRETCH_TEMPO, role: 'Triceps long head' }),
+        iso('triceps-pushdown', 3, [12, 20], { role: 'Triceps lateral' }),
+        iso('hanging-leg-raise', 3, [8, 15], { role: 'Abs (pelvis curl)' }),
+      ]),
+      day('Pull B', [
+        withWarmup(comp('neutral-pulldown', 2, [8, 12], { rir: [2, 1], rest: 120, role: 'Vertical pull' }), [10, 12]),
+        withWarmup(comp('meadows-row', 2, [8, 12], { rir: [2, 1], rest: 120, role: 'Mid-back (per side)' }), [10, 12]),
+        iso('straight-arm-pulldown', 2, [12, 20], { tempo: STRETCH_TEMPO, role: 'Lats (isolation)' }),
+        iso('cable-rear-delt-fly', 3, [12, 20], { role: 'Rear delts' }),
+        iso('bayesian-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, role: 'Biceps long head' }),
+        iso('spider-curl', 2, [10, 15], { role: 'Biceps short head' }),
+        iso('wrist-roller', 2, [2, 5], { rest: 60, role: 'Forearms (both directions)' }),
+      ]),
+      day('Legs B — Posterior & control', [
+        warmUp('backward-incline-walk', [5, 10]),
+        // 90 degrees, once a week.
+        hold('spanish-squat', 3, [45, 45], { rest: 45, role: 'Quad isometric @ 90°' }),
+        withWarmup(perLeg(iso('reverse-lunge', 3, [8, 12], { rir: [3, 2], rest: 45, role: 'Single leg, per leg' })), [8, 10]),
+        // Quad and hamstring are antagonists, so they share the rest.
+        ss('legs-b-quad-ham', perLeg(iso('leg-extension', 3, [10, 15], { tempo: '3-0-3-0', rir: [3, 1], rest: 0, role: 'Quad, per leg (surgical first)' }))),
+        ss('legs-b-quad-ham', iso('nordic-curl', 2, [4, 6], { rir: [2, 1], rest: 60, role: 'Eccentric hamstring' })),
+        perLeg(comp('single-leg-hip-thrust', 2, [10, 15], { rir: [2, 1], rest: 45, role: 'Glute/hamstring, per leg' })),
+        perLeg(iso('seated-leg-curl', 3, [10, 15], { tempo: STRETCH_TEMPO, rir: [3, 1], rest: 45, role: 'Hamstrings, per leg (surgical first)' })),
+        ss('legs-b-calf', perLeg(iso('leg-press-calf-raise', 3, [10, 20], { rest: 0, role: 'Soleus (bent knee), per leg' }))),
+        ss('legs-b-calf', iso('tibialis-raise', 2, [15, 25], { rir: [1, 0], rest: 45, role: 'Lower leg' })),
+        iso('banded-lateral-walk', 2, [12, 20], { rir: [1, 0], rest: 45, role: 'Glute med — knee over foot' }),
+      ]),
+    ],
+  },
   // ------------------------------------------------ Shoulder & Arm Blaster
   // A single stand-alone session: the overhead press alone while fresh, then
   // antagonist supersets — heavy pairs before high-rep pairs, because whatever
