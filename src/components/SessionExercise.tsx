@@ -45,14 +45,17 @@ export function completePatch(
   ex: LoggedExercise,
   si: number,
   last: LoggedSet[] | null,
-  skipRir = false,
+  isTest = false,
 ): Partial<LoggedSet> {
   const st = ex.sets[si]
+  // A test is a measurement: ticking a set must never invent a number. Only
+  // what was typed in gets recorded.
+  if (isTest) return { done: true }
   const g = ghostFor(last, si, st.target)
   const patch: Partial<LoggedSet> = { done: true }
   if (!st.weight && g.weight) patch.weight = g.weight
   if (!st.reps && g.reps) patch.reps = g.reps
-  if (!skipRir && st.rir == null && g.rir != null) patch.rir = g.rir
+  if (st.rir == null && g.rir != null) patch.rir = g.rir
   // One tap completes both legs: the good side fills from its own ghost too.
   if (ex.perLeg) {
     const gg = goodGhostFor(last, si, g)
@@ -234,9 +237,10 @@ export function SetRow({
   onComplete: () => void
 }) {
   const st = ex.sets[si]
-  const g = ghostFor(last, si, st.target)
+  // No ghost values on a test — the boxes show a dash until a result is typed.
+  const g = noRir ? {} : ghostFor(last, si, st.target)
   const hold = st.target?.isHold
-  const gg = goodGhostFor(last, si, g)
+  const gg = noRir ? {} : goodGhostFor(last, si, g)
   const n = si + 1
   return (
     <div className={ex.perLeg ? 'setpair' : undefined}>
