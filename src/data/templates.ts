@@ -1072,6 +1072,42 @@ export const TEMPLATES: Plan[] = [
       ]),
     ],
   },
+  // ------------------------------------------------ Baseline Test Day
+  // A one-off assessment, repeated every 4-6 weeks, that decides where each
+  // movement starts in the late-stage program. Symmetry alone can mislead —
+  // the good leg often loses function too — so each test is read three ways:
+  // leg against leg, against an absolute benchmark where a real one exists
+  // (only the heel raise has one), and by how the knee responds afterward.
+  // Ordered so fatiguing tests come last and don't spoil the skill tests.
+  {
+    id: 'tpl-baseline-tests',
+    revision: 1,
+    name: 'Baseline Test Day',
+    description:
+      'A one-off assessment, repeated every 4–6 weeks, that shows where each movement should start — not just how even your legs are. Do it fresh: a rest day or an easy day, not after a hard leg session. Everything is logged per leg, surgical side first, so the app works out symmetry for you.\n\nHOW TO READ IT: (1) leg against leg — the Progress tab shows each test’s symmetry; (2) against a real benchmark where one exists — only the single-leg heel raise has one, roughly 25–29 reps for adults under 40; (3) how the knee responds — log your worst pain during the day, then check in the next morning, and treat swelling as the stop sign. A good leg that has quietly lost ground can make symmetry look better than it is, so retests against your own earlier numbers matter as much as the percentage.\n\nHOPS ARE IMPACT: do the single and triple hop only if hopping is already comfortable at 2/10 pain or less, and skip them on any day your knee check-in is yellow or red. Everything else here is low impact.\n\nDISTANCES (reach and hops) are logged in centimetres in the reps box. The two crane-scale force tests at the end are optional — skip them if you don’t have one yet.\n\nSTOP any test for pain over 3/10, a feeling of giving way, or a hamstring or calf cramp. Note it and move on.\n\nNot medical advice.',
+    daysPerWeek: 1,
+    createdAt: 0,
+    builtIn: true,
+    days: [
+      day('Baseline Test Day', [
+        // Skill tests first, while fresh.
+        perLeg(mk('test-balance', [s(10, 60, 0, 60, { isHold: true, label: 'Test' }), s(10, 60, 0, 60, { isHold: true, label: 'Test' })], 'Eyes closed, floor — seconds, best of 2')),
+        perLeg(mk('test-reach', [s(30, 90, 0, 45, { label: 'Test' }), s(30, 90, 0, 45, { label: 'Test' }), s(30, 90, 0, 45, { label: 'Test' })], 'Anterior reach in cm, best of 3')),
+        // Impact tests next — optional, only if hopping is already comfortable.
+        perLeg(mk('test-single-hop', [s(60, 200, 0, 60, { label: 'Test' }), s(60, 200, 0, 60, { label: 'Test' }), s(60, 200, 0, 60, { label: 'Test' })], 'Distance in cm, best of 3 — only if hopping is comfortable')),
+        perLeg(mk('test-triple-hop', [s(200, 600, 0, 90, { label: 'Test' }), s(200, 600, 0, 90, { label: 'Test' })], 'Total distance in cm, best of 2 — only if hopping is comfortable')),
+        // Fatiguing tests last, one set to fatigue each.
+        perLeg(mk('test-single-leg-sit-to-stand', [s(5, 25, 0, 180, { label: 'To fatigue' })], 'Reps to fatigue, same box height every time')),
+        perLeg(mk('test-heel-raise', [s(5, 30, 0, 180, { label: 'To fatigue' })], 'Reps to fatigue — about 25–29 is typical under 40')),
+        perLeg(mk('test-bridge-hold', [s(10, 60, 0, 180, { isHold: true, label: 'To fatigue' })], 'Seconds to fatigue — release if the hamstring cramps')),
+        perLeg(hold('side-plank', 1, [20, 60], { rest: 120, role: 'Seconds to fatigue, per side' })),
+        hold('wall-sit', 1, [30, 90], { rest: 120, role: 'Seconds to fatigue at about 90° — both legs' }),
+        // Optional: needs a crane scale.
+        perLeg(mk('test-quad-force', [s(1, 1, 0, 60, { label: 'Test' }), s(1, 1, 0, 60, { label: 'Test' }), s(1, 1, 0, 60, { label: 'Test' })], 'Optional, crane scale — peak lb, best of 3')),
+        perLeg(mk('test-hamstring-force', [s(1, 1, 0, 60, { label: 'Test' }), s(1, 1, 0, 60, { label: 'Test' }), s(1, 1, 0, 60, { label: 'Test' })], 'Optional, crane scale — peak lb, best of 3')),
+      ]),
+    ],
+  },
   // ------------------------------------------------ Shoulder & Arm Blaster
   // A single stand-alone session: the overhead press alone while fresh, then
   // antagonist supersets — heavy pairs before high-rep pairs, because whatever

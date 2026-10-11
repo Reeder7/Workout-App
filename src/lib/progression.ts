@@ -99,6 +99,12 @@ function computeAdvice(
   opts: { deload?: boolean } = {},
 ): Advice {
   if (!exercise) return { verdict: 'unknown', headline: '', reason: '', tone: 'neutral' }
+  // A test is a measurement, not training: "add load" or "chase more reps"
+  // makes no sense on a hop distance or a balance time, and a retest is judged
+  // against the earlier result, not progressed.
+  if (exercise.tags?.includes('Test')) {
+    return { verdict: 'unknown', headline: '', reason: '', tone: 'neutral' }
+  }
 
   const hist = exposures(sessions, exercise.id)
   if (hist.length === 0) {
