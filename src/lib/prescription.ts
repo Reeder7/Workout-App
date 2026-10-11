@@ -33,7 +33,7 @@ function sameExceptRir(a: Target, b: Target): boolean {
  * 8–12 @ 2 RIR become "3 × 8–12 @ 2 RIR" instead of the same sentence
  * repeated above every row.
  */
-export function describeScheme(sets: LoggedSet[]): string {
+export function describeScheme(sets: LoggedSet[], noRir = false): string {
   const groups: { t: Target; n: number; label?: string }[] = []
   for (const s of sets) {
     if (!s.target) continue
@@ -76,7 +76,9 @@ export function describeScheme(sets: LoggedSet[]): string {
     const rir = g.rirTo != null ? `${g.t.rir}→${g.rirTo}` : `${g.t.rir}`
     // A "Hold" label already says it; don't render "Hold 2 × 30–45s hold".
     const suffix = g.t.isHold && !g.label ? 's hold' : 's'
-    const body = g.t.isHold ? `${count}${reps}${suffix}` : `${count}${reps} @ ${rir} RIR`
+    // A test is a measurement, so "reps in reserve" means nothing for it.
+    const body =
+      g.t.isHold || noRir ? `${count}${reps}${g.t.isHold ? suffix : ''}` : `${count}${reps} @ ${rir} RIR`
     return g.label ? `${g.label} ${body}` : body
   })
 

@@ -45,13 +45,14 @@ export function completePatch(
   ex: LoggedExercise,
   si: number,
   last: LoggedSet[] | null,
+  skipRir = false,
 ): Partial<LoggedSet> {
   const st = ex.sets[si]
   const g = ghostFor(last, si, st.target)
   const patch: Partial<LoggedSet> = { done: true }
   if (!st.weight && g.weight) patch.weight = g.weight
   if (!st.reps && g.reps) patch.reps = g.reps
-  if (st.rir == null && g.rir != null) patch.rir = g.rir
+  if (!skipRir && st.rir == null && g.rir != null) patch.rir = g.rir
   // One tap completes both legs: the good side fills from its own ghost too.
   if (ex.perLeg) {
     const gg = goodGhostFor(last, si, g)
@@ -84,7 +85,7 @@ export function ExerciseHead({
     /** Superset member tag, e.g. "B1". */
     tag?: string
   }) {
-  const scheme = describeScheme(ex.sets)
+  const scheme = describeScheme(ex.sets, !!meta?.tags?.includes('Test'))
   const hasNote = !!(note ?? '').trim()
   // Prior sessions only — advice about today shouldn't read today's own sets.
   const advice = progressionAdvice(meta, sessions, unit, { deload, kneeTone })
@@ -180,13 +181,22 @@ export function ExerciseHead({
   )
 }
 
-export function SetGridHead({ unit, holds }: { unit: 'lb' | 'kg'; holds: boolean }) {
+export function SetGridHead({
+  unit,
+  holds,
+  noRir,
+}: {
+  unit: 'lb' | 'kg'
+  holds: boolean
+  /** Tests are measurements, so there is no reps-in-reserve column. */
+  noRir?: boolean
+}) {
   return (
-    <div className="setgrid setgrid-head">
+    <div className={`setgrid setgrid-head${noRir ? ' setgrid-norir' : ''}`}>
       <div className="center">SET</div>
       <div className="center">{unit.toUpperCase()}</div>
       <div className="center">{holds ? 'SEC' : 'REPS'}</div>
-      <div className="center">RIR</div>
+      {!noRir && <div className="center">RIR</div>}
       <div />
     </div>
   )
@@ -203,6 +213,7 @@ export function SetRow({
   unit,
   chip,
   warm,
+  noRir,
   onUpdateSet,
   onUpdateGood,
   onStepRir,
@@ -215,6 +226,7 @@ export function SetRow({
   unit: 'lb' | 'kg'
   chip: string
   warm?: boolean
+  noRir?: boolean
   onUpdateSet: ExerciseHandlers['onUpdateSet']
   onUpdateGood: ExerciseHandlers['onUpdateGood']
   onStepRir: ExerciseHandlers['onStepRir']
@@ -228,7 +240,7 @@ export function SetRow({
   const n = si + 1
   return (
     <div className={ex.perLeg ? 'setpair' : undefined}>
-      <div className={`setgrid setrow${st.done ? ' set-row-done' : ''}`}>
+      <div className={`setgrid setrow${st.done ? ' set-row-done' : ''}${noRir ? ' setgrid-norir' : ''}`}>
         <div
           className={`set-num${warm ? ' set-num-warm' : ''}${chip.length > 1 ? ' set-num-wide' : ''}`}
           title={warm ? 'Warm-up set — not counted as a working set' : undefined}
@@ -253,13 +265,15 @@ export function SetRow({
           placeholder={g.reps ? String(g.reps) : '—'}
           onChange={(e) => onUpdateSet(si, { reps: Math.max(0, parseInt(e.target.value) || 0) })}
         />
-        <RirStepper
-          label={`Set ${n} reps in reserve`}
-          value={st.rir}
-          ghost={g.rir}
-          onStep={(delta) => onStepRir(si, delta)}
-          onSet={(rir) => onUpdateSet(si, { rir })}
-        />
+        {!noRir && (
+          <RirStepper
+            label={`Set ${n} reps in reserve`}
+            value={st.rir}
+            ghost={g.rir}
+            onStep={(delta) => onStepRir(si, delta)}
+            onSet={(rir) => onUpdateSet(si, { rir })}
+          />
+        )}
         <button
           className={`set-done${st.done ? ' on' : ''}`}
           aria-label={st.done ? `Set ${n}: mark incomplete` : `Complete set ${n}`}
@@ -274,7 +288,7 @@ export function SetRow({
         </button>
       </div>
       {ex.perLeg && (
-        <div className={`setgrid setrow setrow-good${st.done ? ' set-row-done' : ''}`}>
+        <div className={`setgrid setrow setrow-good${st.done ? ' set-row-done' : ''}${noRir ? ' setgrid-norir' : ''}`}>
           <div className="side-tag" aria-hidden="true">G</div>
           <input
             type="number"
@@ -294,7 +308,7 @@ export function SetRow({
             placeholder={gg.reps ? String(gg.reps) : '—'}
             onChange={(e) => onUpdateGood(si, { reps: Math.max(0, parseInt(e.target.value) || 0) })}
           />
-          <div className="side-caption">good leg</div>
+          {!noRir && <div className="side-caption">good leg</div>}
           <div />
         </div>
       )}
@@ -306,16 +320,17 @@ export function SessionExercise(props: Props) {
   const { ex, unit, sessions, onUpdateSet, onRest, onAddSet, onRemoveSet } = props
   const last = lastLoggedSets(sessions, ex.exerciseId)
   const holds = isHoldOnly(ex.sets)
+  const isTest = !!props.meta?.tags?.includes('Test')
 
   function complete(si: number) {
-    onUpdateSet(si, completePatch(ex, si, last))
+    onUpdateSet(si, completePatch(ex, si, last, isTest))
     onRest(ex.sets[si].target?.restSec ?? ex.restSec ?? 120)
   }
 
   return (
     <div className={`card${isExerciseDone(ex) ? ' card-done' : ''}`}>
       <ExerciseHead {...props} />
-      <SetGridHead unit={unit} holds={holds} />
+      <SetGridHead unit={unit} holds={holds} noRir={isTest} />
 
       {sinkDone(ex.sets, (st) => st.done).map(({ item: st, index: si }) => {
         const warm = !!st.target?.warmup
@@ -330,6 +345,7 @@ export function SessionExercise(props: Props) {
             unit={unit}
             chip={warm ? 'W' : String(workNo)}
             warm={warm}
+            noRir={isTest}
             onUpdateSet={onUpdateSet}
             onUpdateGood={props.onUpdateGood}
             onStepRir={props.onStepRir}

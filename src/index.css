@@ -925,6 +925,10 @@ button.lrow:active {
   gap: 6px;
   align-items: center;
 }
+/* Tests have no reps-in-reserve column: the two inputs share its width. */
+.setgrid.setgrid-norir {
+  grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr) 40px;
+}
 /* Rows and the header carry the same 8px inset so their columns stay aligned
    while the completed-row accent rail has somewhere to sit without clipping
    the set number. */
